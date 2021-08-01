@@ -12,6 +12,7 @@
     "gitmoji-cli": "^4.1.0",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
+    "mongoose": "^5.13.5",
     "morgan": "~1.9.1"
   }
 }
