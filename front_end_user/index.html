@@ -30,24 +30,15 @@
     
 
     <!-- date form -->
-    <div id="dateForm" class="container-md py-3 my-3 rounded" style="background-color: #3399ff;">
+    <div id="dateForm" class="container-md py-4 my-3 rounded" style="background-color: #3399ff;">
         <form action="#">
-            <div class="row  align-items-center mb-2">
-                <div class="col">
-                    <p class="form-title">scegli la data</p>
-                </div>
-                <div class="col">
-                    <p class="form-title">scegli l'orario d'arrivo</p>
-                </div>
-                <div class="col">
-                    <p class="form-title">scegli il numero di ore</p>
-                </div>
-            </div>
             <div class="row">
-                <div class="col" id="bookDate">
+                <div class="col-4" id="bookDate">
+                    <p class="form-title">scegli la data</p>
                     <input type="date" class="form-control"  aria-label="data di prenotazione">
                 </div>
-                <div class="col" id="bookTime">
+                <div class="col-3" id="bookTime">
+                    <p class="form-title">scegli l'orario d'arrivo</p>
                     <select class="form-select form-select-md" aria-label="orario di prenotazione">
                         <option value="8" selected>8:00</option>
                         <option value="9">9:00</option>
@@ -62,7 +53,9 @@
                         <option value="18">18:00</option>
                       </select>
                 </div>
-                <div class="col" id="bookHours">
+                <div class="col-3" id="bookHours">
+                    <p class="form-title">scegli il numero di ore</p>
+
                     <select class="form-select form-select-md" aria-label="ore da prenotare">
                         <option value="1" selected>1</option>
                         <option value="2">2</option>
@@ -74,7 +67,7 @@
               <div class="row mt-3">
                 <div class="col-12" con>
                     <div class="d-flex flex-row-reverse item-element">
-                        <button class="btn btn-secondary btm-sm" type="submit">Submit form</button>
+                        <button class="btn btn-secondary btm-sm" type="submit">Cerca</button>
                       </div>
                     
                   </div>
