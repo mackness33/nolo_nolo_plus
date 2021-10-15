@@ -1,6 +1,6 @@
 img {
-    height: 10rem;
-    width: 12rem;
+    height: 100%;
+    width: 100%;
     object-fit:cover;
     
 }
@@ -13,6 +13,7 @@ img {
 
 .item-type {
     background-color: rgba(212, 224, 245, 2);
+    
 }
 
 .item-description {
@@ -27,4 +28,12 @@ img {
     font-weight: bold;
     padding-top: 1rem;
     padding-left: 0.5rem;
+}
+
+.total-price {
+    border-style: solid;
+    border-width: 0.2vw;
+    border-color:orange;
+    background-color: rgba(255, 166, 0, 0.822);
+    border-radius: 0.5vw;
 }

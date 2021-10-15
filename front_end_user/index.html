@@ -33,13 +33,13 @@
     <div id="dateForm" class="container-md py-4 my-3 rounded" style="background-color: #3399ff;">
         <form action="#">
             <div class="row">
-                <div class="col-5" id="bookDate">
+                <div class="col-md-5" id="bookDate">
                     <p class="form-title">Data</p>
-                    <input type="date" class="form-control"  aria-label="data di prenotazione" required>
+                    <input type="date" class="form-control"  aria-label="data di prenotazione">
                 </div>
-                <div class="col-3" id="bookTime">
+                <div class="col-md-3" id="bookTime">
                     <p class="form-title">Orario</p>
-                    <select class="form-select form-select-md" aria-label="orario di prenotazione" required>
+                    <select class="form-select form-select-md" aria-label="orario di prenotazione">
                         <option value="8">8:00</option>
                         <option value="9">9:00</option>
                         <option value="10">10:00</option>
@@ -53,10 +53,10 @@
                         <option value="18">18:00</option>
                       </select>
                 </div>
-                <div class="col-3" id="bookHours">
+                <div class="col-md-3" id="bookHours">
                     <p class="form-title">Durata</p>
 
-                    <select class="form-select form-select-md" aria-label="ore da prenotare" required>
+                    <select class="form-select form-select-md" aria-label="ore da prenotare">
                         <option value="1" selected>1 ora</option>
                         <option value="2">2 ore</option>
                         <option value="3">3 ore</option>
@@ -65,9 +65,9 @@
                 </div>
               </div>
               <div class="row mt-3">
-                <div class="col-12" con>
+                <div class="col-12">
                     <div class="d-flex flex-row-reverse">
-                        <button class="btn btn-warning btn-lg" type="submit">Cerca</button>
+                        <button class="btn btn-warning btn-lg" type="submit" id="searchBtn">Cerca</button>
                       </div>
                     
                   </div>
@@ -76,22 +76,22 @@
     </div>
     
     <!-- items list -->
-    <div class="container-md">
+    <div class="container-md item-list">
         <!-- item begin -->
-        <div class="container my-4 border border-primary rounded item-type">
+        <!-- <div class="container my-4 border border-primary rounded item-type">
             <div class="row my-2">
-                <div class="col-2 ">
+                <div class="col-md-2 ">
                     <a href="#">
                         <img src="./img/img1.jpg" alt="immagine di pedalo'" class="rounded float-left">
                     </a>
                 </div>
-                <div class="col-7 d-flex flex-column">
+                <div class="col-md-7 d-flex flex-column">
                     <div class="row my-1">
-                        <div class="col d-flex flex-column">
+                        <div class="col-md d-flex flex-column">
                             <div class="item-description">Nome:</div>
                             <div class="item-name">Lorem, ipsum dolor.</div>
                         </div>
-                        <div class="col-9 d-flex flex-column">
+                        <div class="col-md-9 d-flex flex-column">
                             <div class="item-description">Tipo:</div>
                             <div class="item-type">Lorem, ipsum dolor.</div>
                         </div>
@@ -102,9 +102,9 @@
                         <div class="item-properties"> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum aperiam consequuntur at sint quos vitae quidem repudiandae repellendus nostrum totam sequi quas illo iusto amet iste facere non, esse assumenda!</div>
                     </div>
                 </div>
-                <div class="col-3 d-flex flex-column align-items-center">
-                    <div class="h-50 d-flex">
-                        <div class="d-flex flex-row align-items-top">
+                <div class="col-md-3 d-flex flex-column align-items-center">
+                    <div class="row d-flex">
+                        <div class=" mb-3 d-flex flex-row align-items-top total-price">
                             <div class="d-flex flex-column price-high align-self-start">
                                 39
                             </div>
@@ -117,62 +117,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="h-50 w-100 d-flex">
+                    <div class=" row h-50 w-100 d-flex">
                         <button type="button" class="btn btn-success w-100"><h2>Prenota</h2></button>
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <!-- item end -->
-
-        <div class="container my-4 border border-primary rounded item-type">
-            <div class="row my-2">
-                <div class="col-2 ">
-                    <a href="#">
-                        <img src="./img/img2.jpeg" alt="immagine di pedalo'" class="rounded float-left">
-                    </a>
-                </div>
-                <div class="col-7 d-flex flex-column">
-                    <div class="row my-1">
-                        <div class="col d-flex flex-column">
-                            <div class="item-description">Nome:</div>
-                            <div class="item-name">Lorem, ipsum dolor.</div>
-                        </div>
-                        <div class="col-9 d-flex flex-column">
-                            <div class="item-description">Tipo:</div>
-                            <div class="item-type">Lorem, ipsum dolor.</div>
-                        </div>
-                    </div>
-                    
-                    <div class="item-description">Caratteristiche:</div>
-                    <div class="row">
-                        <div class="item-properties"> Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsum aperiam consequuntur at sint quos vitae quidem repudiandae repellendus nostrum totam sequi quas illo iusto amet iste facere non, esse assumenda!</div>
-                    </div>
-                </div>
-                <div class="col-3 d-flex flex-column align-items-center">
-                    <div class="h-50 d-flex">
-                        <div class="d-flex flex-row align-items-top">
-                            <div class="d-flex flex-column price-high align-self-start">
-                                69
-                            </div>
-                            <div class="d-flex flex-row price-low-container ">
-                                <p>
-                                    , <span class="price-low">
-                                        99
-                                    </span> / h
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="h-50 w-100 d-flex">
-                        <button type="button" class="btn btn-success w-100"><h2>Prenota</h2></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-
 
     <!-- scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
