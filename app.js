@@ -33,7 +33,7 @@ app.use('/pedalo', pedaloRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  console.log("Error occured, damn boy");
+  console.log("Error occured");
   next(createError(404));
 });
 
