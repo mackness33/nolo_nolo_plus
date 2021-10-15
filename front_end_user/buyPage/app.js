@@ -5,7 +5,7 @@ const itemList = [
         type: 'Ricreativo',
         description: 'Bellissimo per bambini e coppie, niente preservativi inclusi.',
         price: 39.99,
-        img: ['./img/img1.jpg']
+        img: ['../img/img1.jpg']
     },
     {
         id: 36,
@@ -13,7 +13,7 @@ const itemList = [
         type: 'Lusso',
         description: 'Per te ma se sei Bill Gates.',
         price: 1499.99,
-        img: ['./img/img2.jpeg']
+        img: ['../img/img2.jpeg']
     }
 ]
 
