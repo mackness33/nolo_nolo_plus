@@ -32,59 +32,70 @@
     
 
     <!-- date form -->
-    <div id="dateForm" class="container-md py-4 my-3 rounded" style="background-color: #3399ff;">
-        <form action="#">
-            <div class="row">
-                <div class="col-md-5" id="bookDate">
-                    <p class="form-title">Data</p>
-                    <input type="date" class="form-control"  aria-label="data di prenotazione">
-                </div>
-                <div class="col-md-3" id="bookTime">
-                    <p class="form-title">Orario</p>
-                    <select class="form-select form-select-md" aria-label="orario di prenotazione">
-                        <option value="8">8:00</option>
-                        <option value="9">9:00</option>
-                        <option value="10">10:00</option>
-                        <option value="11">11:00</option>
-                        <option value="12">12:00</option>
-                        <option value="13">13:00</option>
-                        <option value="14">14:00</option>
-                        <option value="15">15:00</option>
-                        <option value="16">16:00</option>
-                        <option value="17">17:00</option>
-                        <option value="18">18:00</option>
-                      </select>
-                </div>
-                <div class="col-md-3" id="bookHours">
-                    <p class="form-title">Durata</p>
-
-                    <select class="form-select form-select-md" aria-label="ore da prenotare">
-                        <option value="1" selected>1 ora</option>
-                        <option value="2">2 ore</option>
-                        <option value="3">3 ore</option>
-                        <option value="4">4 ore</option>
-                      </select>
-                </div>
-              </div>
-              <div class="row mt-3">
-                <div class="col-12">
-                    <div class="d-flex flex-row-reverse">
-                        <button class="btn btn-warning btn-lg" type="submit" id="searchBtn">Cerca</button>
+    <div id="dateForm" class="container-md pb-3 pt-2 my-3 rounded" style="background-color: #3399ff;">
+        <div class="row">
+            <div class="col-md-8 booking-form px-3 border-end border-white">
+                <form action="#">
+                    <p class="book-title form-title">Prenota per dopo...</p>
+                    <div class="row">
+                        <div class="col-md-4" id="bookDate">
+                            <p class="form-title">Data</p>
+                            <input type="date" class="form-control"  aria-label="data di prenotazione">
+                        </div>
+                        <div class="col-md-3" id="bookTime">
+                            <p class="form-title">Orario</p>
+                            <select class="form-select form-select-md" aria-label="orario di prenotazione">
+                                <option value="8">8:00</option>
+                                <option value="9">9:00</option>
+                                <option value="10">10:00</option>
+                                <option value="11">11:00</option>
+                                <option value="12">12:00</option>
+                                <option value="13">13:00</option>
+                                <option value="14">14:00</option>
+                                <option value="15">15:00</option>
+                                <option value="16">16:00</option>
+                                <option value="17">17:00</option>
+                                <option value="18">18:00</option>
+                              </select>
+                        </div>
+                        <div class="col-md" id="bookHours">
+                            <p class="form-title">Durata</p>
+        
+                            <select class="form-select form-select-md" aria-label="ore da prenotare">
+                                <option value="1" selected>1 ora</option>
+                                <option value="2">2 ore</option>
+                                <option value="3">3 ore</option>
+                                <option value="4">4 ore</option>
+                              </select>
+                        </div>
                       </div>
-                    
-                  </div>
-              </div>
-        </form>
+                      <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="d-flex flex-row-reverse">
+                                <button class="btn btn-warning btn-lg" type="submit" id="searchBtn">Cerca</button>
+                              </div>
+                            
+                          </div>
+                      </div>
+                </form>
+            </div>
+            <div class="col-md-4 d-flex flex-column">
+                <p class="book-title form-title flex-row pb-5 align-self-start">... O acquista ora!</p>
+                <button class="btn btn-warning btn-lg flex-row">Acquista</button>
+            </div>
+        </div>
+        
+        
     </div>
     
     <!-- items list -->
     <div class="container-md item-list">
         <!-- item begin -->
-        <!-- <div class="container my-4 border border-primary rounded item-type">
+        <div class="container my-4 border border-primary rounded item-type">
             <div class="row my-2">
                 <div class="col-md-2 ">
                     <a href="#">
-                        <img src="./img/img1.jpg" alt="immagine di pedalo'" class="rounded float-left">
+                        <img src="../img/img1.jpg" alt="immagine di pedalo'" class="rounded float-left">
                     </a>
                 </div>
                 <div class="col-md-7 d-flex flex-column">
@@ -106,7 +117,7 @@
                 </div>
                 <div class="col-md-3 d-flex flex-column align-items-center">
                     <div class="row d-flex">
-                        <div class=" mb-3 d-flex flex-row align-items-top total-price">
+                        <div class=" my-3 d-flex flex-row align-items-top total-price">
                             <div class="d-flex flex-column price-high align-self-start">
                                 39
                             </div>
@@ -124,7 +135,7 @@
                     </div>
                 </div>
             </div>
-        </div> -->
+        </div>
         <!-- item end -->
 
     <!-- scripts -->

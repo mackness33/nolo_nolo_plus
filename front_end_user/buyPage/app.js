@@ -71,6 +71,10 @@ window.addEventListener('DOMContentLoaded', ()=>{
     dateInput.setAttribute('min', today.toISOString().split('T')[0]);
     today.setDate(today.getDate() + 90);
     dateInput.setAttribute('max', ((today.toISOString()).split('T')[0]));
+
+    if(window.screen.width < 768){
+        document.querySelector('.booking-form').classList.remove('border-end');
+    }
 });
 
 function addItem(item){
@@ -100,7 +104,7 @@ function addItem(item){
         </div>
         <div class="col-md-3 d-flex flex-column align-items-center">
             <div class="row d-flex">
-                <div class=" m-3 d-flex flex-row align-items-top total-price">
+                <div class="my-3 d-flex flex-row align-items-top total-price">
                     <div class="d-flex flex-column price-high align-self-start">
                         ${item.price.toString().split(".")[0]}
                     </div>
@@ -123,4 +127,14 @@ function addItem(item){
     let node = document.createElement(null);
     node.innerHTML = itemhtml;
     document.querySelector('.item-list').appendChild(node);
+}
+
+
+window.onresize = () => {
+    if(window.screen.width < 768){
+        document.querySelector('.booking-form').classList.remove('border-end');
+    }
+    else{
+        document.querySelector('.booking-form').classList.add('border-end');
+    }
 }
