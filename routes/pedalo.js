@@ -18,7 +18,7 @@ router.get('/', function(req, res, next) {
 
   Pedalo.find({ name: /^dumb/ });
 
-  res.send('respond with a pedalo');
+  res.send(pedalos);
 });
 
 module.exports = router;
