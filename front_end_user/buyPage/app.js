@@ -131,7 +131,7 @@ function addItem(item){
 
 
 window.onresize = () => {
-    if(window.screen.width < 768){
+    if(window.innerWidth < 768){
         document.querySelector('.booking-form').classList.remove('border-end');
     }
     else{
