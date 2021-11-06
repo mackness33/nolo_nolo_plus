@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 main().catch(err => console.log(err));
 
 async function main() {
-  await mongoose.connect('mongodb://localhost:8000/test');
+  await mongoose.connect('mongodb://david.mack:iraeBoh3@david.mack.tw.cs.unibo.it:27017/test');
 }
 
 const kittySchema = new mongoose.Schema({
