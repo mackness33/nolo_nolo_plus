@@ -41,5 +41,6 @@ Infine, l'uri da passare a mongoose/MongoClient per connettersi al server e':<br
 `mongodb://nome.cognome:password@mongo_nome.cognome:27017?writeConcern=majority`<br>
 Esso permette di collegarsi solo al database `test` presente nel container mongo.
 
-L'utilizzo di 2 container fa in modo che la porta `27017` per comunicare con il server sia accessibile solo da un altro container, nel nostro caso quello che sta eseguendo node.js<br>
+L'utilizzo di 2 container fa in modo che la porta `27017` per comunicare con il server sia accessibile solo da un altro container,
+nel nostro caso quello che sta eseguendo node.js
 Inoltre e' questo stesso script a contenere la entry point per potercisi connettere dal web, tale entry point e' obbligatoriamente la porta 8000.
