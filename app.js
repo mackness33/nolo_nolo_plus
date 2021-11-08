@@ -1,6 +1,6 @@
 // INFO: how to start the server DEBUG=app:* npm start
 
-
+require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
@@ -10,10 +10,12 @@ var mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var kittenRouter = require('./routes/mongo_ex_url');
+// var kittenRouter = require('./routes/mongo_ex_url');
 var pedaloRouter = require('./routes/pedalo');
 
 var app = express();
+
+console.log("dotenv works?" + process.env.DB_HOST);
 
 // view engine setup
 // TODO: uninstall Jade
@@ -28,7 +30,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/kitten', kittenRouter);
+// app.use('/kitten', kittenRouter);
 app.use('/pedalo', pedaloRouter);
 
 // catch 404 and forward to error handler
@@ -46,7 +48,8 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   // TODO: find another way to rendere the error. Without Jade
-  res.render('error');
+  // res.render('error');
+  console.log("ERROR: " + err.message);
 });
 
 module.exports = app;

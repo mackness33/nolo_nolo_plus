@@ -4,7 +4,8 @@
  * Module dependencies.
  */
 
-require('dotenv').config();
+// import _ from '../env'
+
 var app = require('../app');
 var debug = require('debug')('nolo-nolo-plus:server');
 var http = require('http');

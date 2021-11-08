@@ -1,8 +1,13 @@
+// require('dotenv').config({ path: '../bin/key.env', debug: process.env.DEBUG });
+
 var mongoose = require('mongoose');
 main().catch(err => console.log(err));
 
 async function main() {
-  await mongoose.connect('mongodb://localhost:8000/test');
+  // let uri = 'mongodb://' + process.env.DB_HOST + ':' + process.env.DB_PORT + '/test'
+  let uri = 'mongodb://localhost:27017/test'
+  console.log("mongo uri: " + uri);
+  await mongoose.connect(uri);
 }
 
 const pedaloSchema = new mongoose.Schema({
@@ -22,7 +27,7 @@ const Pedalo = mongoose.model('Pedalo', pedaloSchema);
 
 const example = new Pedalo({ name: 'Example' });
 console.log(example.name); // 'Silence'
-
 console.log("End of test pedalo");
+
 
 module.exports = Pedalo;
