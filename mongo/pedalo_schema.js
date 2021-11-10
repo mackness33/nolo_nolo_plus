@@ -1,11 +1,15 @@
 // require('dotenv').config({ path: '../bin/key.env', debug: process.env.DEBUG });
 
+require('dotenv').config({ path: '../bin/.env' });
 var mongoose = require('mongoose');
 main().catch(err => console.log(err));
 
 async function main() {
-  // let uri = 'mongodb://' + process.env.DB_HOST + ':' + process.env.DB_PORT + '/test'
-  let uri = 'mongodb://localhost:27017/test'
+  let db_cred = process.env.DB_USER && process.env.DB_PSW ? process.env.DB_USER + ':' + process.env.DB_PSW : ''
+  let db_name = (process.env.DB_NAME || '')
+  let db_options = (process.env.DB_OPTIONS || '')
+  let uri = 'mongodb://' + db_cred + process.env.DB_HOST + ':' + process.env.DB_PORT + '/' + db_name + "?" + db_options
+  // let uri = 'mongoxdb://localhost:27017/test'
   console.log("mongo uri: " + uri);
   await mongoose.connect(uri);
 }

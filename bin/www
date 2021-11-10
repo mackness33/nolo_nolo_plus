@@ -6,6 +6,7 @@
 
 // import _ from '../env'
 
+require('dotenv').config();
 var app = require('../app');
 var debug = require('debug')('nolo-nolo-plus:server');
 var http = require('http');

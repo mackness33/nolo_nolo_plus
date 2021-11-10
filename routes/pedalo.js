@@ -13,12 +13,22 @@ router.get('/', function(req, res, next) {
   dumb.save();
   dumb.check();
 
-  const pedalos = Pedalo.find();
-  console.log(pedalos);
+  Pedalo.find(function (err, pedalo) {
+    if (err) return handleError(err);
+    // Prints "Space Ghost is a talk show host".
+    console.log("pedalo's name is %s.", pedalo.name);
+    res.send(pedalo);
+  });
+  // console.log(pedalos);
 
-  Pedalo.find({ name: /^dumb/ });
+  Pedalo.find({ name: /^dumb/ }, function (err, pedalo) {
+    if (err) return handleError(err);
+    // Prints "Space Ghost is a talk show host".
+    console.log("pedalo's name is %s.", pedalo.name);
+    res.send(pedalo);
+  });
 
-  res.send(pedalos);
+  // res.send(pedalos.);
 });
 
 module.exports = router;
