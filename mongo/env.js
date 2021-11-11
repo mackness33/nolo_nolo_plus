@@ -1,2 +1,2 @@
 import dotenv from 'dotenv'
-dotenv.config({ silent: true })
+dotenv.config({path: __dirname + '../bin/.env',  silent: true })

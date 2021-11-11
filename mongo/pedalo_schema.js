@@ -1,4 +1,6 @@
-require('dotenv').config({ path: '../bin/.env' });
+const result = require('dotenv').config({path: __dirname + '/.env'});
+
+
 var mongoose = require('mongoose');
 mongo_connection().catch(err => console.log(err));
 
@@ -6,7 +8,7 @@ function mongo_uri(){
   let db_cred = process.env.DB_USER && process.env.DB_PSW ? process.env.DB_USER + ':' + process.env.DB_PSW : ''
   let db_name = (process.env.DB_NAME || '')
   let db_options = (process.env.DB_OPTIONS || '')
-  return 'mongodb://' + db_cred + process.env.DB_HOST + ':' + process.env.DB_PORT + '/' + db_name + "?" + db_options
+  return 'mongodb://' + db_cred + '@' + process.env.DB_HOST + ':' + process.env.DB_PORT + '/' + db_name + "?" + db_options
 }
 
 async function mongo_connection() {
