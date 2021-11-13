@@ -1,21 +1,6 @@
-require('dotenv').config({path: __dirname + '/.env'});
-var help = require('./base');
-var helper = new help()
+require('dotenv').config({path: __dirname + '../bin/.env'});
+var helper = require('./base');
 var mongoose = require('mongoose');
-// mongo_connection().catch(err => console.log(err));
-
-// function mongo_uri(){
-//   let db_cred = process.env.DB_USER && process.env.DB_PSW ? process.env.DB_USER + ':' + process.env.DB_PSW : ''
-//   let db_name = (process.env.DB_NAME || '')
-//   let db_options = (process.env.DB_OPTIONS || '')
-//   return 'mongodb://' + db_cred + '@' + process.env.DB_HOST + ':' + process.env.DB_PORT + '/' + db_name + "?" + db_options
-// }
-//
-// async function mongo_connection() {
-//   let uri = mongo_uri();
-//   console.log("mongo uri: " + uri);
-//   await mongoose.connect(uri);
-// }
 
 const pedaloSchema = new mongoose.Schema({
   name: String
@@ -28,7 +13,6 @@ pedaloSchema.methods.check = function check() {
     : "It doesn't have a name";
   console.log(greeting);
 };
-
 
 const Pedalo = helper.create_model('Pedalo', pedaloSchema);
 

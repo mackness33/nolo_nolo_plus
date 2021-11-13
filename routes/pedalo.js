@@ -5,6 +5,7 @@ var Pedalo = require('./../mongo/pedalo_schema');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   console.log("in pedalo");
+  console.log("ped: " + Pedalo);
 
   const dumb = new Pedalo({ name: 'dumbpedalo' });
   dumb.check();

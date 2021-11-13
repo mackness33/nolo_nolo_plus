@@ -7,6 +7,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
+var helper = require('./mongo/base');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -21,7 +22,7 @@ console.log("dotenv works?" + process.env.DB_HOST);
 // TODO: uninstall Jade
 // app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'jade');
-
+helper.initialize();
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
