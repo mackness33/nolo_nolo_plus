@@ -14,6 +14,6 @@ pedaloSchema.methods.check = function check() {
   console.log(greeting);
 };
 
-const Pedalo = helper.create_model('Pedalo', pedaloSchema);
+const Pedalo = helper.get_model('Pedalo', pedaloSchema);
 
 module.exports = Pedalo;

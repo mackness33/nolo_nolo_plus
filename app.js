@@ -11,18 +11,12 @@ var helper = require('./mongo/base');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-// var kittenRouter = require('./routes/mongo_ex_url');
 var pedaloRouter = require('./routes/pedalo');
 
 var app = express();
 
 console.log("dotenv works?" + process.env.DB_HOST);
 
-// view engine setup
-// TODO: uninstall Jade
-// app.set('views', path.join(__dirname, 'views'));
-// app.set('view engine', 'jade');
-// helper.initialize();
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -31,7 +25,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-// app.use('/kitten', kittenRouter);
 app.use('/pedalo', pedaloRouter);
 
 // catch 404 and forward to error handler
