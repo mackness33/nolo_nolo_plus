@@ -24,33 +24,27 @@ class mongo_helper{
 
   async #mongo_connection(resolve, reject) {
     console.log("mongo_uri: " + this.#mongo_uri);
-    let uri = this.#mongo_uri
-    try{
-      setTimeout( function() {
-        let conn_prom = mongoose.createConnection(uri).asPromise();
-        conn_prom.then(connection_made => {
-          console.log("connection: " + connection_made);
-          console.log("connection ready state: " + connection_made.readyState);
-          if (conn_prom.readyState === 1)
-            this.#conn = value;
+    let uri = this.#mongo_uri;
+    (mongoose.createConnection(uri).asPromise()).then((value) => {
+      resolve("connection ready state: " + value.readyState);
+      if (value.readyState === 1)
+        this.#conn = value;
 
-          resolve( "Connection established!" );
-        }).catch(err => {
-          reject( "Mongo error: ", err );
-        })
-      }, 1000);
-    } catch (err) {
-      reject( "connection request as timed out" );
-    }
+      resolve( "Connection established!" );
+    }).catch((err) => {
+      reject(err);
+    })
+
     return;
   }
 
   initialize(){
-    this.#mongo_connection((info) => {console.log(info)}, (err) => {console.error(err)}).then(value => {
-      console.log("intiizialize value: " + value);
-    }).catch(err => {
-      console.log("intiizialize err: " + err);
-    })
+    this.#mongo_connection(
+      (info) => {console.log(info);},
+      (err) => {console.error(err);}
+    );
+
+    return;
   }
 
   async #createModel(table, schema) {

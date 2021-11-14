@@ -7,6 +7,13 @@ router.get('/', function(req, res, next) {
   console.log("in pedalo");
   console.log("ped: " + Pedalo);
 
+  if (!Pedalo){
+    // TODO: throw error, 50x;
+    console.log("Error has occured");
+    next(createError(500));
+    return;
+  }
+
   const dumb = new Pedalo({ name: 'dumbpedalo' });
   dumb.check();
 
