@@ -3,7 +3,8 @@ var mongoose = require('mongoose');
 
 class mongo_helper{
   #mongo_uri = ''
-  #conn = ''
+  #conn = 'conn'
+  #connection = 'connection'
 
   constructor() {
     let db_cred = process.env.DB_USER && process.env.DB_PSW
@@ -15,7 +16,9 @@ class mongo_helper{
       'mongodb://' + db_cred + process.env.DB_HOST + ':' +
       process.env.DB_PORT + '/' + db_name + "?" + db_options
 
-    this.#conn = undefined;
+    // this.#conn = undefined;
+    console.log("mongo_uri: " + this.#mongo_uri);
+    this.#conn = mongoose.createConnection(this.#mongo_uri).asPromise();
   }
 
   get #MongoUri() {
@@ -23,12 +26,10 @@ class mongo_helper{
   }
 
   async #mongo_connection(resolve, reject) {
-    console.log("mongo_uri: " + this.#mongo_uri);
-    let uri = this.#mongo_uri;
-    (mongoose.createConnection(uri).asPromise()).then((value) => {
+    await (this.#conn).then((value) => {
       resolve("connection ready state: " + value.readyState);
       if (value.readyState === 1)
-        this.#conn = value;
+        this.#connection = value;
 
       resolve( "Connection established!" );
     }).catch((err) => {
@@ -47,14 +48,27 @@ class mongo_helper{
     return;
   }
 
-  async #createModel(table, schema) {
-    const connection = await mongoose.createConnection(this.#mongo_uri);
-    const model = connection.model(table, schema);
-    return connection.model(table, schema);
-  }
+  // async #createModel(table, schema) {
+  //   const connection = await mongoose.createConnection(this.#mongo_uri);
+  //   const model = connection.model(table, schema);
+  //   return connection.model(table, schema);
+  // }
 
-  create_model(table, schema) {
-    return undefined;
+  async create_model(table, schema) {
+    console.log ("this priv conn is: " + this.#conn);
+    console.log ("this priv connection is: " + this.#connection);
+    let model = 'model';
+
+    // await this.#mongo_connection(
+    //   (info) => {console.log(info);},
+    //   (err) => {console.error(err);}
+    // ).then(() => {model = this.#connection.model(table, schema);});
+
+    await this.#conn.then((connection) => {model = connection.model(table, schema);})
+      .catch ((reason) => {console.error(reason);});
+
+    console.log("model: " + model);
+    return model;
   }
 
 };

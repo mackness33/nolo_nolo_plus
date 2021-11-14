@@ -22,7 +22,7 @@ console.log("dotenv works?" + process.env.DB_HOST);
 // TODO: uninstall Jade
 // app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'jade');
-helper.initialize();
+// helper.initialize();
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
