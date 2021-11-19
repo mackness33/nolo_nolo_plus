@@ -1,5 +1,6 @@
 require('dotenv').config({path: __dirname + '../bin/.env'});
-var mongoose = require('mongoose');
+const logger = require('./../logger.js');
+const mongoose = require('mongoose');
 
 class mongo_helper{
   #mongo_uri = ''
@@ -14,22 +15,22 @@ class mongo_helper{
       'mongodb://' + db_cred + process.env.DB_HOST + ':' +
       process.env.DB_PORT + '/' + db_name + "?" + db_options
 
-    // this.#conn = undefined;
-    console.log("mongo_uri: " + this.#mongo_uri);
     this.#conn = mongoose.createConnection(this.#mongo_uri).asPromise();
   }
 
   async get_model(table, schema) {
-    console.log ("this priv conn is: " + this.#conn);
     let model = 'model';
 
     await this.#conn.then((connection) => { model = connection.model(table, schema); })
-      .catch ((reason) => { console.error(reason); });
+      .catch ((reason) => {
+        // logger.trace("mongo_uri: " + this.#mongo_uri);
+        logger.fatal(reason);
+      });
 
-    console.log("model: " + model);
+    logger.debug("Creating model: " + model.name);
     return model;
   }
-  
+
 };
 
 var helper = new mongo_helper();

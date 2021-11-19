@@ -1,4 +1,5 @@
 require('dotenv').config({path: __dirname + '../bin/.env'});
+const logger = require('./../logger');
 var helper = require('./base');
 var mongoose = require('mongoose');
 
@@ -11,7 +12,7 @@ pedaloSchema.methods.check = function check() {
   const greeting = this.name
     ? "Pedalo name is " + this.name
     : "It doesn't have a name";
-  console.log(greeting);
+  logger.info(greeting);
 };
 
 const Pedalo = helper.get_model('Pedalo', pedaloSchema);

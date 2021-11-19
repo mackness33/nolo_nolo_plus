@@ -1,16 +1,15 @@
-var express = require('express');
-var router = express.Router();
-var Pedalo = require('./../mongo/pedalo_schema');
+const router = require('express').Router();
+const createError = require('http-errors');
+const Pedalo = require('./../mongo/pedalo_schema');
+const logger = require('./../logger.js');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  console.log("in pedalo");
-
   Pedalo.then(pedalo_test)
     .then((resolve) => { res.send(resolve); })
     .catch((reason) => {
-      console.error(reason);
-      res.status(500).send("Mongo Not Working");
+      logger.error(reason);
+      next(createError(500));
     });
 });
 

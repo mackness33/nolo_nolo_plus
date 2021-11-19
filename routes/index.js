@@ -1,9 +1,9 @@
-var express = require('express');
-var router = express.Router();
+const router = require('express').Router();
+const logger = require('./../logger.js');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  console.log("in index");
+  logger.info("in index");
   res.send('Index');
   // res.render('index', { title: 'Express' });
 });
