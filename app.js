@@ -14,6 +14,8 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var pedaloRouter = require('./routes/pedalo');
 
+var back_office = require('./back-office/back_office');
+
 var app = express();
 
 app.use(morgan('combined'));
@@ -22,13 +24,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use('/', back_office);
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/pedalo', pedaloRouter);
 
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  logger.info("Error occured");
+  logger.warn("Error occured");
   next(createError(404));
 });
 
