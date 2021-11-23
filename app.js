@@ -34,7 +34,8 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/pedalo', pedaloRouter);
 
-app.use('/:company', back_office);
+// app.use('/nn+1', back_office);
+app.use('/nnplus', back_office);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -53,7 +54,11 @@ app.use(function(err, req, res, next) {
   // res.render('error');
   logger.error(err.status + " - " + err.message);
 
-  res.status(err.status).send(err.message);
+  if (err.status)
+    res.status(err.status).send(err.message);
+  else
+    res.status(500).send(err.message);
+
 });
 
 module.exports = app;

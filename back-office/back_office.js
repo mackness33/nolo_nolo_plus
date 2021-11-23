@@ -9,17 +9,17 @@ const logger = require('./../logger');
 const morgan = require('morgan');
 const cors = require('cors');
 
+const authRouter = require('./routes/authentication');
+
 const app = express();
 
 app.use(morgan('combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-
-
-
 app.use(express.static(path.join(__dirname, 'public')));
-// app.use('static', express.static(path.join(__dirname, 'public')));
+
+app.use('/', authRouter);
 
 // catch 404 and forward to error handler
 app.use('/', function(req, res, next) {
@@ -32,8 +32,9 @@ app.use('/', function(req, res, next) {
 
 app.use('/', function(req, res, next) {
   logger.info("sending first file");
-  res.sendFile(path.join(__dirname, 'public/login.html'));
+  res.sendFile(path.join(__dirname, 'public/templates/login2.html'));
   // res.sendFile(path.join(__dirname, 'public/stylesheets/login.css'));
 });
+
 
 module.exports = app;
