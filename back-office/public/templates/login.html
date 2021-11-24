@@ -2,80 +2,9 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <!-- <script type="text/javascript" src="scripts/login.js"></script> -->
+    <!-- <script type="text/javascript" src="scripts/auth.js"></script> -->
     <script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" type="text/css" href="stylesheets/login.css" media="screen" />
-    <script>
-    // $('#myForm').click( function() {
-    //   console.log('In the submit!');
-    //
-    //   $.post( '', $('#myForm').serialize(), function(data) {
-    //     console.log('Data: ', data);
-    //     console.log('No good');
-    //     },
-    //     'json' // I expect a JSON response
-    //   );
-    // });
-    var request;
-    console.log('Fucking javascript!');
-
-    $('form#myForm').submit( function(event) {
-      console.log('In the submit!');
-
-      // Prevent default posting of form - put here to work in case of errors
-      event.preventDefault();
-
-      // Abort any pending request
-      if (request) {
-          request.abort();
-      }
-
-      // setup some local variables
-      var $form = $(this);
-
-      // Let's select and cache all the fields
-      // var $inputs = $form.find("input, select, button, textarea");
-      var $inputs = $form.find("input");
-
-      // Serialize the data in the form
-      var serializedData = $form.serialize();
-
-      // Let's disable the inputs for the duration of the Ajax request.
-      // Note: we disable elements AFTER the form data has been serialized.
-      // Disabled form elements will not be serialized.
-      $inputs.prop("disabled", true);
-
-      // Fire off the request to /form.php
-      request = $.ajax({
-          url: "/nnplus/login",
-          type: "post",
-          data: serializedData
-      });
-
-      // Callback handler that will be called on success
-      request.done(function (response, textStatus, jqXHR){
-          // Log a message to the console
-          console.log("Hooray, it worked!");
-      });
-
-      // Callback handler that will be called on failure
-      request.fail(function (jqXHR, textStatus, errorThrown){
-          // Log the error to the console
-          console.error(
-              "The following error occurred: "+
-              textStatus, errorThrown
-          );
-      });
-
-      // Callback handler that will be called regardless
-      // if the request failed or succeeded
-      request.always(function () {
-          // Reenable the inputs
-          $inputs.prop("disabled", false);
-      });
-
-    });
-    </script>
     <title>back_office</title>
   </head>
   <body>
@@ -99,14 +28,93 @@
         </form>
       </div>
     </div>
+    <script>
+    var request;
+    // Bind to the submit event of our form
+    // const c = document.getElementById("foo");
+    // const cc = $("#foo");
+    // const cf = $("form#foo");
+    //
+    // console.log(c);
+    // console.log(cc);
+    // console.log(cf);
 
-    <!-- <form id="myForm">
-      <label for="username">Username</label>
-      <input id="usr" name="user" type="text" value="" />
-      <label for="password">Password</label>
-      <input id="psw" name="pass" type="password" value="" />
+    // c.addEventListener("submit", () => { console.log('In submit Dio cane'); } );
 
-      <input type="submit" value="Send" />
-    </form> -->
+    $("#myForm").submit(function (event){
+      console.log('In submit finally');
+
+      // Prevent default posting of form - put here to work in case of errors
+      event.preventDefault();
+
+      // Abort any pending request
+      if (request) {
+        request.abort();
+      }
+      // setup some local variables
+      var $form = $(this);
+
+      // Let's select and cache all the fields
+      var $inputs = $form.find("input, select, button, textarea");
+
+      // Serialize the data in the form
+      var serializedData = $form.serialize();
+
+      console.log("serializedData: " + serializedData);
+
+      // Let's disable the inputs for the duration of the Ajax request.
+      // Note: we disable elements AFTER the form data has been serialized.
+      // Disabled form elements will not be serialized.
+      $inputs.prop("disabled", true);
+
+      // Fire off the request to /form.php
+      request = $.ajax({
+        url: "/nnplus/login",
+        type: "post",
+        data: serializedData
+      });
+
+      // Callback handler that will be called on success
+      request.done(function (response, textStatus, jqXHR){
+        // Log a message to the console
+        console.log("Hooray, it worked!");
+        console.log("response: " + JSON.stringify(response));
+        console.log("response2: " + response);
+        console.log("response_url: " + response.url);
+        console.log("textStatus: " + textStatus);
+        console.log("jqXHR: " + JSON.stringify(jqXHR));
+
+        $( "html" ).html( response );
+        // let x = hola();
+
+        window.location.replace(response);
+      });
+
+      // Callback handler that will be called on failure
+      request.fail(function (jqXHR, textStatus, errorThrown){
+        // Log the error to the console
+        console.error(
+        "The following error occurred: "+
+        textStatus, errorThrown
+        );
+      });
+
+      // Callback handler that will be called regardless
+      // if the request failed or succeeded
+      request.always(function () {
+        // Reenable the inputs
+        $inputs.prop("disabled", false);
+      });
+
+    });
+
+    // function hola (){
+    //   $.ajax({
+    //     url: "/nnplus/home",
+    //     type: "get"
+    //     // data: serializedData
+    //   });
+    // }
+    </script>
   </body>
 </html>

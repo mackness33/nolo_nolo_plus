@@ -10,6 +10,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 
 const authRouter = require('./routes/authentication');
+const homeRouter = require('./routes/home');
 
 const app = express();
 
@@ -19,21 +20,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', authRouter);
+app.use('/login', authRouter);
+app.use('/home', homeRouter);
 
 // catch 404 and forward to error handler
 app.use('/', function(req, res, next) {
-  logger.info("In back_office, back at y'all");
+  // logger.info("In back_office, back at y'all");
+  // logger.info('Form: ' + util.inspect(req, { depth: null }));
+  // logger.warn("");
+  logger.warn("resource " + JSON.stringify(req.url) + " not found");
+  // logger.info("res: " + JSON.stringify(res.url));
+  next();
   // next(createError(404));
   // res.send('back_office');
-  next();
-});
-
-
-app.use('/', function(req, res, next) {
-  logger.info("sending first file");
-  res.sendFile(path.join(__dirname, 'public/templates/login2.html'));
-  // res.sendFile(path.join(__dirname, 'public/stylesheets/login.css'));
 });
 
 
