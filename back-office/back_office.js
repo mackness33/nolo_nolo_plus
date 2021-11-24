@@ -25,14 +25,9 @@ app.use('/home', homeRouter);
 
 // catch 404 and forward to error handler
 app.use('/', function(req, res, next) {
-  // logger.info("In back_office, back at y'all");
   // logger.info('Form: ' + util.inspect(req, { depth: null }));
-  // logger.warn("");
   logger.warn("resource " + JSON.stringify(req.url) + " not found");
-  // logger.info("res: " + JSON.stringify(res.url));
   next();
-  // next(createError(404));
-  // res.send('back_office');
 });
 
 

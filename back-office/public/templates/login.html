@@ -78,24 +78,18 @@
       request.done(function (response, textStatus, jqXHR){
         // Log a message to the console
         console.log("Hooray, it worked!");
-        console.log("response: " + JSON.stringify(response));
-        console.log("response2: " + response);
-        console.log("response_url: " + response.url);
+        console.log("response: " + response);
         console.log("textStatus: " + textStatus);
         console.log("jqXHR: " + JSON.stringify(jqXHR));
 
         $( "html" ).html( response );
-        // let x = hola();
-
-        window.location.replace(response);
       });
 
       // Callback handler that will be called on failure
       request.fail(function (jqXHR, textStatus, errorThrown){
         // Log the error to the console
         console.error(
-        "The following error occurred: "+
-        textStatus, errorThrown
+          "The following error occurred: " + textStatus, errorThrown
         );
       });
 

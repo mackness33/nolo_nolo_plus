@@ -23,4 +23,24 @@ router.post('/', function(req, res, next) {
   // next(home);
 });
 
+// router.post('/login', function(req, res, next) {
+//     // Read username and password from request body
+//     const { username, password } = req.body;
+//
+//     // Filter user from the users array by username and password
+//     const user = users.find(u => { return u.username === username && u.password === password });
+//
+//     console.log( "user: " + user );
+//     if (user) {
+//         // Generate an access token
+//         const accessToken = jwt.sign({ username: user.username,  role: user.role }, accessTokenSecret);
+//
+//         res.json({
+//             accessToken
+//         });
+//     } else {
+//         res.send('Username or password incorrect');
+//     }
+// });
+
 module.exports = router;
