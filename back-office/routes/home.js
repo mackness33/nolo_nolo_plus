@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
   logger.info("in home GET");
   // TODO: send the login.html
 
-  res.sendFile(path.join(__dirname, '../public/templates/home.html'));
+  res.sendFile(path.join(__dirname, '../public/templates/index.html'));
   // res.send('respond with home res');
   logger.info("end home GET");
 });
