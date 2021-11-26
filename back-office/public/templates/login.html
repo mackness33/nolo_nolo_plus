@@ -1,114 +1,36 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <!-- <script type="text/javascript" src="scripts/auth.js"></script> -->
-    <script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="stylesheets/login.css" media="screen" />
-    <title>back_office</title>
-  </head>
-  <body>
-    <div class="login">
-      <div class="heading">
-        <h2>Log in</h2>
-        <form id='myForm'>
 
-          <div class="input-group input-group-lg">
-            <span class="input-group-addon"><i class="fa fa-user"></i></span>
-            <input id='psw' type="text" class="form-control" placeholder="Username or email">
-          </div>
+<head>
+  <meta charset="utf-8">
+  <!-- <script type="text/javascript" src="scripts/auth.js"></script> -->
+  <script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="./stylesheets/login.css" media="screen" />
+  <title>back_office</title>
+</head>
 
-          <div class="input-group input-group-lg">
-            <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-            <input id='psw' type="password" class="form-control" placeholder="Password">
-          </div>
+<body>
+  <div class="login">
+    <div class="heading">
+      <h2>Log in</h2>
+      <form id='myForm'>
 
-          <!-- <button id="submitButton" type="submit" class="float">Login</button> -->
-          <input id="submitButton" value='Login' type="submit" class="float"/>
-        </form>
-      </div>
+        <div class="input-group input-group-lg">
+          <span class="input-group-addon"><i class="fa fa-user"></i></span>
+          <input id='psw' type="text" class="form-control" placeholder="Username or email">
+        </div>
+
+        <div class="input-group input-group-lg">
+          <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+          <input id='psw' type="password" class="form-control" placeholder="Password">
+        </div>
+
+        <!-- <button id="submitButton" type="submit" class="float">Login</button> -->
+        <input id="submitButton" value='Login' type="submit" class="float" />
+      </form>
     </div>
-    <script>
-    var request;
-    // Bind to the submit event of our form
-    // const c = document.getElementById("foo");
-    // const cc = $("#foo");
-    // const cf = $("form#foo");
-    //
-    // console.log(c);
-    // console.log(cc);
-    // console.log(cf);
+  </div>
+  <script src="./scripts/auth.js"></script>
+</body>
 
-    // c.addEventListener("submit", () => { console.log('In submit Dio cane'); } );
-
-    $("#myForm").submit(function (event){
-      console.log('In submit finally');
-
-      // Prevent default posting of form - put here to work in case of errors
-      event.preventDefault();
-
-      // Abort any pending request
-      if (request) {
-        request.abort();
-      }
-      // setup some local variables
-      var $form = $(this);
-
-      // Let's select and cache all the fields
-      var $inputs = $form.find("input, select, button, textarea");
-
-      // Serialize the data in the form
-      var serializedData = $form.serialize();
-
-      console.log("serializedData: " + serializedData);
-
-      // Let's disable the inputs for the duration of the Ajax request.
-      // Note: we disable elements AFTER the form data has been serialized.
-      // Disabled form elements will not be serialized.
-      $inputs.prop("disabled", true);
-
-      // Fire off the request to /form.php
-      request = $.ajax({
-        url: "/nnplus/login",
-        type: "post",
-        data: serializedData
-      });
-
-      // Callback handler that will be called on success
-      request.done(function (response, textStatus, jqXHR){
-        // Log a message to the console
-        console.log("Hooray, it worked!");
-        console.log("response: " + response);
-        console.log("textStatus: " + textStatus);
-        console.log("jqXHR: " + JSON.stringify(jqXHR));
-
-        $( "html" ).html( response );
-      });
-
-      // Callback handler that will be called on failure
-      request.fail(function (jqXHR, textStatus, errorThrown){
-        // Log the error to the console
-        console.error(
-          "The following error occurred: " + textStatus, errorThrown
-        );
-      });
-
-      // Callback handler that will be called regardless
-      // if the request failed or succeeded
-      request.always(function () {
-        // Reenable the inputs
-        $inputs.prop("disabled", false);
-      });
-
-    });
-
-    // function hola (){
-    //   $.ajax({
-    //     url: "/nnplus/home",
-    //     type: "get"
-    //     // data: serializedData
-    //   });
-    // }
-    </script>
-  </body>
 </html>
