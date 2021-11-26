@@ -26,10 +26,13 @@ var request;
         // Let's select and cache all the fields
         var $inputs = $form.find("input, select, button, textarea");
 
-        // Serialize the data in the form
-        var serializedData = $form.serialize();
+        let input = { 'user': document.getElementById('user').value, 'psw': document.getElementById('psw').value };
 
-        console.log("serializedData: " + serializedData);
+        console.log("input stringify: " + JSON.stringify(input));
+
+        // Serialize the data in the form
+        // What's the use?
+        var serializedData = $form.serialize();
 
         // Let's disable the inputs for the duration of the Ajax request.
         // Note: we disable elements AFTER the form data has been serialized.
@@ -40,19 +43,20 @@ var request;
         request = $.ajax({
           url: "/nnplus/login",
           type: "post",
-          data: serializedData
+          data: input
         });
 
         // Callback handler that will be called on success
         request.done(function (response, textStatus, jqXHR) {
           // Log a message to the console
           console.log("Hooray, it worked!");
-          console.log("response: " + response);
-          console.log("textStatus: " + textStatus);
-          console.log("jqXHR: " + JSON.stringify(jqXHR));
+          // console.log("response: " + response);
+          // console.log("textStatus: " + textStatus);
+          // console.log("jqXHR: " + JSON.stringify(jqXHR));
+          console.log("response: " + response.url);
 
           //$("html").html(response);
-          window.location.href = 'http://localhost:8000/nnplus/home'; 
+          // window.location.href = 'http://localhost:8000/nnplus/home';
 
         });
 
