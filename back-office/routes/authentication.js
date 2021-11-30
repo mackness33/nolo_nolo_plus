@@ -19,8 +19,15 @@ router.post('/', function(req, res, next) {
   // logger.info('Form: ' + util.inspect(req, { depth: null }));
   logger.info('Form: ' + JSON.stringify(req.body));
   // res.send('respond with a resource');
-  res.redirect(301, '/nnplus/home');
+  // res.redirect(301, '/nnplus/home');
   // next(home);
+
+  // TODO: use 'url package to redirect in an easier way'
+  let href = req.protocol + '://' + req.hostname  + ':8000' + '/nnplus/home';
+
+  let data = { 'url': href };
+  logger.info("href: " + JSON.stringify(data));
+  res.send(data);
 });
 
 // router.post('/login', function(req, res, next) {

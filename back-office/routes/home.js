@@ -7,7 +7,9 @@ const util = require('util');
 router.get('/', function(req, res, next) {
   logger.info("in home GET");
   // TODO: send the login.html
-
+  res.locals.requested_url = req.protocol + '://' + req.hostname  + '8000' + req.path;
+  logger.info(res.locals.requested_url);
+  logger.info("req PATH: " + res.locals.requested_url);
   res.sendFile(path.join(__dirname, '../public/templates/empl_home.html'));
   // res.send('respond with home res');
   logger.info("end home GET");
