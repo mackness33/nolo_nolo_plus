@@ -1,8 +1,9 @@
 const path = require('path');
 const router = require('express').Router();
+const createError = require('http-errors');
 const logger = require('../../logger');
-const util = require('util');
-const home = require('./home');
+const Dipendente = require('./../mongo/dipendente');
+// const home = require('./home');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -15,39 +16,32 @@ router.get('/', function(req, res, next) {
 
 router.post('/', function(req, res, next) {
   logger.info("in login POST");
-  logger.info('Form1: ' + req);
-  // logger.info('Form: ' + util.inspect(req, { depth: null }));
   logger.info('Form: ' + JSON.stringify(req.body));
-  // res.send('respond with a resource');
-  // res.redirect(301, '/nnplus/home');
-  // next(home);
 
-  // TODO: use 'url package to redirect in an easier way'
-  let href = req.protocol + '://' + req.hostname  + ':8000' + '/nnplus/home';
+  Dipendente.then((model) => {
+    return model.findOne({ 'user': req.body.user, 'psw': req.body.psw});
+  })
+    .then(start_session)
+    .then((resolve) => { res.send(resolve); })
+    .catch((reason) => {
+      logger.fatal(reason);
+      next(createError(500));
+    });
 
-  let data = { 'url': href };
-  logger.info("href: " + JSON.stringify(data));
-  res.send(data);
+  async function start_session(query){
+    if (query === null)
+      throw new Error("Problem with the check of users");
+
+    logger.info("query: " + query);
+
+    let href = req.protocol + '://' + req.hostname  + ':8000' + '/nnplus/home';
+    // let href = '';
+    let data = { 'url': href, 'session': query };
+    logger.info("data: " + JSON.stringify(data));
+
+    return data;
+  }
+
 });
-
-// router.post('/login', function(req, res, next) {
-//     // Read username and password from request body
-//     const { username, password } = req.body;
-//
-//     // Filter user from the users array by username and password
-//     const user = users.find(u => { return u.username === username && u.password === password });
-//
-//     console.log( "user: " + user );
-//     if (user) {
-//         // Generate an access token
-//         const accessToken = jwt.sign({ username: user.username,  role: user.role }, accessTokenSecret);
-//
-//         res.json({
-//             accessToken
-//         });
-//     } else {
-//         res.send('Username or password incorrect');
-//     }
-// });
 
 module.exports = router;
