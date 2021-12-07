@@ -8,19 +8,27 @@ const cookieParser = require('cookie-parser');
 const logger = require('./../logger');
 const morgan = require('morgan');
 const cors = require('cors');
+const session = require('express-session');
+// const Mon = require('connect-mongodb');
 
 const authRouter = require('./routes/authentication');
 const homeRouter = require('./routes/home');
 
 const app = express();
 
+app.use(session({
+  secret: 'keyboard cat',
+  cookie: { maxAge: 36000 },
+  saveUninitialized: false,
+  resave: false
+}));
 app.use(morgan('combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/login', authRouter);
+app.use('/', authRouter);
 app.use('/home', homeRouter);
 
 // catch 404 and forward to error handler
