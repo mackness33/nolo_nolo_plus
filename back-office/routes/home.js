@@ -8,6 +8,10 @@ router.get('/', (req, res, next) => {
     logger.info("in pre-home GET");
     // req.session.user = 'let\'s see';
     logger.info("req.session: " + JSON.stringify(req.session));
+
+    if (req.session.user === null || req.session.user === undefined)
+      return res.redirect('/nnplus/login');
+
     next();
   }, function(req, res, next) {
     logger.info("in home GET");
