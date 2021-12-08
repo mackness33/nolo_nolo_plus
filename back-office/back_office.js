@@ -13,10 +13,12 @@ const authService = require('../services/auth');
 
 const authRouter = require('./routes/auth');
 const homeRouter = require('./routes/home');
+const userListRouter = require("./routes/users_backOffice");
+const emplListRoter = require("./routes/empl_backOffice");
 
 const app = express();
 
-app.use(morgan('combined'));
+app.use(morgan("combined"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -25,13 +27,14 @@ app.use(authService.get_session());
 
 app.use('/', authRouter);
 app.use('/home', homeRouter);
+app.use("/user", userListRouter);
+app.use("/empl", emplListRoter);
 
 // catch 404 and forward to error handler
-app.use('/', function(req, res, next) {
+app.use("/", function (req, res, next) {
   // logger.info('Form: ' + util.inspect(req, { depth: null }));
   logger.warn("resource " + JSON.stringify(req.url) + " not found");
   next();
 });
-
 
 module.exports = app;
