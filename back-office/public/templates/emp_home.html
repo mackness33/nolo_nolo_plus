@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Front Office</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <!-- <script src="//code.jquery.com/jquery-3.6.0.min.js"></script> -->
+    <link rel="stylesheet" href="./stylesheets/emp_style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark br-primary">
+
+        <!-- navbar content -->
+        <div class="container-fluid" id="nav-container">
+
+            <!-- navbar logo -->
+            <a class="navbar-brand" href="#" aria-hidden="true" tabindex="-1">
+                <img src="./images/logo.png" class="logo">
+            </a>
+
+            <!-- navbar toggle -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Mostra navigazione">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- navbar navigation -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="nav-list">
+                    <li class="nav-item">
+                        <a class="link active-nav" href="#" aria-label="Pagina Clienti" aria-current="page">Clienti</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="link" href="#" aria-label="Pagina Inventario">Inventario</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="link" href="#" aria-label="Pagina Gestione">Noleggi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="link" href="#" aria-label="Pagina log in">Log In</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+    <!-- main content -->
+    <main>
+
+        <!-- add and search customer -->
+        <div class="container-fluid" id="main-container">
+            <div class="container-fluid" id="interact-container">
+                <form id="idSearch">
+                    <label id="textboxInfo" class="visually-hidden">Scrivi il codice cliente</label>
+                    <div id="searchBox">
+                        <select id="searchType">
+                            <option value="mail">mail</option>
+                            <option value="user">Nome Cognome</option>
+                        </select>
+                        <input type="text" aria-labelledby="textboxInfo" id="customerSearch" required
+                            aria-required="true">
+                    </div>
+                    <button class="btn btn-primary " type="submit">Cerca cliente</button>
+                </form>
+                <button class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#addModal">Aggiungi
+                    cliente</button>
+                <button class="btn btn-warning " id="resetBtn">Reset</button>
+            </div>
+
+            <!-- customer list title -->
+            <h1 class="visually-hidden" tabindex="0">Lista dei clienti</h1>
+
+
+            <!-- useful labels for aria-labelledby -->
+            <label id="nameLabel" class="visually-hidden">nome cliente</label>
+
+            <!-- customer list container -->
+            <div class="" id="customerContainer">
+
+                <!-- consumer list -->
+                <ul class="customer-list" id="customerList" aria-live="assertive">
+
+                    <!-- consumer element -->
+                    <li class="customer-element">
+                        <div class="customer-info">
+                            <span class="name" tabindex="0">Franco Franchi</span>
+                            <div class="detail">
+                                <span class="id">25656</span>
+                            </div>
+                            <div class="detail">
+                                <span class="status">Noleggiato</span>
+                            </div>
+                            <div class="customer-btn">
+                                <button class="btn btn-primary info-btn" data-bs-toggle="modal"
+                                    data-bs-target="#infoModal">mostra informazioni</button>
+                                <button class="btn btn-primary edit-btn" data-bs-toggle="modal"
+                                    data-bs-target="#editModal">cambia informazioni</button>
+                                <button class="btn btn-primary feedback-btn">dai feedback</button>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="customer-element">
+                        <div class="customer-info">
+                            <span class="name" tabindex="0">alessndro gueltieri</span>
+                            <div class="detail">
+                                <span class="id">25656</span>
+                            </div>
+                            <div class="detail">
+                                <span class="status">Noleggiato</span>
+                            </div>
+                            <div class="customer-btn">
+                                <button class="btn btn-primary info-btn" data-bs-toggle="modal"
+                                    data-bs-target="#infoModal">mostra
+                                    informazioni</button>
+                                <button class="btn btn-primary edit-btn" data-bs-toggle="modal"
+                                    data-bs-target="#editModal">cambia
+                                    informazioni</button>
+                                <button class="btn btn-primary feedback-btn">dai feedback</button>
+                            </div>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- information Modal -->
+
+    <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel" tabindex="0">Dettagli Utente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Chiudi le informazioni"></button>
+                </div>
+                <div class="modal-body">
+                    <section class="userModal">
+                        <div>
+                            <h6>Nome: </h6><span id="infoModalName">Mario</span>
+                        </div>
+                        <div>
+                            <h6>Cognome:</h6><span id="infoModalSurname">Rossi</span>
+                        </div>
+                        <div>
+                            <h6>Data di Nascita:</h6><span id="infoModalBirth">2021-10-26</span>
+                        </div>
+                        <div>
+                            <h6>E-mail:</h6><span id="infoModalMail">mario_rossi@gmail.com</span>
+                        </div>
+                        <div>
+                            <h6>Status:</h6><span id="infoModalStatus">noleggiato</span>
+                        </div>
+                        <div>
+                            <h6 id="infoModalFeedback">Feedback:</h6>
+                            <ul id="infoFeedBackList">
+
+                            </ul>
+                            </span>
+                        </div>
+                    </section>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Information Result -->
+
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel" tabindex="0">Modifica Dettagli Utente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Chiudi le informazioni"></button>
+                </div>
+                <div class="modal-body">
+                    <form id='editForm'>
+                        <section class="userModal">
+                            <div>
+                                <h6>Nome: </h6>
+                                <input type="text" name="" id="editModalName">
+                            </div>
+                            <div>
+                                <h6>Cognome:</h6>
+                                <input type="text" name="" id="editModalSurname">
+                            </div>
+                            <div>
+                                <h6>Data di Nascita:</h6>
+                                <input type="date" name="" id="editModalBirth" max="">
+                            </div>
+                            <div>
+                                <h6>E-mail:</h6>
+                                <input type="email" name="" id="editModalMail">
+                            </div>
+                            <div>
+                                <h6>Status:</h6>
+                                <select name="" id="editModalStatus">
+                                    <option value=0>Inattivo</option>
+                                    <option value=1>Noleggiato</option>
+                                    <option value=2>Ritirato</option>
+                                    <option value=3>Da Restituire</option>
+                                </select>
+                            </div>
+                            <div>
+                                <h6 id="editModalFeedback">Feedback:</h6>
+                                <ul id="editFeedBackList">
+                                </ul>
+                                </span>
+                            </div>
+                        </section>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" form="editForm" class="btn btn-primary" data-bs-dismiss="modal">Salva
+                        Modifiche</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Add User Result -->
+
+    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel" tabindex="0">Aggingi Utente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Chiudi le informazioni"></button>
+                </div>
+                <div class="modal-body">
+                    <form id='addForm'>
+                        <section class="userModal">
+                            <div>
+                                <h6>Nome: </h6>
+                                <input type="text" name="" id="addModalName">
+                            </div>
+                            <div>
+                                <h6>Cognome:</h6>
+                                <input type="text" name="" id="addModalSurname">
+                            </div>
+                            <div>
+                                <h6>Password:</h6>
+                                <input type="password" name="" id="addModalPassword">
+                            </div>
+                            <div>
+                                <h6>Data di Nascita:</h6>
+                                <input type="date" name="" id="addModalBirth" max="">
+                            </div>
+                            <div>
+                                <h6>E-mail:</h6>
+                                <input type="email" name="" id="addModalMail">
+                            </div>
+                            <div>
+                                <h6>Status:</h6>
+                                <select name="" id="addModalStatus">
+                                    <option value=0>Inattivo</option>
+                                    <option value=1>Noleggiato</option>
+                                    <option value=2>Ritirato</option>
+                                    <option value=3>Da Restituire</option>
+                                </select>
+                            </div>
+                        </section>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" form="addForm" class="btn btn-primary" data-bs-dismiss="modal">Aggiungi
+                        Cliente</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./scripts/emp_home.js"></script>
+    <script>
+        document.getElementById('addModalBirth').setAttribute("max", new Date().toISOString().split("T")[0])
+    </script>
+</body>
+
+</html>
