@@ -1,5 +1,3 @@
-import { data } from "./data.js";
-
 const userList = document.getElementById("customerList");
 const infoModal = document.getElementById("infoModal");
 const editModal = document.getElementById("editModal");
