@@ -1,14 +1,21 @@
 const userList = document.getElementById("customerList");
 const infoModal = document.getElementById("infoModal");
 const editModal = document.getElementById("editModal");
+const feedModal = document.getElementById("feedModal");
+const deleteModal = document.getElementById("deleteModal");
+const addModal = document.getElementById("addModal");
 const searchForm = document.getElementById("idSearch");
 const resetBtn = document.getElementById("resetBtn");
 const addUserForm = document.getElementById("addForm");
 
-addUserForm.addEventListener("submit", (event) => {
+addUserForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  console.log("INTO addUser");
   addUser();
-  reloadList();
+});
+
+addModal.addEventListener("hide.bs.modal", () => {
+  addUserForm.reset();
 });
 
 // user search submit event handler
@@ -28,6 +35,31 @@ searchForm.addEventListener("submit", (event) => {
 resetBtn.addEventListener("click", () => {
   reloadList();
   document.getElementById("customerSearch").value = "";
+});
+
+feedModal.addEventListener("show.bs.modal", (event) => {
+  document.getElementById("feedForm").addEventListener(
+    "submit",
+    async (e) => {
+      e.preventDefault();
+      const userMail = event.relatedTarget.parentElement.parentElement.id;
+      console.log(document.getElementById("feedText").value);
+      const feed = {
+        text: document.getElementById("feedText").value,
+        date: new Date().toISOString(),
+        userMail: userMail,
+      };
+      await $.post("http://localhost:8000/nnplus/user/feed", feed)
+        .done((data) => {
+          console.log(data);
+          document.getElementById("feedForm").reset();
+        })
+        .fail(() => {
+          console.log("morte");
+        });
+    },
+    { once: true }
+  );
 });
 
 // user info modal show event handler
@@ -52,13 +84,33 @@ editModal.addEventListener("hide.bs.modal", (event) => {
   editFeedBackList.innerHTML = "";
 });
 
+deleteModal.addEventListener("show.bs.modal", (event) => {
+  const userMail = event.relatedTarget.parentElement.parentElement.id;
+  document.getElementById("confirmBtn").addEventListener(
+    "click",
+    () => {
+      $.post("http://localhost:8000/nnplus/user/deleteOne", { mail: userMail })
+        .done((data) => {
+          console.log(data);
+          reloadList();
+        })
+        .fail(() => {
+          console.error("failed to delete");
+        });
+    },
+    { once: true }
+  );
+});
+
 // Modal page populate for both info and edit
 async function populateModal(event, mode) {
   const userId = event.relatedTarget.parentElement.parentElement.id;
   var user;
   await $.get("http://localhost:8000/nnplus/user/getOne", {
     mail: userId,
+    mode: mode,
   }).done((data) => {
+    console.log(data);
     user = data;
   });
 
@@ -95,6 +147,7 @@ async function populateModal(event, mode) {
     mail.value = user.mail;
     status.value = user.status;
 
+    mail.setAttribute("data-old", user.mail);
     birth.setAttribute("max", new Date().toISOString().split("T")[0]);
   }
 
@@ -131,42 +184,72 @@ async function populateModal(event, mode) {
                                     }</span>
                             </div>
                             <p class="feedBackText">${feed.text}</p>
-                            <button type="button" class="btn btn-danger deleteFeedback" >Elimina</button>`;
+                            <button id="${
+                              feed._id
+                            }" type="button" class="btn btn-danger deleteFeedback" >Elimina</button>`;
     }
 
     feedBackList.appendChild(feedbackEl);
   });
   if (mode == "edit") {
-    setUpEdit();
+    setUpEdit(user);
   }
 }
 
-function setUpEdit() {
+function setUpEdit(user) {
   const editform = document.getElementById("editForm");
   const deleteButtons = document.querySelectorAll(".deleteFeedback");
   var deletedFeed = [];
 
   deleteButtons.forEach((button) => {
-    button.addEventListener("click", (event) => {
-      deletedFeed.push(event.target.parentElement.id);
-      event.target.parentElement.remove();
-    });
+    button.addEventListener(
+      "click",
+      (event) => {
+        deletedFeed.push(button.id);
+        event.target.parentElement.remove();
+      },
+      { once: true }
+    );
   });
 
-  editform.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    const inputs = editform.elements;
+  editform.addEventListener(
+    "submit",
+    async (event) => {
+      event.preventDefault();
+      const inputs = editform.elements;
 
-    const user = {
-      name: inputs[0].value,
-      surname: inputs[1].value,
-      birth: inputs[2].value,
-      mail: inputs[3].value,
-      status: inputs[4].value,
-    };
-    await $.post("http://localhost:8000/nnplus/user/setOne", user);
-    await reloadList();
-  });
+      const user = {
+        name: inputs[0].value,
+        surname: inputs[1].value,
+        birth: inputs[2].value,
+        oldMail: inputs[3].getAttribute("data-old"),
+        newMail: inputs[3].value,
+        status: inputs[4].value,
+        feeds: deletedFeed,
+      };
+      console.log(user);
+      $.get("http://localhost:8000/nnplus/user/checkExist", {
+        mail: user.newMail,
+      }).done(async (data) => {
+        if (!data || user.oldMail === user.newMail) {
+          await $.post("http://localhost:8000/nnplus/user/setOne", user);
+          reloadList();
+          showAlert(
+            "Modificato con successo",
+            document.getElementById("editBtn").parentElement,
+            true
+          );
+        } else {
+          showAlert(
+            "Mail gia' in utilizzo",
+            document.getElementById("editBtn").parentElement,
+            false
+          );
+        }
+      });
+    },
+    { once: true }
+  );
 }
 
 async function addUser() {
@@ -180,19 +263,53 @@ async function addUser() {
     mail: inputs[4].value,
     status: inputs[5].value,
   };
+  await $.get("http://localhost:8000/nnplus/user/checkExist", {
+    mail: user.mail,
+  }).done((data) => {
+    if (!data) {
+      $.ajax({
+        type: "POST",
+        url: "http://localhost:8000/nnplus/user/add",
+        contentType: "application/json",
+        data: JSON.stringify(user),
+      })
+        .done(() => {
+          console.log("riuscito");
+          addUserForm.reset();
+          reloadList();
+          showAlert(
+            "Account aggiunto con successo",
+            document.getElementById("addBtn").parentElement,
+            true
+          );
+        })
+        .fail(() => {
+          console.log("morte");
+        });
+    } else {
+      showAlert(
+        "Mail gia' in utilizzo",
+        document.getElementById("addBtn").parentElement,
+        false
+      );
+    }
+  });
+}
 
-  $.ajax({
-    type: "POST",
-    url: "http://localhost:8000/nnplus/user/add",
-    contentType: "application/json",
-    data: JSON.stringify(user),
-  })
-    .done(() => {
-      console.log("riuscito");
-    })
-    .fail(() => {
-      console.log("morte");
-    });
+function showAlert(text, parent, happy) {
+  if (!document.getElementById("alert")) {
+    const alert = document.createElement("span");
+    alert.textContent = text;
+    alert.setAttribute("id", "alert");
+    alert.classList.add("animate__animated", "animate__bounceIn");
+    happy ? (alert.style.color = "green") : (alert.style.color = "red");
+    parent.prepend(alert);
+    setTimeout(() => {
+      alert.remove();
+    }, 3000);
+  } else {
+    console.log("not doing");
+  }
 }
 
 // show user by id
@@ -269,8 +386,9 @@ function showUsers(users) {
                                     data-bs-target="#infoModal" data-id="info${user.mail}">mostra informazioni</button>
                                 <button class="btn btn-primary edit-btn" data-bs-toggle="modal"
                                 data-bs-target="#editModal" data-id="edit${user.mail}">cambia informazioni</button>
-                                <button class="btn btn-primary feedback-btn">dai feedback</button>
-                                <button class="btn btn-danger feedback-btn">Elimina</button>
+                                <button class="btn btn-primary feedback-btn" data-bs-toggle="modal"
+                                    data-bs-target="#feedModal">dai feedback</button>
+                                <button class="btn btn-danger delete-btn" data-bs-toggle="modal" data-bs-target="#deleteModal">Elimina</button>
                             </div>
                         </div>`;
     userList.appendChild(userEl);

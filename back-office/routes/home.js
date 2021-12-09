@@ -11,6 +11,7 @@ router.get('/', (req, res, next) => {
   }, function(req, res, next) {
     logger.info("in home GET");
     // TODO: send the login.html
+    req.session.mail = "vladimira@putinia";
     logger.info("req.session: " + JSON.stringify(req.session));
     res.sendFile(path.join(__dirname, '../public/templates/empl_home.html'));
     // res.send('respond with home res');

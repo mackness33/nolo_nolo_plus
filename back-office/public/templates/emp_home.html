@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="./stylesheets/emp_style.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 </head>
 
 <body>
@@ -130,7 +131,8 @@
                                 <button class="btn btn-primary edit-btn" data-bs-toggle="modal"
                                     data-bs-target="#editModal">cambia
                                     informazioni</button>
-                                <button class="btn btn-primary feedback-btn">dai feedback</button>
+                                <button class="btn btn-primary feedback-btn" data-bs-toggle="modal"
+                                    data-bs-target="#feedModal">dai feedback</button>
                             </div>
                         </div>
                     </li>
@@ -183,7 +185,7 @@
         </div>
     </div>
 
-    <!-- Edit Information Result -->
+    <!-- Edit Information Modal -->
 
     <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
@@ -231,7 +233,7 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" form="editForm" class="btn btn-primary" data-bs-dismiss="modal">Salva
+                    <button type="submit" id="editBtn" form="editForm" class="btn btn-primary">Salva
                         Modifiche</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
                 </div>
@@ -240,7 +242,7 @@
     </div>
 
 
-    <!-- Add User Result -->
+    <!-- Add User Modal -->
 
     <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
@@ -255,27 +257,27 @@
                         <section class="userModal">
                             <div>
                                 <h6>Nome: </h6>
-                                <input type="text" name="" id="addModalName">
+                                <input type="text" name="" required id="addModalName">
                             </div>
                             <div>
                                 <h6>Cognome:</h6>
-                                <input type="text" name="" id="addModalSurname">
+                                <input type="text" name="" required id="addModalSurname">
                             </div>
                             <div>
                                 <h6>Password:</h6>
-                                <input type="password" name="" id="addModalPassword">
+                                <input type="password" name="" required id="addModalPassword">
                             </div>
                             <div>
                                 <h6>Data di Nascita:</h6>
-                                <input type="date" name="" id="addModalBirth" max="">
+                                <input type="date" name="" required id="addModalBirth" max="">
                             </div>
                             <div>
                                 <h6>E-mail:</h6>
-                                <input type="email" name="" id="addModalMail">
+                                <input type="email" name="" required id="addModalMail">
                             </div>
                             <div>
                                 <h6>Status:</h6>
-                                <select name="" id="addModalStatus">
+                                <select name="" required id="addModalStatus">
                                     <option value=0>Inattivo</option>
                                     <option value=1>Noleggiato</option>
                                     <option value=2>Ritirato</option>
@@ -286,8 +288,59 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" form="addForm" class="btn btn-primary" data-bs-dismiss="modal">Aggiungi
+                    <button type="submit" id="addBtn" form="addForm" class="btn btn-primary">Aggiungi
                         Cliente</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Modal -->
+
+    <div class="modal fade" id="feedModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel" tabindex="0">Feedback sull'Utente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Chiudi le informazioni"></button>
+                </div>
+                <div class="modal-body">
+                    <section class="userModal">
+                        <form id="feedForm">
+                            <label for="feedText">Inserisci il tuo feedback</label>
+                            <textarea id="feedText" rows="10"></textarea>
+                        </form>
+                    </section>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" form="feedForm" class="btn btn-primary" data-bs-dismiss="modal">Inserisci
+                        FeedBack</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel" tabindex="0">Elimina Utente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Chiudi le informazioni"></button>
+                </div>
+                <div class="modal-body">
+                    <section class="userModal">
+                        <span>Sei sicuro di voler eliminare l'utente?</span>
+                    </section>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="confirmBtn" class="btn btn-primary" data-bs-dismiss="modal">Si
+                    </button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
                 </div>
             </div>
