@@ -40,7 +40,10 @@ $("#myForm").submit(function (event) {
   // Callback handler that will be called on success
   request.done(function (response, textStatus, jqXHR) {
     // Log a message to the console
-    window.location.href = response.url;
+    if (response.success)
+      window.location.href = response.url;
+
+    // TODO: add a text if user not found
     console.log("response: " + JSON.stringify(response));
   });
 
