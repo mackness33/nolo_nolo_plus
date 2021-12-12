@@ -52,7 +52,7 @@ app.use(function(err, req, res, next) {
   // render the error page
   // TODO: find another way to rendere the error. Without Jade
   // res.render('error');
-  logger.error(err.status + " - " + err.message);
+  logger.error(err.status + " - " + err.message, err);
 
   if (err.status)
     res.status(err.status).send(err.message);

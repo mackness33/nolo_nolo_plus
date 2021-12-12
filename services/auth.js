@@ -49,32 +49,41 @@ class auth_service{
         return;
       }
 
-      console.warn( 'User not authorize' );
+      logger.warn( 'User not authorize' );
       res.redirect(home_url);
     }, () => { res.redirect(index_url); });
   }
 
   is_logged(session, successful, unsuccessful){
-    if ( this.check_if_user_logged_in(session) )
+    // logger.info( 'user_logged: ' + this.check_if_user_logged_in(session) );
+    if ( this.check_if_user_logged_in(session) ){
       if (successful)
         successful();
-    else
+    }
+    else{
       if (unsuccessful)
         unsuccessful();
+    }
   }
 
   already_logged(req, res, next, home_url){
+    logger.info('in already logged');
     this.is_logged(req.session, () => {
-      console.warn( 'User already logged in' );
-      res.redirect(home_url);
+      logger.warn( 'User already logged in' );
+      res.redirect(302, home_url);
     });
+
+    next();
   }
 
-  not_already_logged(req, res, next, home_url){
+  not_already_logged(req, res, next, login_url){
+    logger.info('in not already logged');
     this.is_logged(req.session, () => {}, () => {
-      console.warn( 'User not logged in' );
-      res.redirect(home_url);
+      logger.warn( 'User not logged in' );
+      res.redirect(302, login_url);
     });
+
+    next();
   }
 
   generate(session, user, callback){
