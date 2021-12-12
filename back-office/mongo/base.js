@@ -4,9 +4,11 @@ const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo');
 
 class mongo_helper{
-  #mongo_uri = ''
-  #conn = 'conn'
+  #mongo_uri = '' // uri for mongo
+  #conn;  // connection promise
+
   constructor() {
+    // creation of the mongo uri based on the environment
     let db_cred = process.env.DB_USER && process.env.DB_PSW
       ? process.env.DB_USER + ':' + process.env.DB_PSW + '@'
       : ''
@@ -16,23 +18,30 @@ class mongo_helper{
       'mongodb://' + db_cred + process.env.DB_HOST + ':' +
       process.env.DB_PORT + '/' + db_name + "?" + db_options
 
+    // get the connection to the mongo server as a promise
     this.#conn = mongoose.createConnection(this.#mongo_uri).asPromise();
   }
 
   get mongo_uri(){ return this.#mongo_uri; }
 
+  // if used it will "return" a promise that will eventually return the model requested
   async get_model(table, schema) {
     let model = 'model';
 
+    // await to get the connecion
     await this.#conn
+      // then get the model requested
       .then((connection) => { model = connection.model(table, schema); })
+      // logger the error that happend
       .catch ((reason) => { logger.fatal(reason); });
 
     return model;
   }
 
+  // return the store for the session package
   get_store(promise) {
     let conn_prom = this.#conn;
+    // options for the store to be created
     let options = {
       conn_prom,
       dbName: 'test-app',
@@ -40,10 +49,9 @@ class mongo_helper{
       autoRemove: 'native'
     };
 
-    if (!promise)
+    // if the store has to be made without a promise of the connection
+    if (!!!promise)
       options.mongoUrl = this.#mongo_uri;
-
-    // logger.info('store options: ' + options);
 
     return MongoStore.create(options);
   }
