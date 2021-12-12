@@ -12,7 +12,7 @@ const session = require('express-session');
 const authService = require('../services/auth');
 // const Mon = require('connect-mongodb');
 
-const authRouter = require('./routes/authentication');
+const authRouter = require('./routes/auth');
 const homeRouter = require('./routes/home');
 
 const app = express();
