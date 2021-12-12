@@ -26,9 +26,9 @@ class auth_service{
   }
 
   // TODO: add the possibility to get authenticate whatever type of model in input
-  async authentication(username, password){
-    let employees = await Employees;
-    let user = await employees.findOne({ 'user': username, 'psw': password });
+  async authentication(username, password, promised_model){
+    let role_model = await promised_model;
+    let user = await role_model.findOne({ 'user': username, 'psw': password });
 
     logger.info('query in Service: ' + JSON.stringify(user));
 
@@ -45,13 +45,14 @@ class auth_service{
   authorization(req, res, next, home_url, index_url, role){
     this.is_logged(req.session, () =>  {
       if ( req.session.role === role ){
+        logger.info('User authorizized');
         next();
         return;
       }
 
       logger.warn( 'User not authorize' );
       res.redirect(home_url);
-    }, () => { res.redirect(index_url); });
+    }, () => { logger.warn( 'User not logged' ); res.redirect(index_url); });
   }
 
   is_logged(session, successful, unsuccessful){
@@ -67,7 +68,6 @@ class auth_service{
   }
 
   already_logged(req, res, next, home_url){
-    logger.info('in already logged');
     this.is_logged(req.session, () => {
       logger.warn( 'User already logged in' );
       res.redirect(302, home_url);
@@ -77,7 +77,6 @@ class auth_service{
   }
 
   not_already_logged(req, res, next, login_url){
-    logger.info('in not already logged');
     this.is_logged(req.session, () => {}, () => {
       logger.warn( 'User not logged in' );
       res.redirect(302, login_url);

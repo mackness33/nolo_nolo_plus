@@ -2,17 +2,12 @@ const path = require('path');
 const router = require('express').Router();
 const logger = require('../../logger.js');
 const util = require('util');
+const SessionService = require('../../services/auth');
 
 /* GET users listing. */
 router.get('/', (req, res, next) => {
     logger.info("in pre-home GET");
-    // req.session.user = 'let\'s see';
-    logger.info("req.session: " + JSON.stringify(req.session));
-
-    if (req.session.user === null || req.session.user === undefined)
-      return res.redirect('/nnplus/login');
-
-    next();
+    SessionService.authorization(req, res, next, '/nnplus/logout', '/nnplus/login', 'dip');
   }, function(req, res, next) {
     logger.info("in home GET");
     // TODO: send the login.html

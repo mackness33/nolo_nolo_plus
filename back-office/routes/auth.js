@@ -12,7 +12,7 @@ router.get('/login', function(req, res, next) {
     SessionService.already_logged(req, res, next, '/nnplus/home');
   }, function(req, res, next) {
     logger.info("in login GET");
-    
+
     res.sendFile(path.join(__dirname, '../public/templates/login.html'));
 });
 
@@ -26,7 +26,7 @@ router.post('/login', function(req, res, next) {
     logger.info('Session: ' + JSON.stringify(req.session));
 
     let data;
-    SessionService.authentication(req.body.user, req.body.psw)
+    SessionService.authentication(req.body.user, req.body.psw, Dipendente)
     .then((user) => { SessionService.generate(req.session, user); })
     .then( successful_login )
     .catch( wrong_credentials )
