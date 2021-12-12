@@ -1,9 +1,12 @@
 const router = require("express").Router();
 const logger = require("../../logger.js");
 const Employee = require("../mongo/schema/employee");
+const SessionService = require('../../services/auth');
 
 /* GET users listing. */
-router.get("/", function (req, res, next) {
+router.get("/", (req, res, next) => {
+    SessionService.authorization(req, res, next, '/nnplus/logout', '/nnplus/login', 2);
+  }, function (req, res, next) {
   console.log(req.query);
   const dt = new Date();
   var again;
