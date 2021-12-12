@@ -22,24 +22,93 @@ class auth_service{
     if (store !== null && store !== undefined)
       session_options.store = store;
 
-    logger.info('session options: ' + JSON.stringify(session_options));
-
     return session(session_options);
   }
 
   // TODO: add the possibility to get authenticate whatever type of model in input
   async authentication(username, password){
     let employees = await Employees;
-    logger.info('employees: ' + JSON.stringify(employees));
-
     let user = await employees.findOne({ 'user': username, 'psw': password });
 
     logger.info('query in Service: ' + JSON.stringify(user));
 
-    // if (user === null)
-    //   throw new Error("User not found");
+    if (user === null)
+      throw new Error("User not found");
 
     return user;
+  }
+
+  check_if_user_logged_in(session){
+    return !!session.user;
+  }
+
+  authorization(req, res, next, home_url, index_url, role){
+    this.is_logged(req.session, () =>  {
+      if ( req.session.role === role ){
+        next();
+        return;
+      }
+
+      console.warn( 'User not authorize' );
+      res.redirect(home_url);
+    }, () => { res.redirect(index_url); });
+  }
+
+  is_logged(session, successful, unsuccessful){
+    if ( this.check_if_user_logged_in(session) )
+      if (successful)
+        successful();
+    else
+      if (unsuccessful)
+        unsuccessful();
+  }
+
+  already_logged(req, res, next, home_url){
+    this.is_logged(req.session, () => {
+      console.warn( 'User already logged in' );
+      res.redirect(home_url);
+    });
+  }
+
+  not_already_logged(req, res, next, home_url){
+    this.is_logged(req.session, () => {}, () => {
+      console.warn( 'User not logged in' );
+      res.redirect(home_url);
+    });
+  }
+
+  generate(session, user, callback){
+    session.regenerate(function(err) {
+      logger.info('Creating a new session: ');
+
+      if ( err ){
+        logger.error('Error in regenerate session: ' + err);
+        throw new Error(err);
+      }
+    });
+
+    session.user = user.user;
+    session.role = user.role;
+
+    if (callback)
+      callback();
+  }
+
+  destroy(session, res, callback){
+    session.destroy(function(err) {
+      logger.info('Destroying the session!');
+
+      if ( err ){
+        logger.error('Error in destroy session ', err);
+        throw new Error(err);
+      }
+
+    });
+
+    res.clearCookie(session.id, { path: "/" });
+
+    if (callback)
+      callback();
   }
 }
 

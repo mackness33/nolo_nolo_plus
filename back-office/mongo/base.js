@@ -24,12 +24,9 @@ class mongo_helper{
   async get_model(table, schema) {
     let model = 'model';
 
-    await this.#conn.then((connection) => { model = connection.model(table, schema); })
-      .catch ((reason) => {
-        logger.fatal(reason);
-      });
-
-    logger.info('In get model: ' + model)
+    await this.#conn
+      .then((connection) => { model = connection.model(table, schema); })
+      .catch ((reason) => { logger.fatal(reason); });
 
     return model;
   }
@@ -46,7 +43,7 @@ class mongo_helper{
     if (!promise)
       options.mongoUrl = this.#mongo_uri;
 
-    logger.info('store options: ' + options);
+    // logger.info('store options: ' + options);
 
     return MongoStore.create(options);
   }

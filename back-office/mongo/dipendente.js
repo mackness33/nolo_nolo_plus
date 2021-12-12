@@ -19,6 +19,4 @@ dipendenteSchema.methods.check = function check() {
 
 const Dipendente = helper.get_model('Dipendente', dipendenteSchema);
 
-logger.info('dipendente: ' + JSON.stringify(Dipendente));
-
 module.exports = Dipendente;
