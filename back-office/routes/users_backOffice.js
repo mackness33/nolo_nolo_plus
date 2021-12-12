@@ -1,8 +1,7 @@
 const router = require("express").Router();
 const logger = require("../../logger.js");
-const userModel = require("../mongo/user_schema");
-const emplModel = require("../mongo/employee_schema");
-const Employee = require("../mongo/employee_schema");
+const userModel = require("../mongo/schema/user");
+const emplModel = require("../mongo/schema/employee");
 
 router.get("/getOne", (req, res, next) => {
   userModel.then(async (User, reject) => {

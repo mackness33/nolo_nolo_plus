@@ -2,7 +2,7 @@ const path = require('path');
 const router = require('express').Router();
 const createError = require('http-errors');
 const logger = require('../../logger');
-const Dipendente = require('./../mongo/dipendente');
+const Employee = require('./../mongo/schema/employee');
 const SessionService = require('../../services/auth');
 
 // first function is present to makes checks before the "real" routes
@@ -31,13 +31,14 @@ router.post('/login', (req, res, next) => {
     let data;
 
     // promise to authenticate the user
-    SessionService.authentication(req.body.user, req.body.psw, Dipendente)
+    SessionService.authentication(req.body.user, req.body.psw, Employee)
     // if present generate the session for the user
       .then((user) => { SessionService.generate(req.session, user); })
       // if successfully logged the user in then send it to the nnplus home
       .then( successful_login )
-      // if there're problems during the authentication send the
+      // if there're problems during the authentication let the client knwo that it failed
       .catch( wrong_credentials )
+      // finally send the result of the operations to the client
       .finally( send_result );
 
     // create the data to send to the client

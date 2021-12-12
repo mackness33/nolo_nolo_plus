@@ -7,13 +7,12 @@ const SessionService = require('../../services/auth');
 /* GET users listing. */
 router.get('/', (req, res, next) => {
     logger.info("in pre-home GET");
-    SessionService.authorization(req, res, next, '/nnplus/logout', '/nnplus/login', 'dip');
+    SessionService.authorization(req, res, next, '/nnplus/logout', '/nnplus/login', 2);
   }, function(req, res, next) {
     logger.info("in home GET");
     // TODO: send the login.html
-    req.session.mail = "vladimira@putinia";
     logger.info("req.session: " + JSON.stringify(req.session));
-    res.sendFile(path.join(__dirname, '../public/templates/empl_home.html'));
+    res.sendFile(path.join(__dirname, '../public/templates/emp_home.html'));
     // res.send('respond with home res');
     logger.info("end home GET");
 });

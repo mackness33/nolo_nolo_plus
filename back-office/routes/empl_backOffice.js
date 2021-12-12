@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const logger = require("../../logger.js");
-const Employee = require("../mongo/employee_schema");
+const Employee = require("../mongo/schema/employee");
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
@@ -13,6 +13,7 @@ router.get("/", function (req, res, next) {
       surname: "putinia",
       mail: "vladimira@putinia",
       password: "something",
+      role: 2,
     });
     await tania.save();
     again = await model.find({ name: "vladimira" });

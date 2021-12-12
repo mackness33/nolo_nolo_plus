@@ -24,33 +24,34 @@ class auth_service{
     return session(session_options);
   }
 
-  // TODO: add the possibility to get authenticate whatever type of model in input
   async authentication(username, password, promised_model){
     let role_model = await promised_model;
     let user = await role_model.findOne({ 'user': username, 'psw': password });
 
     logger.info('query in Service: ' + JSON.stringify(user));
 
-    if (user === null)
+    // if user is null ora undefined than throw an error
+    if ( !!!user )
       throw new Error("User not found");
 
     return user;
   }
 
   check_if_user_logged_in(session){
-    return !!session.user;
+    return !!session.mail;
   }
 
   authorization(req, res, next, home_url, index_url, role){
     this.is_logged(req.session, () =>  {
-      if ( req.session.role === role ){
+      if ( req.session.role <= role ){
         logger.info('User authorizized');
         next();
         return;
       }
-
-      logger.warn( 'User not authorize' );
-      res.redirect(home_url);
+      else{
+        logger.warn( 'User not authorize' );
+        res.redirect(home_url);
+      }
     }, () => { logger.warn( 'User not logged' ); res.redirect(index_url); });
   }
 
@@ -94,7 +95,9 @@ class auth_service{
       }
     });
 
-    session.user = user.user;
+    logger.info("role in generate: " + user.role);
+    logger.info("user in generate: " + user);
+    session.mail = user.mail;
     session.role = user.role;
 
     if (callback)
