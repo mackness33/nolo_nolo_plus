@@ -24,7 +24,7 @@ router.post('/login', (req, res, next) => {
     SessionService.already_logged(req, res, next, '/nnplus/home');
   }, (req, res, next) => {
     logger.info("in login POST");
-    // logger.info('Form: ' + JSON.stringify(req.body));
+    logger.info('Form: ' + JSON.stringify(req.body));
     // logger.info('User: ' + JSON.stringify(req.session.user));
     // logger.info('Session: ' + JSON.stringify(req.session));
 

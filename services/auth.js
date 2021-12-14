@@ -33,9 +33,11 @@ class auth_service{
   async authentication(username, password, promised_model){
     // check the db to see if the user is present
     let role_model = await promised_model;
-    let user = await role_model.findOne({ 'user': username, 'psw': password });
+    let user = await role_model.findOne({ 'mail': username, 'password': password });
 
     logger.info('query in Service: ' + JSON.stringify(user));
+    logger.info('username: ' + JSON.stringify(username));
+    logger.info('password: ' + JSON.stringify(password));
 
     // if user is null or undefined than throw an error
     if ( !!!user )
@@ -74,7 +76,7 @@ class auth_service{
   // successful as a function to do if the user is logged in
   // otherwise unsuccessful they can be empty if not needed
   is_logged(session, successful, unsuccessful){
-    // logger.info( 'user_logged: ' + this.check_if_user_logged_in(session) );
+    logger.info( 'user_logged: ' + this.check_if_user_logged_in(session) );
     if ( this.check_if_user_logged_in(session) ){
       if (successful)
         successful();
@@ -87,22 +89,30 @@ class auth_service{
 
   // check wheter the user is already logged in
   already_logged(req, res, next, home_url){
-    this.is_logged(req.session, () => {
-      logger.warn( 'User already logged in' );
-      res.redirect(302, home_url);
-    });
+    this.is_logged(
+      req.session,
+      () => {
+        logger.warn( 'User already logged in' );
+        res.redirect(302, home_url);
+      },
+      () => { next(); }      
+    );
 
-    next();
+    // next();
   }
 
   // check wheter the user isn't already logged in
   not_already_logged(req, res, next, login_url){
-    this.is_logged(req.session, () => {}, () => {
-      logger.warn( 'User not logged in' );
-      res.redirect(302, login_url);
-    });
+    this.is_logged(
+      req.session,
+      () => { next(); },
+      () => {
+        logger.warn( 'User not logged in' );
+        res.redirect(302, login_url);
+      }
+    );
 
-    next();
+    // next();
   }
 
   /* SESSION OPERATIONS */
