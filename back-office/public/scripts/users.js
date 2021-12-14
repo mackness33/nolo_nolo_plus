@@ -8,6 +8,10 @@ const searchForm = document.getElementById("idSearch");
 const resetBtn = document.getElementById("resetBtn");
 const addUserForm = document.getElementById("addForm");
 
+document.addEventListener("DOMContentLoaded", async () => {
+  reloadList();
+});
+
 addUserForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   console.log("INTO addUser");
