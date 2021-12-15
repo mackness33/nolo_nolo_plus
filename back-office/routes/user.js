@@ -1,12 +1,22 @@
 const router = require("express").Router();
 const logger = require("../../logger.js");
-const userModel = require("../mongo/schema/user");
-const emplModel = require("../mongo/schema/employee");
-const SessionService = require('../../services/auth');
+const userModel = require("../../services/mongo/schema/user");
+const emplModel = require("../../services/mongo/schema/employee");
+const SessionService = require("../../services/auth");
 
-router.get("/getOne", (req, res, next) => {
-    SessionService.authorization(req, res, next, '/nnplus/logout', '/nnplus/login', 2);
-  }, (req, res, next) => {
+router.get(
+  "/getOne",
+  (req, res, next) => {
+    SessionService.authorization(
+      req,
+      res,
+      next,
+      "/nnplus/logout",
+      "/nnplus/login",
+      2
+    );
+  },
+  (req, res, next) => {
     userModel.then(async (User, reject) => {
       var user;
       if (req.query.mail) {
@@ -28,11 +38,22 @@ router.get("/getOne", (req, res, next) => {
       }
       res.send(user);
     });
-});
+  }
+);
 
-router.post("/setOne", (req, res, next) => {
-    SessionService.authorization(req, res, next, '/nnplus/logout', '/nnplus/login', 2);
-  }, (req, res, next) => {
+router.post(
+  "/setOne",
+  (req, res, next) => {
+    SessionService.authorization(
+      req,
+      res,
+      next,
+      "/nnplus/logout",
+      "/nnplus/login",
+      2
+    );
+  },
+  (req, res, next) => {
     logger.info("GODDO:::  " + req.session.mail);
     userModel.then(async (User, reject) => {
       //await User.findOneAndUpdate({ mail: req.body.mail }, req.body).exec();
@@ -53,20 +74,42 @@ router.post("/setOne", (req, res, next) => {
       await user.save();
       res.send("ah cool");
     });
-});
+  }
+);
 
-router.get("/all", (req, res, next) => {
-    SessionService.authorization(req, res, next, '/nnplus/logout', '/nnplus/login', 2);
-  }, (req, res, next) => {
+router.get(
+  "/all",
+  (req, res, next) => {
+    SessionService.authorization(
+      req,
+      res,
+      next,
+      "/nnplus/logout",
+      "/nnplus/login",
+      2
+    );
+  },
+  (req, res, next) => {
     userModel.then(async (User, reject) => {
       const users = await User.find().populate("feedback.emplCode");
       res.send(users);
     });
-});
+  }
+);
 
-router.post("/add", (req, res, next) => {
-    SessionService.authorization(req, res, next, '/nnplus/logout', '/nnplus/login', 2);
-  }, (req, res, next) => {
+router.post(
+  "/add",
+  (req, res, next) => {
+    SessionService.authorization(
+      req,
+      res,
+      next,
+      "/nnplus/logout",
+      "/nnplus/login",
+      2
+    );
+  },
+  (req, res, next) => {
     userModel.then(async (User, reject) => {
       const newUser = new User({
         name: req.body.name,
@@ -80,11 +123,22 @@ router.post("/add", (req, res, next) => {
       await newUser.save();
       res.send("all cool");
     });
-});
+  }
+);
 
-router.post("/feed", (req, res, next) => {
-    SessionService.authorization(req, res, next, '/nnplus/logout', '/nnplus/login', 2);
-  }, (req, res, next) => {
+router.post(
+  "/feed",
+  (req, res, next) => {
+    SessionService.authorization(
+      req,
+      res,
+      next,
+      "/nnplus/logout",
+      "/nnplus/login",
+      2
+    );
+  },
+  (req, res, next) => {
     emplModel.then(async (Employee, reject) => {
       const emp = await Employee.findOne({ mail: req.session.mail });
       userModel.then(async (User, reject) => {
@@ -98,25 +152,48 @@ router.post("/feed", (req, res, next) => {
       });
       res.send("bene bene");
     });
-});
+  }
+);
 
-router.post("/deleteOne", (req, res, next) => {
-    SessionService.authorization(req, res, next, '/nnplus/logout', '/nnplus/login', 2);
-  }, (req, res, next) => {
+router.post(
+  "/deleteOne",
+  (req, res, next) => {
+    SessionService.authorization(
+      req,
+      res,
+      next,
+      "/nnplus/logout",
+      "/nnplus/login",
+      2
+    );
+  },
+  (req, res, next) => {
     userModel.then(async (User, reject) => {
       const result = await User.deleteOne({ mail: req.body.mail });
       res.send(result);
     });
-});
+  }
+);
 
-router.get("/checkExist", (req, res, next) => {
-    SessionService.authorization(req, res, next, '/nnplus/logout', '/nnplus/login', 2);
-  }, (req, res, next) => {
+router.get(
+  "/checkExist",
+  (req, res, next) => {
+    SessionService.authorization(
+      req,
+      res,
+      next,
+      "/nnplus/logout",
+      "/nnplus/login",
+      2
+    );
+  },
+  (req, res, next) => {
     userModel.then(async (User, reject) => {
       const result = await User.findOne({ mail: req.query.mail });
       logger.info(result);
       res.send(result);
     });
-});
+  }
+);
 
 module.exports = router;
