@@ -59,3 +59,15 @@ typings/
 
 # next.js build output
 .next
+
+# node_modules in fo_app
+front-office/fo_app/build
+
+# node_modules in fo_app
+front-office/fo_app/node_modules
+
+# package-lock.js in fo_app
+front-office/fo_app/package-lock.json
+
+# package-lock.js in root
+package-lock.json
