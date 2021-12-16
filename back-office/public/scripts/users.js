@@ -53,7 +53,7 @@ feedModal.addEventListener("show.bs.modal", (event) => {
         date: new Date().toISOString(),
         userMail: userMail,
       };
-      await $.post("http://localhost:8000/nnplus/user/feed", feed)
+      await $.post("/nnplus/user/feed", feed)
         .done((data) => {
           console.log(data);
           document.getElementById("feedForm").reset();
@@ -93,7 +93,7 @@ deleteModal.addEventListener("show.bs.modal", (event) => {
   document.getElementById("confirmBtn").addEventListener(
     "click",
     () => {
-      $.post("http://localhost:8000/nnplus/user/deleteOne", { mail: userMail })
+      $.post("/nnplus/user/deleteOne", { mail: userMail })
         .done((data) => {
           console.log(data);
           reloadList();
@@ -110,7 +110,7 @@ deleteModal.addEventListener("show.bs.modal", (event) => {
 async function populateModal(event, mode) {
   const userId = event.relatedTarget.parentElement.parentElement.id;
   var user;
-  await $.get("http://localhost:8000/nnplus/user/getOne", {
+  await $.get("/nnplus/user/getOne", {
     mail: userId,
     mode: mode,
   }).done((data) => {
@@ -232,11 +232,11 @@ function setUpEdit(user) {
         feeds: deletedFeed,
       };
       console.log(user);
-      $.get("http://localhost:8000/nnplus/user/checkExist", {
+      $.get("/nnplus/user/checkExist", {
         mail: user.newMail,
       }).done(async (data) => {
         if (!data || user.oldMail === user.newMail) {
-          await $.post("http://localhost:8000/nnplus/user/setOne", user);
+          await $.post("/nnplus/user/setOne", user);
           reloadList();
           showAlert(
             "Modificato con successo",
@@ -267,13 +267,13 @@ async function addUser() {
     mail: inputs[4].value,
     status: inputs[5].value,
   };
-  await $.get("http://localhost:8000/nnplus/user/checkExist", {
+  await $.get("/nnplus/user/checkExist", {
     mail: user.mail,
   }).done((data) => {
     if (!data) {
       $.ajax({
         type: "POST",
-        url: "http://localhost:8000/nnplus/user/add",
+        url: "/nnplus/user/add",
         contentType: "application/json",
         data: JSON.stringify(user),
       })
@@ -319,7 +319,7 @@ function showAlert(text, parent, happy) {
 // show user by id
 async function showUserByMail(mail) {
   var user = [];
-  await $.get("http://localhost:8000/nnplus/user/getOne", {
+  await $.get("/nnplus/user/getOne", {
     mail: mail,
   }).done((data) => {
     console.log(data);
@@ -336,7 +336,7 @@ async function showUserByName(fullName) {
   const name = fullName.split(" ")[0];
   const surname = fullName.split(" ")[1];
   console.log(name + surname);
-  await $.get("http://localhost:8000/nnplus/user/getOne", {
+  await $.get("/nnplus/user/getOne", {
     name: name,
     surname: surname,
   }).done((data) => {
@@ -400,7 +400,7 @@ function showUsers(users) {
 }
 
 export async function reloadList() {
-  await $.get("http://localhost:8000/nnplus/user/all", (data, status) => {
+  await $.get("/nnplus/user/all", (data, status) => {
     showUsers(data);
   });
 }
