@@ -216,44 +216,42 @@ function setUpEdit(user) {
     );
   });
 
-  editform.addEventListener(
-    "submit",
-    async (event) => {
-      event.preventDefault();
-      const inputs = editform.elements;
+  editform.onsubmit = async (event) => {
+    event.preventDefault();
+    const inputs = editform.elements;
 
-      const user = {
-        name: inputs[0].value,
-        surname: inputs[1].value,
-        birth: inputs[2].value,
-        oldMail: inputs[3].getAttribute("data-old"),
-        newMail: inputs[3].value,
-        status: inputs[4].value,
-        feeds: deletedFeed,
-      };
-      console.log(user);
-      $.get("/nnplus/user/checkExist", {
-        mail: user.newMail,
-      }).done(async (data) => {
-        if (!data || user.oldMail === user.newMail) {
-          await $.post("/nnplus/user/setOne", user);
-          reloadList();
-          showAlert(
-            "Modificato con successo",
-            document.getElementById("editBtn").parentElement,
-            true
-          );
-        } else {
-          showAlert(
-            "Mail gia' in utilizzo",
-            document.getElementById("editBtn").parentElement,
-            false
-          );
-        }
-      });
-    },
-    { once: true }
-  );
+    const user = {
+      name: inputs[0].value,
+      surname: inputs[1].value,
+      birth: inputs[2].value,
+      mail: inputs[3].getAttribute("data-old"),
+      newMail: inputs[3].value,
+      status: inputs[4].value,
+      feeds: deletedFeed,
+      role: 2,
+    };
+    console.log(user);
+    $.get("/nnplus/user/checkExist", {
+      mail: user.newMail,
+    }).done(async (data) => {
+      console.log(data);
+      if (!data || user.mail === user.newMail) {
+        await $.post("/nnplus/user/setOne", user);
+        reloadList();
+        showAlert(
+          "Modificato con successo",
+          document.getElementById("editBtn").parentElement,
+          true
+        );
+      } else {
+        showAlert(
+          "Mail gia' in utilizzo",
+          document.getElementById("editBtn").parentElement,
+          false
+        );
+      }
+    });
+  };
 }
 
 async function addUser() {

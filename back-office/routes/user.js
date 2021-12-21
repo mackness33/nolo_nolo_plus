@@ -3,6 +3,7 @@ const logger = require("../../logger.js");
 const userModel = require("../../services/mongo/schema/user");
 const emplModel = require("../../services/mongo/schema/employee");
 const SessionService = require("../../services/auth");
+const helper = require("../../services/mongo/base.js");
 
 router.get(
   "/getOne",
@@ -16,28 +17,24 @@ router.get(
       2
     );
   },
-  (req, res, next) => {
-    userModel.then(async (User, reject) => {
-      var user;
-      if (req.query.mail) {
-        user = await User.findOne({ mail: req.query.mail }).populate(
-          "feedback.emplCode"
+  async (req, res, next) => {
+    if (req.query.mail) {
+      var user = await helper.getOne(userModel, req);
+      user = helper.format(user);
+      for (let i = 0; i < user.feedback.length; i++) {
+        user.feedback[i].emplCode = helper.format(
+          user.feedback[i].emplCode,
+          true
         );
-      } else {
-        user = await User.find({
-          name: req.query.name,
-          surname: req.query.surname,
-        }).populate("feedback.emplCode");
       }
-      if (req.query.mode == "edit") {
-        user.feedback = user.feedback.filter((feed) => {
-          if (feed.emplCode.mail == req.session.mail) {
-            return feed;
-          }
-        });
+    } else {
+      var user = await helper.getOne(userModel, req);
+      for (let i = 0; i < user.length; i++) {
+        user[i] = helper.format(user[i]);
       }
-      res.send(user);
-    });
+    }
+
+    res.send(user);
   }
 );
 
@@ -53,27 +50,9 @@ router.post(
       2
     );
   },
-  (req, res, next) => {
-    logger.info("GODDO:::  " + req.session.mail);
-    userModel.then(async (User, reject) => {
-      //await User.findOneAndUpdate({ mail: req.body.mail }, req.body).exec();
-      const user = await User.findOne({ mail: req.body.oldMail });
-      user.name = req.body.name;
-      user.surname = req.body.surname;
-      user.mail = req.body.newMail;
-      user.status = req.body.status;
-      logger.info(req.body["feeds[]"]);
-      if (!Array.isArray(req.body["feeds[]"])) {
-        req.body["feeds[]"] = [req.body["feeds[]"]];
-      }
-      user.feedback = user.feedback.filter((feed) => {
-        return !req.body["feeds[]"].includes(feed.id);
-      });
-      logger.info(req.body["feeds[]"]);
-
-      await user.save();
-      res.send("ah cool");
-    });
+  async (req, res, next) => {
+    await helper.setOne(userModel, req);
+    res.send("ahhh done");
   }
 );
 
@@ -89,11 +68,12 @@ router.get(
       2
     );
   },
-  (req, res, next) => {
-    userModel.then(async (User, reject) => {
-      const users = await User.find().populate("feedback.emplCode");
-      res.send(users);
-    });
+  async (req, res, next) => {
+    const users = await helper.getAll(userModel);
+    for (let i = 0; i < users.length; i++) {
+      users[i] = helper.format(users[i], false);
+    }
+    res.send(users);
   }
 );
 
@@ -109,20 +89,9 @@ router.post(
       2
     );
   },
-  (req, res, next) => {
-    userModel.then(async (User, reject) => {
-      const newUser = new User({
-        name: req.body.name,
-        surname: req.body.surname,
-        birth: req.body.birth,
-        mail: req.body.mail,
-        password: req.body.password,
-        status: req.body.status,
-      });
-
-      await newUser.save();
-      res.send("all cool");
-    });
+  async (req, res, next) => {
+    await helper.add(userModel, req);
+    res.send("all cool");
   }
 );
 
@@ -138,20 +107,17 @@ router.post(
       2
     );
   },
-  (req, res, next) => {
-    emplModel.then(async (Employee, reject) => {
-      const emp = await Employee.findOne({ mail: req.session.mail });
-      userModel.then(async (User, reject) => {
-        const user = await User.findOne({ mail: req.body.userMail });
-        user.feedback.push({
-          date: req.body.date,
-          text: req.body.text,
-          emplCode: emp._id,
-        });
-        await user.save();
-      });
-      res.send("bene bene");
+  async (req, res, next) => {
+    const emp = await helper.getOne(emplModel, req.session.mail);
+    req.query = { mail: req.body.userMail };
+    const user = await helper.getOne(userModel, req);
+    user.feedback.push({
+      date: req.body.date,
+      text: req.body.text,
+      emplCode: emp._id,
     });
+    await user.save();
+    res.send("bene bene");
   }
 );
 
@@ -167,11 +133,8 @@ router.post(
       2
     );
   },
-  (req, res, next) => {
-    userModel.then(async (User, reject) => {
-      const result = await User.deleteOne({ mail: req.body.mail });
-      res.send(result);
-    });
+  async (req, res, next) => {
+    res.send(await helper.deleteOne(userModel, req.body.mail));
   }
 );
 
@@ -187,12 +150,8 @@ router.get(
       2
     );
   },
-  (req, res, next) => {
-    userModel.then(async (User, reject) => {
-      const result = await User.findOne({ mail: req.query.mail });
-      logger.info(result);
-      res.send(result);
-    });
+  async (req, res, next) => {
+    res.send(await helper.checkExist(userModel, req.query.mail));
   }
 );
 

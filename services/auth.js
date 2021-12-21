@@ -29,7 +29,10 @@ class auth_service {
   async authentication(username, password, promised_model) {
     // check the db to see if the user is present
     let role_model = await promised_model;
-    let user = await role_model.findOne({ mail: username, password: password });
+    let user = await role_model.findOne({
+      "person.mail": username,
+      "person.password": password,
+    });
 
     logger.info("query in Service: " + JSON.stringify(user));
     logger.info("username: " + JSON.stringify(username));

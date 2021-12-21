@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
-const { Schema } = mongoose;
+const person_schema = require("./person");
 const helper = require("../base");
-const Employee = require("./employee");
 
 const feedback_schema = mongoose.Schema({
   date: {
@@ -19,25 +18,12 @@ const feedback_schema = mongoose.Schema({
 });
 
 const user_schema = mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  surname: {
-    type: String,
+  person: {
+    type: person_schema,
     required: true,
   },
   birth: {
     type: Date,
-    required: true,
-  },
-  mail: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
     required: true,
   },
   status: {

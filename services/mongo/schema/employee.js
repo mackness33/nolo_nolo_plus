@@ -1,29 +1,14 @@
+const req = require("express/lib/request");
 const mongoose = require("mongoose");
 const { Schema } = mongoose.Schema();
 const helper = require("../base");
+const person_schema = require("./person");
 
 const employee_schema = mongoose.Schema({
-  name: {
-    type: String,
+  person: {
+    type: person_schema,
     required: true,
   },
-  surname: {
-    type: String,
-    required: true,
-  },
-  mail: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    require,
-  },
-  role: {
-    type: Number,
-    require
-  }
 });
 
 const Employee = helper.get_model("Employee", employee_schema);
