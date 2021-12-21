@@ -376,12 +376,14 @@ function showUsers(users) {
     }
     const fullName = adjustName(user.name + " " + user.surname);
     userEl.innerHTML = `<div class="customer-info" id="${user.mail}">
+                            <div class="no-btns">
                             <span class="name" tabindex="0">${fullName.name} ${fullName.surname}</span>
                             <div class="detail">
                                 <span class="id">${user.mail}</span>
                             </div>
                             <div class="detail">
                                 <span class="status">${statusString}</span>
+                            </div>
                             </div>
                             <div class="customer-btn">
                                 <button class="btn btn-primary info-btn" data-bs-toggle="modal"

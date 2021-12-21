@@ -67,6 +67,8 @@ main {
   padding: 1rem;
   background-color: rgba(255, 255, 255, 0.726);
   border-radius: var(--main-radius);
+  padding-left: 0.1rem;
+  padding-right: 0.1rem;
 }
 
 /* add and search elements */
@@ -111,7 +113,7 @@ main {
 /* customer list elements */
 
 #customerContainer {
-  padding: 1rem;
+  padding: 0.2rem;
   border-radius: var(--main-radius);
   margin: 1rem;
   background-color: rgba(0, 0, 0, 0.39);
@@ -143,9 +145,21 @@ main {
   align-items: center;
 }
 
+.no-btns {
+  width: 50%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.no-btns > * {
+  display: flex;
+  width: 33%;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
 .detail {
   display: flex;
-  width: 15%;
   justify-content: start;
   margin-left: 3rem;
 }
@@ -201,11 +215,19 @@ main {
     padding-left: 0.1rem;
     padding-right: 0.1rem;
   }
+
+  .no-btns {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .no-btns > * {
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
   .detail {
     width: 100%;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     margin: 0;
   }
 
@@ -267,6 +289,15 @@ main {
 
   /* customer list */
 
+  .no-btns {
+    width: 100%;
+  }
+
+  .no-btns > * {
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
   .customer-info {
     flex-direction: column;
     justify-content: center;
