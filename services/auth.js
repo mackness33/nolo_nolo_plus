@@ -1,6 +1,6 @@
 require("dotenv").config({ path: __dirname + "../bin/.env" });
 const session = require("express-session");
-const mongo_service = require("../services/mongo/base");
+const mongo_service = require("../services/mongo/utils");
 const logger = require("../logger.js");
 
 // class made to manage the authentication of users

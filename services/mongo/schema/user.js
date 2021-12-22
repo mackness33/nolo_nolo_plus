@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const person_schema = require("./person");
-const helper = require("../base");
+const helper = require("../utils");
 
 const feedback_schema = mongoose.Schema({
   date: {

@@ -3,8 +3,8 @@ const logger = require("../../logger.js");
 const userModel = require("../../services/mongo/schema/user");
 const emplModel = require("../../services/mongo/schema/employee");
 const SessionService = require("../../services/auth");
-const pedService = require("../../services/pedalo");
-const helper = require("../../services/mongo/base.js");
+const pedService = require("../../services/mongo/schema/pedalo");
+const helper = require("../../services/mongo/utils.js");
 
 router.use((req, res, next) => {
   SessionService.authorization(

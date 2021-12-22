@@ -2,6 +2,17 @@ const router = require("express").Router();
 const logger = require("../../logger.js");
 const Employee = require("../../services/mongo/schema/employee");
 const SessionService = require("../../services/auth");
+const baseService = require("../../services/mongo/base")
+var baseHelper;
+
+router.use(async (req, res, next) => {
+  // let employeeModel = await Employee;
+  logger.info('pre employee');
+  baseHelper = new baseService(await Employee);
+  logger.info('post employee');
+
+  next();
+});
 
 /* GET users listing. */
 router.get(
@@ -16,25 +27,9 @@ router.get(
   //     2
   //   );
   // },
-  function (req, res, next) {
-    console.log(req.query);
-    const dt = new Date();
-    var again;
-    Employee.then(async (model, reject) => {
-      const tania = new model({
-        name: "vladimira",
-        surname: "putinia",
-        mail: "vladimira@putinia",
-        password: "something",
-        role: 2,
-      });
-      await tania.save();
-      again = await model.find({ name: "vladimira" });
-      logger.info(again);
-    }).then(() => {
-      logger.info("EMPLYEE::  " + again);
-      res.send(again);
-    });
+  async function (req, res, next) {
+    const doc = await baseHelper.checkExists({"person.name": "dio"})
+    res.send(doc);
   }
 );
 

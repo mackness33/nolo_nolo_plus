@@ -4,7 +4,7 @@ const createError = require("http-errors");
 const logger = require("../../logger");
 const Employee = require("../../services/mongo/schema/employee");
 const SessionService = require("../../services/auth");
-const helper = require("../../services/mongo/base");
+const helper = require("../../services/mongo/utils");
 
 // first function is present to makes checks before the "real" routes
 

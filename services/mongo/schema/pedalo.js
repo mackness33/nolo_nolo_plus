@@ -1,5 +1,5 @@
 require('dotenv').config({path: __dirname + '../bin/.env'});
-var helper = require('../base');
+var helper = require('../utils');
 var mongoose = require('mongoose');
 
 const pedaloSchema = new mongoose.Schema({
