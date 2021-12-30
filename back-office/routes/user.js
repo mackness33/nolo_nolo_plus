@@ -3,8 +3,8 @@ const logger = require("../../logger.js");
 const userModel = require("../../services/mongo/schema/user");
 const emplModel = require("../../services/mongo/schema/employee");
 const SessionService = require("../../services/auth");
-const pedService = require("../../services/mongo/schema/pedalo");
-const helper = require("../../services/mongo/utils.js");
+const userService = require("../../services/mongo/user_service");
+const baseService = require("../../services/mongo/base.js");
 
 router.use((req, res, next) => {
   SessionService.authorization(
@@ -17,63 +17,77 @@ router.use((req, res, next) => {
   );
 });
 
-router.get("/getOne", async (req, res, next) => {
-  if (req.query.mail) {
-    var user = await helper.getOne(userModel, req);
-    user = helper.format(user);
-    for (let i = 0; i < user.feedback.length; i++) {
-      user.feedback[i].emplCode = helper.format(
-        user.feedback[i].emplCode,
-        true
-      );
-    }
-  } else {
-    var user = await helper.getOne(userModel, req);
-    for (let i = 0; i < user.length; i++) {
-      user[i] = helper.format(user[i]);
-    }
-  }
+router.use(async (req, res, next) => {
+  await userService.initialize();
+  next();
+});
 
+router.get("/getOne", async (req, res, next) => {
+  var user = userService.format(
+    await userService.findOne({ "person.mail": req.query.mail }),
+    "person"
+  );
+  if (req.query.mode == "edit") {
+    user.feedback = userService.filterFeeds(user.feedback, req.session.mail);
+  }
+  for (let i = 0; i < user.feedback.length; i++) {
+    user.feedback[i].emplCode = userService.format(
+      user.feedback[i].emplCode,
+      "person"
+    );
+  }
   res.send(user);
 });
 
+router.get("/getMany", async (req, res, next) => {
+  var users = await userService.find({
+    "person.name": req.query.name,
+    "person.surname": req.query.surname,
+  });
+  for (let i = 0; i < users.length; i++) {
+    users[i] = userService.format(users[i], "person");
+  }
+  res.send(users);
+});
+
 router.post("/setOne", async (req, res, next) => {
-  await helper.setOne(userModel, req);
+  req.body.feeds = req.body["feeds[]"];
+  delete req.body["feeds[]"];
+  console.log("QUI::: " + JSON.stringify(req.body));
+  await userService.updateOne({ "person.mail": req.body.oldMail }, req.body);
   res.send("ahhh done");
 });
 
 router.get("/all", async (req, res, next) => {
-  const users = await helper.getAll(userModel);
+  const users = await userService.find();
   for (let i = 0; i < users.length; i++) {
-    users[i] = helper.format(users[i], false);
+    users[i] = userService.format(users[i], "person");
   }
   res.send(users);
 });
 
 router.post("/add", async (req, res, next) => {
-  await helper.add(userModel, req);
+  const user = {
+    ...userService.setUpPerson(req.body),
+    birth: req.body.birth,
+    status: req.body.status,
+    feedback: [],
+  };
+  await userService.insertOne(user);
   res.send("all cool");
 });
 
 router.post("/feed", async (req, res, next) => {
-  const emp = await helper.getOne(emplModel, req.session.mail);
-  req.query = { mail: req.body.userMail };
-  const user = await helper.getOne(userModel, req);
-  user.feedback.push({
-    date: req.body.date,
-    text: req.body.text,
-    emplCode: emp._id,
-  });
-  await user.save();
+  await userService.addFeed(req.session.mail, req.body.userMail, req.body);
   res.send("bene bene");
 });
 
 router.post("/deleteOne", async (req, res, next) => {
-  res.send(await helper.deleteOne(userModel, req.body.mail));
+  res.send(await userService.deleteOne({ "person.mail": req.body.mail }));
 });
 
 router.get("/checkExist", async (req, res, next) => {
-  res.send(await helper.checkExist(userModel, req.query.mail));
+  res.send(await userService.checkExists({ "person.mail": req.query.mail }));
 });
 
 module.exports = router;

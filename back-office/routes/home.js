@@ -1,18 +1,57 @@
-const path = require('path');
-const router = require('express').Router();
-const logger = require('../../logger.js');
-const util = require('util');
-const SessionService = require('../../services/auth');
+const path = require("path");
+const router = require("express").Router();
+const logger = require("../../logger.js");
+const util = require("util");
+const SessionService = require("../../services/auth");
 
 /* GET users listing. */
-router.get('/',
+router.get(
+  "/",
   (req, res, next) => {
     logger.info("in pre-home GET");
-    SessionService.authorization(req, res, next, '/nnplus/logout', '/nnplus/login', 2);
-  }, function(req, res, next) {
+    SessionService.authorization(
+      req,
+      res,
+      next,
+      "/nnplus/logout",
+      "/nnplus/login",
+      2
+    );
+  },
+  (req, res, next) => {
+    logger.info("in pre-home GET");
+    SessionService.authorization(
+      req,
+      res,
+      next,
+      "/nnplus/logout",
+      "/nnplus/login",
+      2
+    );
+  },
+  function (req, res, next) {
     logger.info("in home GET");
 
-    res.sendFile(path.join(__dirname, '../public/templates/users.html'));
+    res.sendFile(path.join(__dirname, "../public/templates/users.html"));
+  }
+);
+
+router.get(
+  "/inventory",
+  (req, res, next) => {
+    logger.info("in pre-home GET");
+    SessionService.authorization(
+      req,
+      res,
+      next,
+      "/nnplus/logout",
+      "/nnplus/login",
+      2
+    );
+  },
+  (req, res, next) => {
+    logger.info("in inventory GET");
+    res.sendFile(path.join(__dirname, "../public/templates/inventory.html"));
   }
 );
 

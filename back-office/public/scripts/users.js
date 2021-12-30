@@ -7,6 +7,7 @@ const addModal = document.getElementById("addModal");
 const searchForm = document.getElementById("idSearch");
 const resetBtn = document.getElementById("resetBtn");
 const addUserForm = document.getElementById("addForm");
+//$(document).ajaxComplete(checkSession);
 
 document.addEventListener("DOMContentLoaded", async () => {
   reloadList();
@@ -57,9 +58,19 @@ feedModal.addEventListener("show.bs.modal", (event) => {
         .done((data) => {
           console.log(data);
           document.getElementById("feedForm").reset();
+          showAlert(
+            "feedback aggiunto con successo",
+            document.getElementById("feedSubmit").parentElement,
+            true
+          );
         })
         .fail(() => {
           console.log("morte");
+          showAlert(
+            "aggiunta del feedback fallito",
+            document.getElementById("feedSubmit").parentElement,
+            false
+          );
         });
     },
     { once: true }
@@ -127,9 +138,8 @@ async function populateModal(event, mode) {
   if (mode == "info") {
     name.innerHTML = user.name;
     surname.innerHTML = user.surname;
-    birth.innerHTML = user.birth.split("T")[0];
+    birth.value = user.birth.split("T")[0];
     mail.innerHTML = user.mail;
-
     switch (user.status) {
       case 0:
         status.innerHTML = "Inattivo";
@@ -156,41 +166,51 @@ async function populateModal(event, mode) {
   }
 
   const feedBackList = document.getElementById(`${mode}FeedBackList`);
-  user.feedback.forEach((feed) => {
+  user.feedback.forEach((feed, index) => {
     const feedbackEl = document.createElement("li");
     feedbackEl.classList.add("feedback");
+    feedbackEl.setAttribute("tabindex", "0");
+    feedbackEl.setAttribute("aria-label", `feedback numero ${index + 1}`);
     feedbackEl.id = feed.feedbackId;
     if (mode == "info") {
-      feedbackEl.innerHTML = `<div>
-                                    <h6>Dipendente:</h6><span class="feedBackName">${
+      feedbackEl.innerHTML = `<div tabindex="0">
+                                    <b>Dipendente: </b><span class="feedBackName">${
                                       feed.emplCode.name +
                                       " " +
                                       feed.emplCode.surname
                                     }</span>
                             </div>
-                            <div>
-                                    <h6>Data:</h6><span class="feedBackDate">${
+                            <div tabindex="0">
+                                    <b aria-label="Data del feedback">Data: </b><input type="date" value="${
                                       feed.date.split("T")[0]
-                                    }</span>
+                                    }" class="feedBackDate" readonly>
+                                      
+                                    </input>
                             </div>
-                            <p class="feedBackText">${feed.text}</p>`;
+                            <p tabindex="0" class="feedBackText">${
+                              feed.text
+                            }</p>`;
     } else if (mode == "edit") {
-      feedbackEl.innerHTML = `<div>
-                                    <h6>Dipendente:</h6><span class="feedBackName">${
+      feedbackEl.innerHTML = `<div tabindex="0">
+                                    <b>Dipendente: </b><span class="feedBackName">${
                                       feed.emplCode.name +
                                       " " +
                                       feed.emplCode.surname
                                     }</span>
                             </div>
-                            <div>
-                                    <h6>Data:</h6><span class="feedBackDate">${
+                            <div tabindex="0">
+                                    <b aria-label="Data del feedback">Data: </b><input type="date" value="${
                                       feed.date.split("T")[0]
-                                    }</span>
+                                    }" class="feedBackDate" readonly></input>
                             </div>
-                            <p class="feedBackText">${feed.text}</p>
+                            <p tabindex="0" class="feedBackText">${
+                              feed.text
+                            }</p>
                             <button id="${
                               feed._id
-                            }" type="button" class="btn btn-danger deleteFeedback" >Elimina</button>`;
+                            }" type="button" class="btn btn-danger deleteFeedback" aria-label="elimina feedback numero ${
+        index + 1
+      }">Elimina</button>`;
     }
 
     feedBackList.appendChild(feedbackEl);
@@ -224,18 +244,18 @@ function setUpEdit(user) {
       name: inputs[0].value,
       surname: inputs[1].value,
       birth: inputs[2].value,
-      mail: inputs[3].getAttribute("data-old"),
-      newMail: inputs[3].value,
+      oldMail: inputs[3].getAttribute("data-old"),
+      mail: inputs[3].value,
       status: inputs[4].value,
       feeds: deletedFeed,
       role: 2,
     };
     console.log(user);
     $.get("/nnplus/user/checkExist", {
-      mail: user.newMail,
+      mail: user.mail,
     }).done(async (data) => {
       console.log(data);
-      if (!data || user.mail === user.newMail) {
+      if (!data || user.oldMail === user.mail) {
         await $.post("/nnplus/user/setOne", user);
         reloadList();
         showAlert(
@@ -264,6 +284,7 @@ async function addUser() {
     birth: inputs[3].value,
     mail: inputs[4].value,
     status: inputs[5].value,
+    role: 3,
   };
   await $.get("/nnplus/user/checkExist", {
     mail: user.mail,
@@ -301,6 +322,7 @@ async function addUser() {
 function showAlert(text, parent, happy) {
   if (!document.getElementById("alert")) {
     const alert = document.createElement("span");
+    alert.setAttribute("role", "alert");
     alert.textContent = text;
     alert.setAttribute("id", "alert");
     alert.classList.add("animate__animated", "animate__bounceIn");
@@ -334,7 +356,7 @@ async function showUserByName(fullName) {
   const name = fullName.split(" ")[0];
   const surname = fullName.split(" ")[1];
   console.log(name + surname);
-  await $.get("/nnplus/user/getOne", {
+  await $.get("/nnplus/user/getMany", {
     name: name,
     surname: surname,
   }).done((data) => {
@@ -355,6 +377,12 @@ function showUsers(users) {
   users.forEach((user) => {
     const userEl = document.createElement("li");
     userEl.classList.add("customer-element");
+    userEl.setAttribute("tabindex", "0");
+    userEl.setAttribute(
+      "aria-label",
+      "utente " + user.name + " " + user.surname
+    );
+    userEl.setAttribute("id", user.mail);
     var statusString;
     switch (user.status) {
       case 1:
@@ -375,32 +403,36 @@ function showUsers(users) {
         break;
     }
     const fullName = adjustName(user.name + " " + user.surname);
-    userEl.innerHTML = `<div class="customer-info" id="${user.mail}">
+
+    userEl.innerHTML = `<div class="customer-info">
                             <div class="no-btns">
-                            <span class="name" tabindex="0">${fullName.name} ${fullName.surname}</span>
                             <div class="detail">
-                                <span class="id">${user.mail}</span>
+                            <span class="name" tabindex="0"><b style="display:inline;">Nome:</b> ${fullName.name} ${fullName.surname}</span>
                             </div>
                             <div class="detail">
-                                <span class="status">${statusString}</span>
+                                <span class="id" tabindex="0"><b style="display:inline;">Email:</b> ${user.mail}</span>
+                            </div>
+                            <div class="detail">
+                                <span class="status" tabindex="0"><b style="display:inline;">Status:</b> ${statusString}</span>
                             </div>
                             </div>
-                            <div class="customer-btn">
+                            
+                        </div>
+                        <div class="customer-btn">
                                 <button class="btn btn-primary info-btn" data-bs-toggle="modal"
-                                    data-bs-target="#infoModal" data-id="info${user.mail}">mostra informazioni</button>
+                                    data-bs-target="#infoModal" data-id="info${user.mail}" aria-label="mostra le informazioni di ${fullName.name} ${fullName.surname}">mostra informazioni</button>
                                 <button class="btn btn-primary edit-btn" data-bs-toggle="modal"
-                                data-bs-target="#editModal" data-id="edit${user.mail}">cambia informazioni</button>
+                                data-bs-target="#editModal" data-id="edit${user.mail}" aria-label="cambia le informazioni di ${fullName.name} ${fullName.surname}">cambia informazioni</button>
                                 <button class="btn btn-primary feedback-btn" data-bs-toggle="modal"
-                                    data-bs-target="#feedModal">dai feedback</button>
-                                <button class="btn btn-danger delete-btn" data-bs-toggle="modal" data-bs-target="#deleteModal">Elimina</button>
-                            </div>
-                        </div>`;
+                                    data-bs-target="#feedModal" aria-label="fornisci un feedback su ${fullName.name} ${fullName.surname}">dai feedback</button>
+                                <button class="btn btn-danger delete-btn" aria-label="elimina l'account di  ${fullName.name} ${fullName.surname}" data-bs-toggle="modal" data-bs-target="#deleteModal">Elimina</button>
+                            </div>`;
     userList.appendChild(userEl);
   });
 }
 
 export async function reloadList() {
-  await $.get("/nnplus/user/all", (data, status) => {
+  await $.get("/nnplus/user/all", (data) => {
     showUsers(data);
   });
 }
@@ -416,4 +448,11 @@ function adjustName(fullName) {
     fullName.split(" ")[1].slice(1);
 
   return { name: name, surname: surname };
+}
+
+// checks if response is html, which means the session has expired
+function checkSession(evt, xhr, options) {
+  if (xhr.getResponseHeader("content-type").includes("html")) {
+    window.location.href = "/nnplus/login";
+  }
 }

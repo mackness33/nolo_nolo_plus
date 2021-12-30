@@ -1,0 +1,119 @@
+:root {
+  --main-radius: 1rem;
+  --main-margin: 0.5rem;
+  --button-radius: 2rem;
+}
+
+body {
+  background-color: rgba(0, 0, 0, 0.822);
+  color: white;
+  font-size: medium;
+}
+
+.btn {
+  border-radius: var(--button-radius);
+}
+
+.modal {
+  color: black;
+}
+
+/* main body decoration */
+
+main {
+  margin: var(--main-margin);
+}
+
+#main-container {
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.726);
+  border-radius: var(--main-radius);
+  padding-left: 0.1rem;
+  padding-right: 0.1rem;
+}
+
+/* controls elements*/
+
+#controls {
+  margin: 1rem;
+}
+
+#controls > button {
+  margin: 0.2rem;
+}
+
+/* filters elements */
+
+/* items container */
+
+.items-list {
+  padding: 1rem;
+  border-radius: var(--main-radius);
+  margin: 1rem;
+  background-color: rgba(0, 0, 0, 0.39);
+  box-shadow: inset 0 0 10px #000000;
+}
+
+.item-instance {
+  margin-bottom: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  width: 17rem;
+  height: 23rem;
+}
+
+.card {
+  background-color: rgba(0, 0, 0, 0.363);
+  color: white;
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  width: 100%;
+  height: 100%;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-img-top {
+  object-fit: cover;
+  height: 10rem;
+}
+
+/* add modal */
+
+.modal-elements div {
+  margin-bottom: 1rem;
+}
+
+.modal-elements div b label {
+  margin-bottom: 0rem;
+}
+
+.modal-elements div input {
+  width: 100%;
+  max-width: 25rem;
+}
+
+#addDescr,
+#addNote,
+#addCondition {
+  width: 100%;
+}
+
+/* laptop interactive */
+
+@media only screen and (max-width: 1024px) {
+}
+
+/* tablet/mobile interactive */
+
+@media only screen and (max-width: 768px) {
+  #controls {
+    display: flex;
+    flex-direction: column;
+  }
+}

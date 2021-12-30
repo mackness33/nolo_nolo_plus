@@ -12,6 +12,7 @@ class auth_service {
       secret: process.env.SS_SECRET,
       cookie: { maxAge: 1000 * 60 * 15 },
       store: mongo_service.get_store(), // get the store from the Mongo Service
+      rolling: true,
       saveUninitialized: false,
       resave: false,
     };

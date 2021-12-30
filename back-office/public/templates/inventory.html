@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Front Office</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <!-- <script src="//code.jquery.com/jquery-3.6.0.min.js"></script> -->
+  <link rel="stylesheet" href="../stylesheets/nav.css">
+  <link rel="stylesheet" href="../stylesheets/inventory.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+  <!-- <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+    crossorigin="anonymous"></script> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+</head>
+
+<body>
+  <!-- navbar -->
+  <nav class="navbar navbar-expand-md navbar-dark br-primary">
+
+    <!-- navbar content -->
+    <div class="container-fluid" id="nav-container">
+
+      <!-- navbar logo -->
+      <a class="navbar-brand" href="#" aria-hidden="true" tabindex="-1">
+        <img src="../images/logo.png" class="logo">
+      </a>
+
+      <!-- navbar toggle -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navElements"
+        aria-controls="navElements" aria-expanded="false" aria-label="Mostra navigazione">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- navbar navigation -->
+      <div class="collapse navbar-collapse" id="navElements">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="nav-list">
+          <li class="nav-item">
+            <a class="link" href="http://localhost:8000/nnplus/home" aria-label="Pagina Clienti"
+              aria-current="page">Clienti</a>
+          </li>
+          <li class="nav-item">
+            <a class="link active-nav" href="http://localhost:8000/nnplus/home/inventory"
+              aria-label="Pagina Inventario">Inventario</a>
+          </li>
+          <li class="nav-item">
+            <a class="link" href="#" aria-label="Pagina Gestione">Noleggi</a>
+          </li>
+          <li class="nav-item">
+            <a class="link" href="#" aria-label="Pagina log in">Log In</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- main content -->
+
+  <main>
+
+    <div class="contaier-fluid" id="main-container">
+
+      <!-- search and filter container -->
+
+      <div id="controls">
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filters"
+          aria-label="mostra filtri" aria-expanded="false" aria-controls="filters">Filtra</button>
+        <button class="btn btn-primary" type="button" aria-label="aggiungi un nuovo computer" data-bs-toggle="modal"
+          data-bs-target="#addModal">Aggiungi computer</button>
+        <button id="temp">clicca</button>
+      </div>
+
+      <!-- filters container -->
+
+      <div class="collapse" id="filters">
+        <div class="row d-flex justify-content-center">
+          <div class="col">dio</div>
+          <div class="col">dio</div>
+          <div class="col">dio</div>
+          <div class="col">dio</div>
+          <div class="col">dio</div>
+          <div class="col">dio</div>
+          <div class="col">dio</div>
+          <div class="col">dio</div>
+          <div class="col">dio</div>
+        </div>
+      </div>
+
+      <!-- items container -->
+
+      <div class="items-list">
+
+        <!-- items single row -->
+        <div class="row d-flex justify-content-center">
+
+          <!-- single item -->
+          <div class="item-instance col-lg-2 col-md-3 col-sm-4">
+            <div class="card">
+              <img class="card-img-top"
+                src="https://cdn.veloce.it/wp-content/uploads/2021/05/Beau-Lake-Tahoe-Pedal-Boat-14-3.jpg" alt=""
+                srcset="">
+              </img>
+              <div class="card-body">
+                <h5 class="card-title">Atlantico</h5>
+                <button class="btn btn-primary">Mostra informazioni</button>
+                <button class="btn btn-primary">Cambia informazioni</button>
+                <button class="btn btn-danger">elimina</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="item-instance col-lg-2 col-md-3 col-sm-4">
+            <div class="card">
+              <img class="card-img-top" src="https://ak.picdn.net/shutterstock/videos/30180277/thumb/1.jpg" alt=""
+                srcset="">
+              </img>
+              <div class="card-body">
+                <h5 class="card-title">Puttane</h5>
+                <button class="btn btn-primary">Mostra informazioni</button>
+                <button class="btn btn-primary">Cambia informazioni</button>
+                <button class="btn btn-danger">elimina</button>
+              </div>
+            </div>
+          </div>
+
+
+  </main>
+
+  <!-- add item modal -->
+  <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addTitle" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addTitle">Aggiungi Computer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addform">
+            <section class="modal-elements">
+              <div>
+                <b><label for="addImage">Immagine: </label></b>
+                <br>
+                <input type="file" name="addImage" id="addImage" accept=".jpg, .jpeg, .png">
+              </div>
+              <div>
+                <b><label for="addBrand">Marca: </label></b><br>
+                <input type="text" name="addBrand" id="addBrand">
+              </div>
+              <div>
+                <b><label for="addModel">Modello: </label></b><br>
+                <input type="text" name="addModel" id="addModel">
+              </div>
+              <div>
+                <b><label for="addType">Tipo: </label></b><br>
+                <input type="text" name="addType" id="addType">
+              </div>
+              <div>
+                <b><label for="addCpu">Processore: </label></b><br>
+                <input type="text" name="addCpu" id="addCpu">
+              </div>
+              <div>
+                <b><label for="addGpu">Scheda grafica: </label></b><br>
+                <input type="text" name="addGpu" id="addGpu">
+              </div>
+              <div>
+                <b><label for="addRam">Memoria: </label></b><br>
+                <input type="text" name="addRam" id="addRam">
+              </div>
+              <div>
+                <b><label for="addPrice">Prezzo:</label></b><br>
+                <input type="number" name="addPrice" id="addPrice" step="0.01">
+              </div>
+              <div>
+                <b><label for="addDescr">Descrizione:</label></b>
+                <textarea name="addDescr" id="addDescr" rows="5"></textarea>
+              </div>
+              <div>
+                <b><label for="addCondition">Condizione: <span data-bs-toggle="tooltip" data-bs-placement="top"
+                      title="5=Molto usato 10=Nuovo">ⓘ</span></label>
+                </b>
+                <input type="range" name="addCondition" id="addCondition" min="5" max="10" value="5">
+                <span id="rangeValue" class="border rounded p-1">5</span>
+              </div>
+              <div>
+                <b><label for="addNote">Note:</label></b>
+                <textarea name="addNote" id="addNote" rows="2"></textarea>
+              </div>
+            </section>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" form="addform" class="btn btn-primary">Aggiungi</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../scripts/inventory.js"></script>
+  <script>
+    document.getElementById('addCondition').addEventListener('change', (event) => {
+      document.getElementById('rangeValue').innerHTML = event.target.value
+    })
+
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+  </script>
+</body>
+
+</html>

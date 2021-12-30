@@ -1,0 +1,51 @@
+/* nav elements */
+
+nav {
+  background-color: rgb(34, 99, 196);
+  border-radius: var(--main-radius);
+  margin: var(--main-margin);
+}
+
+#nav-container {
+  margin: 1rem;
+}
+
+.logo {
+  height: 3rem;
+}
+
+#nav-container > a {
+  margin-right: 2rem;
+}
+
+.link {
+  margin-left: 2rem;
+  color: white;
+  text-decoration: none;
+  background-color: rgb(42, 126, 252);
+  padding: 0.5rem;
+  border-radius: var(--main-radius);
+  transition: color 500ms;
+}
+
+.link:hover {
+  color: black;
+  transition: color 500ms;
+}
+
+.link.active-nav {
+  background-color: rgb(84, 148, 243);
+}
+
+@media only screen and (max-width: 767px) {
+  /* nav elements */
+
+  .nav-item {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.7rem;
+  }
+  .link {
+    margin-left: 0;
+  }
+}

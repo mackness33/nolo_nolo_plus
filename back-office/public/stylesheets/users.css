@@ -136,17 +136,19 @@ main {
 
 .customer-element {
   padding: 1rem;
+  display: flex;
+  justify-content: space-evenly;
 }
 
 .customer-info {
   display: flex;
   width: 100%;
-  justify-content: end;
+  justify-content: flex-start;
   align-items: center;
 }
 
 .no-btns {
-  width: 50%;
+  width: 100%;
   display: flex;
   justify-content: flex-start;
 }
@@ -166,8 +168,9 @@ main {
 
 .customer-btn {
   display: flex;
-  width: 50%;
+  width: 100%;
   justify-content: end;
+  align-items: center;
 }
 
 .customer-btn > * {
@@ -298,6 +301,11 @@ main {
     align-items: center;
     justify-content: center;
   }
+
+  .customer-element {
+    flex-direction: column;
+  }
+
   .customer-info {
     flex-direction: column;
     justify-content: center;
@@ -310,7 +318,7 @@ main {
   }
 
   .customer-btn > * {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     margin-left: 0;
   }
 

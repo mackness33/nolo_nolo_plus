@@ -31,19 +31,21 @@
       </a>
 
       <!-- navbar toggle -->
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Mostra navigazione">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navElements"
+        aria-controls="navElements" aria-expanded="false" aria-label="Mostra e nascondi navigazione">
         <span class="navbar-toggler-icon"></span>
       </button>
 
       <!-- navbar navigation -->
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <div class="collapse navbar-collapse" id="navElements">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="nav-list">
           <li class="nav-item">
-            <a class="link active-nav" href="#" aria-label="Pagina Clienti" aria-current="page">Clienti</a>
+            <a class="link active-nav" href="http://localhost:8000/nnplus/home" aria-label="Pagina Clienti"
+              aria-current="page">Clienti</a>
           </li>
           <li class="nav-item">
-            <a class="link" href="#" aria-label="Pagina Inventario">Inventario</a>
+            <a class="link" href="http://localhost:8000/nnplus/home/inventory"
+              aria-label="Pagina Inventario">Inventario</a>
           </li>
           <li class="nav-item">
             <a class="link" href="#" aria-label="Pagina Gestione">Noleggi</a>
@@ -67,31 +69,25 @@
         <form id="idSearch">
           <label id="textboxInfo" class="visually-hidden">Scrivi il codice cliente</label>
           <div id="searchBox">
-            <select id="searchType">
+            <select id="searchType" aria-label="Seleziona criterio di ricerca">
               <option value="mail">mail</option>
               <option value="user">Nome Cognome</option>
             </select>
-            <input type="text" aria-labelledby="textboxInfo" id="customerSearch" required aria-required="true">
+            <input type="text" aria-label="Inserisci il criterio di ricerca" id="customerSearch" required
+              aria-required="true">
           </div>
           <button class="btn btn-primary " type="submit">Cerca cliente</button>
         </form>
         <button class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#addModal">Aggiungi
           cliente</button>
-        <button class="btn btn-warning " id="resetBtn">Reset</button>
+        <button class="btn btn-warning" id="resetBtn" aria-label="reimposta lista dei clienti">Reset</button>
       </div>
-
-      <!-- customer list title -->
-      <h1 class="visually-hidden" tabindex="0">Lista dei clienti</h1>
-
-
-      <!-- useful labels for aria-labelledby -->
-      <label id="nameLabel" class="visually-hidden">nome cliente</label>
 
       <!-- customer list container -->
       <div class="" id="customerContainer">
 
         <!-- consumer list -->
-        <ul class="customer-list" id="customerList" aria-live="assertive">
+        <ul class="customer-list" id="customerList">
 
           <!-- consumer element -->
           <li class="customer-element">
@@ -143,31 +139,31 @@
 
   <!-- information Modal -->
 
-  <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel" tabindex="0">Dettagli Utente</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi le informazioni"></button>
+          <h5 class="modal-title" id="infoTitle" tabindex="0">Dettagli Utente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
         </div>
         <div class="modal-body">
           <section class="userModal">
-            <div>
-              <h6>Nome: </h6><span id="infoModalName">Mario</span>
+            <div tabindex="0">
+              <b>Nome: </b><span id="infoModalName">Mario</span>
             </div>
-            <div>
-              <h6>Cognome:</h6><span id="infoModalSurname">Rossi</span>
+            <div tabindex="0">
+              <b>Cognome: </b><span id="infoModalSurname">Rossi</span>
             </div>
-            <div>
-              <h6>Data di Nascita:</h6><span id="infoModalBirth">2021-10-26</span>
+            <div tabindex="0">
+              <b>Data di Nascita: </b><input type="date" id="infoModalBirth" readonly></input>
             </div>
-            <div>
-              <h6>E-mail:</h6><span id="infoModalMail">mario_rossi@gmail.com</span>
+            <div tabindex="0">
+              <b>E-mail: </b><span id="infoModalMail">mario_rossi@gmail.com</span>
             </div>
-            <div>
-              <h6>Status:</h6><span id="infoModalStatus">noleggiato</span>
+            <div tabindex="0">
+              <b>Status: </b><span id="infoModalStatus">noleggiato</span>
             </div>
-            <div>
+            <div tabindex="0" aria-label="lista dei feedback">
               <h6 id="infoModalFeedback">Feedback:</h6>
               <ul id="infoFeedBackList">
 
@@ -185,35 +181,35 @@
 
   <!-- Edit Information Modal -->
 
-  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel" tabindex="0">Modifica Dettagli Utente</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi le informazioni"></button>
+          <h5 class="modal-title" id="editTitle" tabindex="0">Modifica Dettagli Utente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
         </div>
         <div class="modal-body">
           <form id='editForm'>
             <section class="userModal">
               <div>
-                <h6>Nome: </h6>
-                <input type="text" name="" id="editModalName">
+                <b>Nome: </b>
+                <input type="text" aria-label="modifica il nome" id="editModalName" required>
               </div>
               <div>
-                <h6>Cognome:</h6>
-                <input type="text" name="" id="editModalSurname">
+                <b>Cognome:</b>
+                <input type="text" aria-label="modifica il cognome" id="editModalSurname" required>
               </div>
               <div>
-                <h6>Data di Nascita:</h6>
-                <input type="date" name="" id="editModalBirth" max="">
+                <b>Data di Nascita:</b>
+                <input type="date" aria-label="modifica la data di nascita" id="editModalBirth" max="" required>
               </div>
               <div>
-                <h6>E-mail:</h6>
-                <input type="email" name="" id="editModalMail">
+                <b>E-mail:</b>
+                <input type="email" naria-label="modifica l'email" id="editModalMail" required>
               </div>
               <div>
-                <h6>Status:</h6>
-                <select name="" id="editModalStatus">
+                <b>Status:</b>
+                <select aria-label="modifica lo status" id="editModalStatus" required>
                   <option value=0>Inattivo</option>
                   <option value=1>Noleggiato</option>
                   <option value=2>Ritirato</option>
@@ -241,39 +237,41 @@
 
   <!-- Add User Modal -->
 
-  <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel" tabindex="0">Aggingi Utente</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi le informazioni"></button>
+          <h5 class="modal-title" id="addTitle" tabindex="0">Aggingi Utente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
         </div>
         <div class="modal-body">
           <form id='addForm'>
             <section class="userModal">
               <div>
-                <h6>Nome: </h6>
-                <input type="text" name="" required id="addModalName">
+                <b>Nome: </b>
+                <input type="text" name="" required id="addModalName"
+                  aria-label="inserisci il nome. solo caratteri alfabetici">
               </div>
               <div>
-                <h6>Cognome:</h6>
-                <input type="text" name="" required id="addModalSurname">
+                <b>Cognome:</b>
+                <input type="text" name="" required id="addModalSurname"
+                  aria-label="inserisci il cognome. solo caratteri alfabetici">
               </div>
               <div>
-                <h6>Password:</h6>
-                <input type="password" name="" required id="addModalPassword">
+                <b>Password:</b>
+                <input type="password" name="" required id="addModalPassword" aria-label="inserisci la password">
               </div>
               <div>
-                <h6>Data di Nascita:</h6>
-                <input type="date" name="" required id="addModalBirth" max="">
+                <b>Data di Nascita:</b>
+                <input type="date" name="" required id="addModalBirth" max="" aria-label="inserisci la data di nascita">
               </div>
               <div>
-                <h6>E-mail:</h6>
-                <input type="email" name="" required id="addModalMail">
+                <b>E-mail:</b>
+                <input type="email" name="" required id="addModalMail" aria-label="inserisci l'email">
               </div>
               <div>
-                <h6>Status:</h6>
-                <select name="" required id="addModalStatus">
+                <b>Status:</b>
+                <select name="" required id="addModalStatus" aria-label="inserisci lo status">
                   <option value=0>Inattivo</option>
                   <option value=1>Noleggiato</option>
                   <option value=2>Ritirato</option>
@@ -294,12 +292,12 @@
 
   <!-- Feedback Modal -->
 
-  <div class="modal fade" id="feedModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="feedModal" tabindex="-1" aria-labelledby="feedTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel" tabindex="0">Feedback sull'Utente</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi le informazioni"></button>
+          <h5 class="modal-title" id="feedTitle" tabindex="0">Feedback sull'Utente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
         </div>
         <div class="modal-body">
           <section class="userModal">
@@ -310,7 +308,7 @@
           </section>
         </div>
         <div class="modal-footer">
-          <button type="submit" form="feedForm" class="btn btn-primary" data-bs-dismiss="modal">Inserisci
+          <button type="submit" id="feedSubmit" form="feedForm" class="btn btn-primary">Salva
             FeedBack</button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
         </div>
@@ -320,20 +318,20 @@
 
   <!-- Delete Modal -->
 
-  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel" tabindex="0">Elimina Utente</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi le informazioni"></button>
+          <h5 class="modal-title" id="deleteTitle" tabindex="0">Elimina Utente</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
         </div>
         <div class="modal-body">
           <section class="userModal">
-            <span>Sei sicuro di voler eliminare l'utente?</span>
+            <span tabindex="0">Sei sicuro di voler eliminare l'utente?</span>
           </section>
         </div>
         <div class="modal-footer">
-          <button type="button" id="confirmBtn" class="btn btn-primary" data-bs-dismiss="modal">Si
+          <button type="button" id="confirmBtn" class="btn btn-primary" data-bs-dismiss="modal">Conferma
           </button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
         </div>

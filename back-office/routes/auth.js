@@ -4,7 +4,13 @@ const createError = require("http-errors");
 const logger = require("../../logger");
 const Employee = require("../../services/mongo/schema/employee");
 const SessionService = require("../../services/auth");
-const helper = require("../../services/mongo/utils");
+const baseClass = require("../../services/mongo/base");
+var baseService = new baseClass();
+
+router.use(async (req, res, next) => {
+  await baseService.initialize(Employee);
+  next();
+});
 
 // first function is present to makes checks before the "real" routes
 
@@ -42,7 +48,7 @@ router.post(
     SessionService.authentication(req.body.user, req.body.psw, Employee)
       // if present generate the session for the user
       .then((user) => {
-        user = helper.format(user, false);
+        user = baseService.format(user, "person");
         SessionService.generate(req.session, user);
       })
       // if successfully logged the user in then send it to the nnplus home
