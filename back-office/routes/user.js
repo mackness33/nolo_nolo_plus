@@ -3,7 +3,7 @@ const logger = require("../../logger.js");
 const userModel = require("../../services/mongo/schema/user");
 const emplModel = require("../../services/mongo/schema/employee");
 const SessionService = require("../../services/auth");
-const userService = require("../../services/mongo/user_service");
+const userService = require("../../services/mongo/userService");
 const baseService = require("../../services/mongo/base.js");
 
 router.use((req, res, next) => {

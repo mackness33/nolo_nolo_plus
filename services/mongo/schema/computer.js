@@ -2,7 +2,7 @@ require("dotenv").config({ path: __dirname + "../bin/.env" });
 const logger = require("../../../logger");
 var helper = require("../utils");
 var mongoose = require("mongoose");
-const empHelper = require("../employee_service");
+const empHelper = require("../employeeService");
 
 const computerSchema = new mongoose.Schema({
   image: {

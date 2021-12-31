@@ -1,5 +1,5 @@
-const personService = require("./person_service");
-const empHelper = require("./employee_service");
+const personService = require("./personService");
+const empHelper = require("./employeeService");
 const User = require("./schema/user");
 
 class userService extends personService {

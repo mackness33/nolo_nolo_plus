@@ -5,35 +5,36 @@ const User = require("../../services/mongo/schema/user");
 const SessionService = require("../../services/auth");
 const baseService = require("../../services/mongo/base");
 var baseHelper = new baseService();
-const userHelper = require("../../services/mongo/user_service");
-const computerHelper = require("../../services/mongo/computer_service");
+const userHelper = require("../../services/mongo/userService");
+const empHelper = require("../../services/mongo/employeeService");
+const computerHelper = require("../../services/mongo/computerService");
+const componentService = require("../../services/mongo/componentService");
 
 router.use(async (req, res, next) => {
-  await computerHelper.initialize();
+  await componentService.initialize();
   //await baseHelper.initialize(User);
 
   next();
 });
 
 /* GET users listing. */
-router.post("/", async function (req, res, next) {
-  await computerHelper.insertOne(req.body);
+router.get("/", async function (req, res, next) {
+  const comp = {
+    brand: "dell",
+    model: "legion",
+    type: "gaming",
+    cpu: "ryzen 7 3700x 3.8ghz",
+    gpu: "nvidia gtx 1050 2gb",
+    ram: "16gb 3600mhz",
+  };
+  componentService.addComponents(comp);
   res.send("arrived");
 });
 
 router.get("/attr", async (req, res, next) => {
-  const attr = await computerHelper.find();
-  let tmp;
-  attr.forEach((el) => {
-    tmp[el.name] = el.values;
-  });
-  tmp.gpu;
-  // var types = [];
-  // attr.forEach((a) => {
-  //   types.push(...a.type);
-  // });
-  // types = [...new Set(types)];
-  res.send(attr);
+  const compLists = await componentService.getAll();
+  logger.info(compLists);
+  res.send(compLists);
 });
 
 module.exports = router;

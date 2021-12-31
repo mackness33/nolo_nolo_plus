@@ -18,6 +18,28 @@ body {
   color: black;
 }
 
+/* jquery ui elements */
+
+.ui-autocomplete {
+  color: black;
+  z-index: 5000;
+  list-style: none;
+  background-color: white;
+  border: 2px solid black;
+  width: 12rem !important;
+  max-width: 12rem !important;
+  padding-left: 0% !important;
+}
+
+.ui-autocomplete > li:hover {
+  color: white;
+  background-color: rgb(0, 132, 255);
+}
+
+.ui-helper-hidden-accessible {
+  display: none;
+}
+
 /* main body decoration */
 
 main {
