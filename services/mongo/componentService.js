@@ -32,11 +32,7 @@ class componentService extends baseService {
   }
 
   async addComponents(params) {
-    logger.info("WOOOOOWOWOW");
-
-    logger.info("WOWO::   " + JSON.stringify(params));
     const filteredParams = this.#filtercomponents(params);
-    logger.info("WOOOOOWOWOW");
     for (const [entry, value] of Object.entries(filteredParams)) {
       logger.info(`${entry}: ${value}`);
       await this.#insertEntry(entry, value);
