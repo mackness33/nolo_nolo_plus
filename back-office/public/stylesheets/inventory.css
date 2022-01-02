@@ -18,6 +18,26 @@ body {
   color: black;
 }
 
+.set-scroll {
+  overflow-x: hidden !important;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 0.4rem;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.425);
+  border-radius: 10px;
+}
+
 /* jquery ui elements */
 
 .ui-autocomplete {
@@ -26,9 +46,18 @@ body {
   list-style: none;
   background-color: white;
   border: 2px solid black;
-  width: 12rem !important;
-  max-width: 12rem !important;
+  border-radius: 0.2rem;
+  width: 16rem !important;
+  max-width: 16rem !important;
   padding-left: 0% !important;
+  max-height: 6rem !important;
+  overflow: scroll;
+  -ms-overflow-style: none; /*hide scrollbar for IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.ui-autocomplete::-webkit-scrollbar {
+  display: none;
 }
 
 .ui-autocomplete > li:hover {
@@ -66,45 +95,150 @@ main {
 
 /* filters elements */
 
+#filters {
+  padding: 1rem;
+  border-radius: var(--main-radius);
+  margin: 0.4rem;
+  background-color: rgba(0, 0, 0, 0.39);
+  box-shadow: inset 0 0 10px #000000;
+}
+
+.filter-list {
+  margin: 0.3rem;
+  padding: 0.5rem;
+}
+
+.filter-list > ul {
+  list-style: none;
+  padding: 0;
+  max-height: 6rem;
+  overflow-y: scroll;
+}
+
+.filter-list > h6 {
+  border-bottom: solid rgb(10, 100, 184) 1px;
+}
+
 /* items container */
 
 .items-list {
   padding: 1rem;
   border-radius: var(--main-radius);
-  margin: 1rem;
+  margin: 0.4rem;
   background-color: rgba(0, 0, 0, 0.39);
   box-shadow: inset 0 0 10px #000000;
 }
 
 .item-instance {
-  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
   align-items: center;
   justify-content: center;
   display: flex;
-  width: 17rem;
-  height: 23rem;
+  width: 23rem;
+  max-height: 75rem;
 }
+
+/* card elements */
 
 .card {
   background-color: rgba(0, 0, 0, 0.363);
   color: white;
-  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.596),
+    0 6px 20px 0 rgba(0, 0, 0, 0.19);
   width: 100%;
   height: 100%;
+  transition: 0.3s transform cubic-bezier(0.155, 1.105, 0.295, 1.12),
+    0.3s box-shadow,
+    0.3s -webkit-transform cubic-bezier(0.155, 1.105, 0.295, 1.12);
+}
+
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.808),
+    0 6px 20px 0 rgba(0, 0, 0, 0.637);
 }
 
 .card-body {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .card-img-top {
   object-fit: cover;
-  height: 10rem;
+  height: 15rem;
 }
 
+.brand-card {
+  font-weight: 250;
+}
+
+.info-card {
+  /* QUESTIONABLE!! LIST ALREADY DOES THE COLUMN */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.info > span {
+  text-align: end;
+  max-height: 3rem;
+  overflow-y: scroll;
+}
+
+.info-card-list {
+  list-style: none;
+  width: 100%;
+  padding: 0;
+}
+
+.types-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  max-height: 4.5rem;
+  overflow: scroll;
+}
+
+.types-card > ul {
+  list-style: none;
+  padding: 0;
+}
+
+.types-card li {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.text-container {
+  display: flex;
+  flex-direction: column;
+  max-height: 6rem;
+}
+
+.text-card {
+  overflow: scroll;
+}
+
+.card-buttons {
+  display: flex;
+  flex-direction: column;
+}
+
+.card-buttons button {
+  margin-top: 0.5rem;
+}
 /* add modal */
 
 .modal-elements div {
@@ -126,16 +260,42 @@ main {
   width: 100%;
 }
 
-/* laptop interactive */
+/* laptop responsive */
 
 @media only screen and (max-width: 1024px) {
 }
 
-/* tablet/mobile interactive */
+/* tablet/mobile responsive */
 
 @media only screen and (max-width: 768px) {
   #controls {
     display: flex;
     flex-direction: column;
+  }
+}
+
+/* large mobile responsive */
+
+@media only screen and (max-width: 425px) {
+  /* single card container */
+  .item-instance {
+    height: 83rem;
+  }
+
+  /* card info */
+  .info {
+    flex-direction: column;
+  }
+
+  .info > span {
+    text-align: start;
+  }
+
+  .types-card {
+    align-items: flex-start;
+  }
+
+  .types-card li {
+    justify-content: flex-start;
   }
 }

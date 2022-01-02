@@ -14,6 +14,10 @@ class baseService {
     return this._model.findOne(params);
   }
 
+  async findOne(params, attr) {
+    return this._model.findOne(params, attr);
+  }
+
   async find(params) {
     return this._model.find(params, attributes);
   }

@@ -73,6 +73,11 @@ main {
 
 /* add and search elements */
 
+#filterAndSearch {
+  display: flex;
+  flex-direction: column;
+}
+
 #interact-container {
   display: flex;
 }
@@ -108,6 +113,29 @@ main {
 
 #resetBtn {
   margin-left: 1rem;
+}
+
+/* filters elements */
+
+#filters {
+  margin-top: 1rem;
+  display: flex;
+}
+
+#filterForm {
+  display: flex;
+  align-items: center;
+}
+
+.filter {
+  color: black;
+  display: flex;
+  align-items: center;
+  margin-right: 0.4rem;
+}
+
+#filterBtn {
+  margin-right: 0%;
 }
 
 /* customer list elements */
@@ -287,6 +315,16 @@ main {
   }
   #idSearch {
     display: flex;
+    flex-direction: column;
+  }
+
+  /* filter elements */
+
+  #filters {
+    flex-direction: column;
+  }
+
+  #filterForm {
     flex-direction: column;
   }
 

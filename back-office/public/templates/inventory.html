@@ -45,18 +45,16 @@
       <div class="collapse navbar-collapse" id="navElements">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="nav-list">
           <li class="nav-item">
-            <a class="link" href="http://localhost:8000/nnplus/home" aria-label="Pagina Clienti"
-              aria-current="page">Clienti</a>
+            <a class="link" href="/nnplus/home" aria-label="Pagina Clienti" aria-current="page">Clienti</a>
           </li>
           <li class="nav-item">
-            <a class="link active-nav" href="http://localhost:8000/nnplus/home/inventory"
-              aria-label="Pagina Inventario">Inventario</a>
+            <a class="link active-nav" href="/nnplus/home/inventory" aria-label="Pagina Inventario">Inventario</a>
           </li>
           <li class="nav-item">
             <a class="link" href="#" aria-label="Pagina Gestione">Noleggi</a>
           </li>
           <li class="nav-item">
-            <a class="link" href="#" aria-label="Pagina log in">Log In</a>
+            <a class="link" href="/nnplus/logout" aria-label="Effettua il log out">Log Out</a>
           </li>
         </ul>
       </div>
@@ -75,24 +73,45 @@
         <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filters"
           aria-label="mostra filtri" aria-expanded="false" aria-controls="filters">Filtra</button>
         <button class="btn btn-primary" type="button" aria-label="aggiungi un nuovo computer" data-bs-toggle="modal"
-          data-bs-target="#addModal">Aggiungi computer</button>
-        <input type="text" name="" id="temp2">
+          data-bs-target="#addModal" data-origin="add">Aggiungi computer</button>
+        <button class="btn btn-warning" id="resetBtn">Reset</button>
       </div>
 
       <!-- filters container -->
 
       <div class="collapse" id="filters">
-        <div class="row d-flex justify-content-center">
-          <div class="col">dio</div>
-          <div class="col">dio</div>
-          <div class="col">dio</div>
-          <div class="col">dio</div>
-          <div class="col">dio</div>
-          <div class="col">dio</div>
-          <div class="col">dio</div>
-          <div class="col">dio</div>
-          <div class="col">dio</div>
+        <div class="row d-flex justify-content-start">
+          <div class="col-lg-3 col-md-4 col-sm-5 filter-list" data-filter="brand">
+            <h6>Marca</h6>
+            <ul>
+
+            </ul>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-5 filter-list" data-filter="type">
+            <h6>Tipo</h6>
+            <ul>
+
+            </ul>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-5 filter-list" data-filter="cpu">
+            <h6>Processore</h6>
+            <ul>
+
+            </ul>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-5 filter-list" data-filter="gpu">
+            <h6>Scheda grafica</h6>
+            <ul>
+            </ul>
+          </div>
+          <div class="col-lg-3 col-md-4 col-sm-5 filter-list" data-filter="ram">
+            <h6>Memoria</h6>
+            <ul>
+            </ul>
+          </div>
+
         </div>
+        <button class="btn btn-primary" id="filterBtn">Applica</button>
       </div>
 
       <!-- items container -->
@@ -100,7 +119,7 @@
       <div class="items-list">
 
         <!-- items single row -->
-        <div class="row d-flex justify-content-center">
+        <div id="itemsContainer" class="row d-flex justify-content-center">
 
           <!-- single item -->
           <div class="item-instance col-lg-2 col-md-3 col-sm-4">
@@ -110,29 +129,182 @@
                 srcset="">
               </img>
               <div class="card-body">
-                <h5 class="card-title">Atlantico</h5>
-                <button class="btn btn-primary">Mostra informazioni</button>
-                <button class="btn btn-primary">Cambia informazioni</button>
-                <button class="btn btn-danger">elimina</button>
+                <h5 class="card-title" tabindex="0">
+                  <div class="brand-card">DELL</div>
+                  <div class="model-card">LEGION</div>
+                </h5>
+                <div class="info-card">
+                  <ul class="info-card-list">
+                    <li>
+                      <div class="info">
+                        <b>Tipo: </b>
+                        <div class="types-card set-scroll">
+                          <ul>
+                            <li>gaming</li>
+                            <li>ultrabook</li>
+                            <li>gaming</li>
+                            <li>gaming</li>
+                            <li>gaming</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="info">
+                        <b>Processore:</b>
+                        <span class="cpu-card">intel i7-11000k 3.5ghz</span>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="info">
+                        <b>Scheda grafica:</b>
+                        <span class="gpu-card">nvidia rtx 3060 12gb</span>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="info">
+                        <b>Memoria:</b>
+                        <span class="ram-card">16gb 2666mhz</span>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="info">
+                        <b>Condizione:</b>
+                        <span class="condition-card">7/10</span>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="info">
+                        <b>Prezzo:</b>
+                        <span class="price-card">65$/giorno</span>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="text-container">
+                        <b>Descrizione:</b>
+                        <span class="desc-card text-card set-scroll">Lorem, ipsum dolor sit amet consectetur
+                          adipisicing elit.
+                          Repudiandae
+                          qui, esse et exercitationem quam ipsum animi. Quo minus, sed consequatur, molestiae
+                          exercitationem maxime natus, adipisci doloremque dicta porro voluptas cumque quos voluptatibus
+                          est molestias in placeat. Nemo, repellat, expedita, tempora ex adipisci illo aspernatur iste
+                          similique itaque tempore consectetur earum?</span>
+                      </div>
+                    </li>
+                    <div class="text-container">
+                      <b>Note:</b>
+                      <span class="note-card text-card set-scroll">Lorem, ipsum dolor sit amet consectetur
+                        adipisicing elit.
+                        Repudiandae
+                        qui, esse et exercitationem quam ipsum animi. Quo minus, sed consequatur, molestiae
+                        exercitationem maxime natus, adipisci doloremque dicta porro voluptas cumque quos voluptatibus
+                        est molestias in placeat. Nemo, repellat, expedita, tempora ex adipisci illo aspernatur iste
+                        similique itaque tempore consectetur earum?</span>
+                    </div>
+                    </li>
+                  </ul>
+
+                  <div class="card-buttons">
+                    <button class="btn btn-primary">Cambia informazioni</button>
+                    <button class="btn btn-danger">Elimina</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="item-instance col-lg-2 col-md-3 col-sm-4">
             <div class="card">
-              <img class="card-img-top" src="https://ak.picdn.net/shutterstock/videos/30180277/thumb/1.jpg" alt=""
+              <img class="card-img-top"
+                src="https://cdn.veloce.it/wp-content/uploads/2021/05/Beau-Lake-Tahoe-Pedal-Boat-14-3.jpg" alt=""
                 srcset="">
               </img>
               <div class="card-body">
-                <h5 class="card-title">Puttane</h5>
-                <button class="btn btn-primary">Mostra informazioni</button>
-                <button class="btn btn-primary">Cambia informazioni</button>
-                <button class="btn btn-danger">elimina</button>
+                <h5 class="card-title" tabindex="0">
+                  <div class="brand-card">DELL</div>
+                  <div class="model-card">LEGION</div>
+                </h5>
+                <div class="info-card">
+                  <ul class="info-card-list">
+                    <li>
+                      <div class="info">
+                        <b>Tipo: </b>
+                        <div class="types-card set-scroll">
+                          <ul>
+                            <li>gaming</li>
+                            <li>ultrabook</li>
+                            <li>gaming</li>
+                            <li>gaming</li>
+                            <li>gaming</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="info">
+                        <b>Processore:</b>
+                        <span class="cpu-card">intel i7-11000k 3.5ghz</span>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="info">
+                        <b>Scheda grafica:</b>
+                        <span class="gpu-card">nvidia rtx 3060 12gb</span>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="info">
+                        <b>Memoria:</b>
+                        <span class="ram-card">16gb 2666mhz</span>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="info">
+                        <b>Condizione:</b>
+                        <span class="condition-card">7/10</span>
+                      </div>
+                    </li>
+                    <li>
+                      <div class="info">
+                        <b>Prezzo:</b>
+                        <span class="price-card">65$/giorno</span>
+                      </div>
+                    </li>
+                    <li>
+                      <div class=" text-container">
+                        <b>Descrizione:</b>
+                        <span class="desc-card text-card set-scroll">Lorem, ipsum dolor sit amet consectetur
+                          adipisicing elit.
+                          Repudiandae
+                          qui, esse et exercitationem quam ipsum animi. Quo minus, sed consequatur, molestiae
+                          exercitationem maxime natus, adipisci doloremque dicta porro voluptas cumque quos voluptatibus
+                          est molestias in placeat. Nemo, repellat, expedita, tempora ex adipisci illo aspernatur iste
+                          similique itaque tempore consectetur earum?</span>
+                      </div>
+                    </li>
+                    <div class="text-container">
+                      <b>Note:</b>
+                      <span class="note-card text-card set-scroll">Lorem, ipsum dolor sit amet consectetur
+                        adipisicing elit.
+                        Repudiandae
+                        qui, esse et exercitationem quam ipsum animi. Quo minus, sed consequatur, molestiae
+                        exercitationem maxime natus, adipisci doloremque dicta porro voluptas cumque quos voluptatibus
+                        est molestias in placeat. Nemo, repellat, expedita, tempora ex adipisci illo aspernatur iste
+                        similique itaque tempore consectetur earum?</span>
+                    </div>
+                    </li>
+                  </ul>
+
+                  <div class="card-buttons">
+                    <button class="btn btn-primary">Cambia informazioni</button>
+                    <button class="btn btn-danger">Elimina</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-
+        </div>
   </main>
 
   <!-- add item modal -->
@@ -140,7 +312,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="addTitle">Aggiungi Computer</h5>
+          <h5 class="modal-title" id="addTitle"></h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
         </div>
         <div class="modal-body">
@@ -149,39 +321,43 @@
               <div>
                 <b><label for="addImage">Immagine: </label></b>
                 <br>
-                <input type="file" name="addImage" id="addImage" accept=".jpg, .jpeg, .png">
+                <input type="file" name="addImage" id="addImage" accept=".jpg, .jpeg, .png" required>
               </div>
               <div>
                 <b><label for="addBrand">Marca: </label></b><br>
-                <input type="text" name="addBrand" id="addBrand">
+                <input type="text" name="addBrand" id="addBrand" required>
               </div>
               <div>
                 <b><label for="addModel">Modello: </label></b><br>
-                <input type="text" name="addModel" id="addModel">
+                <input type="text" name="addModel" id="addModel" required>
               </div>
               <div>
                 <b><label for="addType">Tipo: </label></b><br>
-                <input type="text" name="addType" id="addType">
+                <input type="text" name="addType" id="addType" required>
               </div>
               <div>
                 <b><label for="addCpu">Processore: </label></b><br>
-                <input type="text" name="addCpu" id="addCpu">
+                <input type="text" name="addCpu" id="addCpu" required>
               </div>
               <div>
                 <b><label for="addGpu">Scheda grafica: </label></b><br>
-                <input type="text" name="addGpu" id="addGpu">
+                <input type="text" name="addGpu" id="addGpu" required>
               </div>
               <div>
                 <b><label for="addRam">Memoria: </label></b><br>
-                <input type="text" name="addRam" id="addRam">
+                <input type="text" name="addRam" id="addRam" required>
               </div>
               <div>
                 <b><label for="addPrice">Prezzo:</label></b><br>
-                <input type="number" name="addPrice" id="addPrice" step="0.01">
+                <input type="number" name="addPrice" id="addPrice" step="0.01" required>
+              </div>
+              <div>
+                <b><label for="addDiscount">Sconto:</label></b><br>
+                <input type="number" name="addDiscount" id="addDiscount" step="0.01" value="0" max="100" required>
               </div>
               <div>
                 <b><label for="addDescr">Descrizione:</label></b>
-                <textarea name="addDescr" id="addDescr" rows="5"></textarea>
+                <textarea name="addDescr" id="addDescr" rows="5" required></textarea>
               </div>
               <div>
                 <b><label for="addCondition">Condizione: <span data-bs-toggle="tooltip" data-bs-placement="top"
@@ -198,7 +374,30 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button type="submit" form="addForm" class="btn btn-primary">Aggiungi</button>
+          <button type="submit" id="addButton" form="addForm" class="btn btn-primary">Aggiungi</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteTitle" tabindex="0">Elimina computer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+        </div>
+        <div class="modal-body">
+          <section class="userModal">
+            <span tabindex="0">Sei sicuro di voler eliminare il computer?</span>
+          </section>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="confirmBtn" class="btn btn-primary" data-bs-dismiss="modal">Conferma
+          </button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
         </div>
       </div>

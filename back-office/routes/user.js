@@ -5,6 +5,7 @@ const emplModel = require("../../services/mongo/schema/employee");
 const SessionService = require("../../services/auth");
 const userService = require("../../services/mongo/userService");
 const baseService = require("../../services/mongo/base.js");
+const { contentType } = require("express/lib/response");
 
 router.use((req, res, next) => {
   SessionService.authorization(
@@ -55,7 +56,7 @@ router.post("/setOne", async (req, res, next) => {
   delete req.body["feeds[]"];
   console.log("QUI::: " + JSON.stringify(req.body));
   await userService.updateOne({ "person.mail": req.body.oldMail }, req.body);
-  res.send("ahhh done");
+  res.send({});
 });
 
 router.get("/all", async (req, res, next) => {
@@ -74,12 +75,12 @@ router.post("/add", async (req, res, next) => {
     feedback: [],
   };
   await userService.insertOne(user);
-  res.send("all cool");
+  res.send({});
 });
 
 router.post("/feed", async (req, res, next) => {
   await userService.addFeed(req.session.mail, req.body.userMail, req.body);
-  res.send("bene bene");
+  res.send({});
 });
 
 router.post("/deleteOne", async (req, res, next) => {

@@ -7,10 +7,33 @@ const addModal = document.getElementById("addModal");
 const searchForm = document.getElementById("idSearch");
 const resetBtn = document.getElementById("resetBtn");
 const addUserForm = document.getElementById("addForm");
-//$(document).ajaxComplete(checkSession);
+$(document).ajaxComplete(checkSession);
 
 document.addEventListener("DOMContentLoaded", async () => {
   reloadList();
+});
+
+$("#filterForm").submit(async function (e) {
+  e.preventDefault();
+
+  const filters = $("#filterForm")[0];
+  var selected = [];
+  for (let index = 0; index < filters.elements.length; index++) {
+    if (filters.elements[index].checked) {
+      selected.push(index);
+    }
+  }
+
+  var users = [];
+
+  await $.get("/nnplus/user/all", (data) => {
+    users = data;
+  });
+
+  const filteredUsers = users.filter((user) => {
+    if (selected.includes(user.status)) return user;
+  });
+  showUsers(filteredUsers);
 });
 
 addUserForm.addEventListener("submit", async (event) => {
@@ -43,38 +66,32 @@ resetBtn.addEventListener("click", () => {
 });
 
 feedModal.addEventListener("show.bs.modal", (event) => {
-  document.getElementById("feedForm").addEventListener(
-    "submit",
-    async (e) => {
-      e.preventDefault();
-      const userMail = event.relatedTarget.parentElement.parentElement.id;
-      console.log(document.getElementById("feedText").value);
-      const feed = {
-        text: document.getElementById("feedText").value,
-        date: new Date().toISOString(),
-        userMail: userMail,
-      };
-      await $.post("/nnplus/user/feed", feed)
-        .done((data) => {
-          console.log(data);
-          document.getElementById("feedForm").reset();
-          showAlert(
-            "feedback aggiunto con successo",
-            document.getElementById("feedSubmit").parentElement,
-            true
-          );
-        })
-        .fail(() => {
-          console.log("morte");
-          showAlert(
-            "aggiunta del feedback fallito",
-            document.getElementById("feedSubmit").parentElement,
-            false
-          );
-        });
-    },
-    { once: true }
-  );
+  $("body").on("submit", "#feedForm", async (e) => {
+    console.log("DO FEED");
+    e.preventDefault();
+    const userMail = event.relatedTarget.parentElement.parentElement.id;
+    const feed = {
+      text: document.getElementById("feedText").value,
+      date: new Date().toISOString(),
+      userMail: userMail,
+    };
+    await $.post("/nnplus/user/feed", feed)
+      .done((data) => {
+        document.getElementById("feedForm").reset();
+        showAlert(
+          "feedback aggiunto con successo",
+          document.getElementById("feedSubmit").parentElement,
+          true
+        );
+      })
+      .fail(() => {
+        showAlert(
+          "aggiunta del feedback fallito",
+          document.getElementById("feedSubmit").parentElement,
+          false
+        );
+      });
+  });
 });
 
 // user info modal show event handler
@@ -97,6 +114,7 @@ editModal.addEventListener("show.bs.modal", (event) => {
 editModal.addEventListener("hide.bs.modal", (event) => {
   const editFeedBackList = document.getElementById("editFeedBackList");
   editFeedBackList.innerHTML = "";
+  $("body").off("submit", "#editForm");
 });
 
 deleteModal.addEventListener("show.bs.modal", (event) => {
@@ -115,6 +133,10 @@ deleteModal.addEventListener("show.bs.modal", (event) => {
     },
     { once: true }
   );
+});
+
+feedModal.addEventListener("hide.bs.modal", (event) => {
+  $("body").off("submit", "#feedForm");
 });
 
 // Modal page populate for both info and edit
@@ -235,9 +257,9 @@ function setUpEdit(user) {
       { once: true }
     );
   });
-
-  editform.onsubmit = async (event) => {
-    event.preventDefault();
+  $("body").on("submit", "#editForm", async function (e) {
+    // editform.onsubmit = async (event) => {
+    e.preventDefault();
     const inputs = editform.elements;
 
     const user = {
@@ -271,7 +293,7 @@ function setUpEdit(user) {
         );
       }
     });
-  };
+  });
 }
 
 async function addUser() {
@@ -431,7 +453,7 @@ function showUsers(users) {
   });
 }
 
-export async function reloadList() {
+async function reloadList() {
   await $.get("/nnplus/user/all", (data) => {
     showUsers(data);
   });

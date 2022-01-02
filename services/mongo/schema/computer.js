@@ -7,6 +7,7 @@ const empHelper = require("../employeeService");
 const computerSchema = new mongoose.Schema({
   image: {
     type: String,
+    required: true,
   },
   brand: {
     type: String,
@@ -35,6 +36,9 @@ const computerSchema = new mongoose.Schema({
   price: {
     type: Number,
     required: true,
+  },
+  discount: {
+    type: Number,
   },
   description: {
     type: String,

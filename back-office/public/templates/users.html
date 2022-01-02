@@ -40,18 +40,16 @@
       <div class="collapse navbar-collapse" id="navElements">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="nav-list">
           <li class="nav-item">
-            <a class="link active-nav" href="http://localhost:8000/nnplus/home" aria-label="Pagina Clienti"
-              aria-current="page">Clienti</a>
+            <a class="link active-nav" href="/nnplus/home" aria-label="Pagina Clienti" aria-current="page">Clienti</a>
           </li>
           <li class="nav-item">
-            <a class="link" href="http://localhost:8000/nnplus/home/inventory"
-              aria-label="Pagina Inventario">Inventario</a>
+            <a class="link" href="/nnplus/home/inventory" aria-label="Pagina Inventario">Inventario</a>
           </li>
           <li class="nav-item">
             <a class="link" href="#" aria-label="Pagina Gestione">Noleggi</a>
           </li>
           <li class="nav-item">
-            <a class="link" href="#" aria-label="Pagina log in">Log In</a>
+            <a class="link" href="/nnplus/logout" aria-label="Effettua il log out">Log Out</a>
           </li>
         </ul>
       </div>
@@ -65,22 +63,47 @@
 
     <!-- add and search customer -->
     <div class="container-fluid" id="main-container">
-      <div class="container-fluid" id="interact-container">
-        <form id="idSearch">
-          <label id="textboxInfo" class="visually-hidden">Scrivi il codice cliente</label>
-          <div id="searchBox">
-            <select id="searchType" aria-label="Seleziona criterio di ricerca">
-              <option value="mail">mail</option>
-              <option value="user">Nome Cognome</option>
-            </select>
-            <input type="text" aria-label="Inserisci il criterio di ricerca" id="customerSearch" required
-              aria-required="true">
-          </div>
-          <button class="btn btn-primary " type="submit">Cerca cliente</button>
-        </form>
-        <button class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#addModal">Aggiungi
-          cliente</button>
-        <button class="btn btn-warning" id="resetBtn" aria-label="reimposta lista dei clienti">Reset</button>
+      <div id="filterAndSearch">
+        <div class="container-fluid" id="interact-container">
+          <form id="idSearch">
+            <label id="textboxInfo" class="visually-hidden">Scrivi il codice cliente</label>
+            <div id="searchBox">
+              <select id="searchType" aria-label="Seleziona criterio di ricerca">
+                <option value="mail">mail</option>
+                <option value="user">Nome Cognome</option>
+              </select>
+              <input type="text" aria-label="Inserisci il criterio di ricerca" id="customerSearch" required
+                aria-required="true">
+            </div>
+            <button class="btn btn-primary " type="submit">Cerca cliente</button>
+          </form>
+          <button class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#addModal">Aggiungi
+            cliente</button>
+          <button class="btn btn-warning" id="resetBtn" aria-label="reimposta lista dei clienti">Reset</button>
+        </div>
+        <div class="container-fluid" id="filters">
+          <form id="filterForm">
+            <div class="filter">
+              <label for="inattivo">Inattivo</label>
+              <input aria-label="filtra solo inattivi" type="checkbox" id="inattivo">
+            </div>
+            <div class="filter">
+              <label for="noleggiato">Noleggiato</label>
+              <input aria-label="filtra solo noleggiati" type='checkbox' id="noleggiato">
+            </div>
+            <div class="filter">
+              <label for="ritirato">Ritirato</label>
+              <input aria-label="filtra solo ritirati" type="checkbox" id="ritirato">
+            </div>
+            <div class="filter">
+              <label for="restituire">Da restituire</label>
+              <input aria-label="filtra solo da restituire" type="checkbox" id="restituire">
+            </div>
+
+          </form>
+          <button aria-label="applica filtri" id="filterBtn" type="submit" class="btn btn-primary"
+            form="filterForm">Applica</button>
+        </div>
       </div>
 
       <!-- customer list container -->
