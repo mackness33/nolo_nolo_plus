@@ -25,7 +25,7 @@ router.use(async (req, res, next) => {
 });
 
 router.get("/allComponents", async (req, res, next) => {
-  const compLists = await componentService.getAll();
+  const compLists = await componentService.getAllComponents();
   res.send(compLists);
 });
 
@@ -35,26 +35,38 @@ router.get("/getAll", async (req, res, next) => {
 });
 
 router.get("/getOne", async (req, res, next) => {
-  logger.info(req.query.id);
-  const item = await computerService.findOne({ _id: req.query.id }, "-image");
+  const item = await computerService.findOne({ _id: req.query.id });
 
   res.send(item);
 });
 
+router.get("/filter", async (req, res, next) => {
+  const filteredItems = await computerService.filter(
+    JSON.parse(req.query.data)
+  );
+  res.send(filteredItems);
+});
+
 router.post("/insert", async (req, res, next) => {
+  const emp = await empService.findOne({
+    "person.mail": req.session.mail,
+  });
+  req.body["emplCode"] = emp._id;
   await componentService.addComponents(req.body);
   await computerService.insertOne(req.body);
-  res.send("fatto");
+  res.send({});
 });
 
 router.put("/editOne", async (req, res, next) => {
   const id = req.body.id;
   delete req.body.id;
-  req.body.type = req.body["type[]"];
-  delete req.body["type[]"];
+  if (req.body["type[]"]) {
+    req.body.type = req.body["type[]"];
+    delete req.body["type[]"];
+  }
   await componentService.addComponents(req.body);
   await computerService.updateOne({ _id: id }, req.body);
-  res.send("fattone");
+  res.send({});
 });
 
 router.delete("/delete", async (req, res, next) => {

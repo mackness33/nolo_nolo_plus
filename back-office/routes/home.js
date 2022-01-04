@@ -18,17 +18,6 @@ router.get(
       2
     );
   },
-  (req, res, next) => {
-    logger.info("in pre-home GET");
-    SessionService.authorization(
-      req,
-      res,
-      next,
-      "/nnplus/logout",
-      "/nnplus/login",
-      2
-    );
-  },
   function (req, res, next) {
     logger.info("in home GET");
 
@@ -52,6 +41,25 @@ router.get(
   (req, res, next) => {
     logger.info("in inventory GET");
     res.sendFile(path.join(__dirname, "../public/templates/inventory.html"));
+  }
+);
+
+router.get(
+  "/booking",
+  (req, res, next) => {
+    logger.info("in pre-home GET");
+    SessionService.authorization(
+      req,
+      res,
+      next,
+      "/nnplus/logout",
+      "/nnplus/login",
+      2
+    );
+  },
+  (req, res, next) => {
+    logger.info("in inventory GET");
+    res.sendFile(path.join(__dirname, "../public/templates/booking.html"));
   }
 );
 

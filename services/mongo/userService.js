@@ -15,12 +15,14 @@ class userService extends personService {
   // FINDS
   async findOne(params) {
     var user = await super.findOne(params);
-    await user.populate("feedback.emplCode");
+    if (user) {
+      await user.populate("feedback.emplCode");
+    }
     return user;
   }
 
-  async find(params) {
-    var users = await super.find(params);
+  async find(params, attributes) {
+    var users = await super.find(params, attributes);
     for (let i = 0; i < users.length; i++) {
       await users[i].populate("feedback.emplCode");
     }

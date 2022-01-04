@@ -65,7 +65,8 @@ main {
 
 #main-container {
   padding: 1rem;
-  background-color: rgba(255, 255, 255, 0.726);
+  background-color: rgba(36, 103, 230, 0.452);
+
   border-radius: var(--main-radius);
   padding-left: 0.1rem;
   padding-right: 0.1rem;

@@ -51,7 +51,7 @@
             <a class="link active-nav" href="/nnplus/home/inventory" aria-label="Pagina Inventario">Inventario</a>
           </li>
           <li class="nav-item">
-            <a class="link" href="#" aria-label="Pagina Gestione">Noleggi</a>
+            <a class="link" href="/nnplus/home/booking" aria-label="Pagina Gestione">Noleggi</a>
           </li>
           <li class="nav-item">
             <a class="link" href="/nnplus/logout" aria-label="Effettua il log out">Log Out</a>
@@ -70,11 +70,18 @@
       <!-- search and filter container -->
 
       <div id="controls">
-        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filters"
-          aria-label="mostra filtri" aria-expanded="false" aria-controls="filters">Filtra</button>
+        <div id="searchContainer">
+          <input type="text" id="searchText" placeholder="Rif del computer">
+          <button class="btn btn-primary" id="searchBtn">Cerca</button>
+        </div>
         <button class="btn btn-primary" type="button" aria-label="aggiungi un nuovo computer" data-bs-toggle="modal"
           data-bs-target="#addModal" data-origin="add">Aggiungi computer</button>
+        <button class="btn btn-success" id="bulkDiscountBtn" data-bs-toggle="modal"
+          data-bs-target="#discountModal">Sconta
+          visualizzati</button>
         <button class="btn btn-warning" id="resetBtn">Reset</button>
+        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filters"
+          aria-label="mostra filtri" aria-expanded="false" aria-controls="filters">Filtra</button>
       </div>
 
       <!-- filters container -->
@@ -109,9 +116,26 @@
             <ul>
             </ul>
           </div>
-
+          <div class="col-lg-5 col-md-6 col-sm-7 filter-list" id="pricePicker">
+            <h6>Prezzo: </h6>
+            <div>
+              <div>
+                <label for="minPrice">Minimo:</label>
+                <input type="range" name="minPrice" id="minPrice" step="0.01"
+                  oninput="this.nextElementSibling.innerHTML = this.value">
+                <span class="border rounded p-1" id="minRangeVal"></span>
+              </div>
+              <div>
+                <label for="maxPrice">Massimo:</label>
+                <input type="range" name="maxPrice" id="maxPrice" step="0.01"
+                  oninput="this.nextElementSibling.innerHTML = this.value">
+                <span class="border rounded p-1" id="maxRangeVal"></span>
+              </div>
+            </div>
+          </div>
         </div>
         <button class="btn btn-primary" id="filterBtn">Applica</button>
+        <button class="btn btn-warning" id="clearFilterBtn">Pulisci filtri</button>
       </div>
 
       <!-- items container -->
@@ -119,7 +143,7 @@
       <div class="items-list">
 
         <!-- items single row -->
-        <div id="itemsContainer" class="row d-flex justify-content-center">
+        <div id="itemsContainer" class="row d-flex justify-content-center align-items-start">
 
           <!-- single item -->
           <div class="item-instance col-lg-2 col-md-3 col-sm-4">
@@ -353,7 +377,7 @@
               </div>
               <div>
                 <b><label for="addDiscount">Sconto:</label></b><br>
-                <input type="number" name="addDiscount" id="addDiscount" step="0.01" value="0" max="100" required>
+                <input type="number" name="addDiscount" id="addDiscount" step="1" value="0" max="100" required>
               </div>
               <div>
                 <b><label for="addDescr">Descrizione:</label></b>
@@ -375,7 +399,7 @@
         </div>
         <div class="modal-footer">
           <button type="submit" id="addButton" form="addForm" class="btn btn-primary">Aggiungi</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+          <button id="addModalCloseBtn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
         </div>
       </div>
     </div>
@@ -397,6 +421,58 @@
         </div>
         <div class="modal-footer">
           <button type="button" id="confirmBtn" class="btn btn-primary" data-bs-dismiss="modal">Conferma
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- image Modal -->
+
+  <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="deleteTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteTitle" tabindex="0">Elimina computer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+        </div>
+        <div class="modal-body">
+          <section class="userModal">
+            <span tabindex="0">Sei sicuro di voler eliminare il computer?</span>
+          </section>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="confirmBtn" class="btn btn-primary" data-bs-dismiss="modal">Conferma
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Discount Modal -->
+
+  <div class="modal fade" id="discountModal" tabindex="-1" aria-labelledby="discountTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="discountTitle" tabindex="0">Sconta computer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+        </div>
+        <div class="modal-body">
+          <div id="discountList">
+            <h6>Stai per scontare i seguenti computer:</h6>
+            <ul>
+            </ul>
+            <label for="bulkDiscountRange">Inserisci il nuovo sconto:</label><br>
+            <input value="0" type="range" min="0" max="100" step="1" name="bulkDiscountRange" id="bulkDiscountRange"
+              oninput="this.nextElementSibling.innerHTML = this.value">
+            <span class="border rounded p-1">0</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="confirmDiscountBtn" class="btn btn-primary">Conferma
           </button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
         </div>

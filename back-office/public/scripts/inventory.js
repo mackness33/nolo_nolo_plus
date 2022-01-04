@@ -1,20 +1,36 @@
 var currentlyShowing = [];
 
+$(document).ajaxComplete(checkSession);
+
 $(document).on("DOMContentLoaded", async function (event) {
-  reloadItems();
+  await reloadItems();
   populateFilters();
+  if (sessionStorage.getItem("itemId")) {
+    const id = sessionStorage.getItem("itemId");
+    sessionStorage.clear();
+    showItems(currentlyShowing.filter((item) => item._id === id));
+  }
+});
+
+$("#searchBtn").click(async function () {
+  const id = $("#searchText").val();
+  const allItems = await getAllItems();
+  showItems(allItems.filter((item) => item._id == id));
 });
 
 $("#resetBtn").click(function () {
   reloadItems();
+  populateFilters();
+  $("#searchText").val("");
 });
 
 async function populateFilters() {
   const componentObject = await getComponents();
-  const filtersList = $("#filters > div > div");
+  const filtersList = $("#filters > div > div[data-filter]");
 
   for (let i = 0; i < filtersList.length; i++) {
     const list = $(filtersList[i]).find("ul")[0];
+    list.innerHTML = "";
     const componentName = filtersList[i].dataset.filter;
     componentObject[componentName].sort();
 
@@ -22,56 +38,158 @@ async function populateFilters() {
       const componentList = componentObject[componentName];
       const filterItem = document.createElement("li");
       filterItem.innerHTML = `<input type="checkbox" id="${y + componentName}">
-      <label for="${y + componentName}">${componentList[y]}</label>`;
+      <label for="${y + componentName}" data-entry="${componentName}">${
+        componentList[y]
+      }</label>`;
 
       $(list).append(filterItem);
     }
+    const allItems = await getAllItems();
+    const min = Math.min(...allItems.map((item) => item.price));
+    const max = Math.max(...allItems.map((item) => item.price));
+    $("#minPrice").val(min).attr("min", min).attr("max", max).next().html(min);
+    $("#maxPrice").val(max).attr("min", min).attr("max", max).next().html(max);
   }
 }
 
 $("#filterBtn").click(async function () {
-  var allItems;
-  const allComponents = await getComponents();
-
-  await $.get("/nnplus/inv/getAll")
-    .done(function (data) {
-      allItems = data;
-    })
-    .fail(function (err) {
-      conosole.error(err);
-    });
-  for (const [entry, value] of Object.entries(allComponents)) {
-    var filters = [];
-    if (entry !== "model") {
-      for (let i = 0; i < value.length; i++) {
-        const DOMelement = $(`#${i + entry}`);
-
-        const filterName = DOMelement.parent().find("label").html();
-        if (DOMelement[0].checked) {
-          filters.push(filterName);
-        }
-      }
-      //filters.length ? console.log(filters + " :  " + entry) : null;
-      if (filters.length) {
-        allItems = allItems.filter((item) => {
-          return entry == "type"
-            ? item[entry].some((type) => filters.includes(type))
-            : filters.includes(item[entry]);
-          return filters.includes(item[entry]);
-        });
-        console.log(allItems);
-      }
-    }
-  }
-
-  showItems(allItems);
+  applyFilters();
 });
 
-function filter(items, component, value) {
-  for (let i = 0; i < items.length; i++) {
-    const element = array[i];
+async function applyFilters() {
+  const checks = $("#filters > div > div[data-filter]")
+    .find("input:checked")
+    .parent()
+    .find("label");
+  var filters = {};
+  for (let i = 0; i < checks.length; i++) {
+    if (!filters[checks[i].dataset.entry]) {
+      filters[checks[i].dataset.entry] = [];
+    }
+    filters[checks[i].dataset.entry].push(checks[i].innerHTML);
+  }
+  var filters = {};
+  for (let i = 0; i < checks.length; i++) {
+    if (!filters[checks[i].dataset.entry]) {
+      filters[checks[i].dataset.entry] = [];
+    }
+    filters[checks[i].dataset.entry].push(checks[i].innerHTML);
+  }
+  filters.price = {};
+  filters.price["$gte"] = $("#minPrice").val();
+  filters.price["$lte"] = $("#maxPrice").val();
+
+  await $.ajax({
+    method: "GET",
+    url: "/nnplus/inv/filter",
+    data: { data: JSON.stringify(filters) },
+  })
+    .done((data) => {
+      console.log(data);
+      showItems(data);
+    })
+    .fail((err) => {
+      console.log(err);
+    });
+}
+
+$("#clearFilterBtn").click(function () {
+  $("#filters > div > div").find("input:checked").prop("checked", false);
+  $("#minPrice")
+    .val($("#minPrice").attr("min"))
+    .next()
+    .html($("#minPrice").val());
+  $("#maxPrice")
+    .val($("#maxPrice").attr("max"))
+    .next()
+    .html($("#maxPrice").val());
+  reloadItems();
+});
+
+$("#discountModal").on("show.bs.modal", async function (event) {
+  populateDiscountList();
+
+  $("body").on("change", "#bulkDiscountRange", (event) => {
+    const newDiscount = event.target.value;
+    showDiscount(newDiscount);
+  });
+
+  $("body").on("click", "#confirmDiscountBtn", async (event) => {
+    const newDiscountValue = $("#bulkDiscountRange").val();
+    var success = true;
+    for (let i = 0; i < currentlyShowing.length; i++) {
+      await $.ajax({
+        method: "PUT",
+        url: "/nnplus/inv/editOne",
+        data: { id: currentlyShowing[i]._id, discount: newDiscountValue },
+      })
+        .done(async (data) => {
+          console.log(data);
+          success = success && true;
+
+          $("#filterBtn").trigger("click");
+        })
+        .fail((err) => {
+          console.los(err);
+          success = success && false;
+        });
+    }
+
+    success
+      ? showAlert(
+          "Sconto aggiornato con successo",
+          event.target.parentElement,
+          true
+        )
+      : showAlert(
+          "Sconto aggiornato con successo",
+          event.relatedTarget.parentElement,
+          true
+        );
+  });
+});
+
+function showDiscount(newDisc) {
+  const list = $("#discountList > ul");
+  for (let i = 0; i < currentlyShowing.length; i++) {
+    const newDiscSpan = $(list).find(
+      `span[data-id=${currentlyShowing[i]._id}]`
+    );
+    newDiscSpan.html(
+      (
+        currentlyShowing[i].price -
+        (currentlyShowing[i].price * newDisc) / 100
+      ).toFixed(2)
+    );
   }
 }
+
+function populateDiscountList() {
+  const list = $("#discountList > ul");
+  for (const i in currentlyShowing) {
+    const item = currentlyShowing[i];
+    const listItem = document.createElement("li");
+    listItem.innerHTML = `
+    <b>${item.brand.toUpperCase()} ${item.model.toUpperCase()}</b>
+    <div>Sconto attuale: ${item.discount}%</div>
+    <div>prezzo scontato attuale: ${
+      item.discount
+        ? (item.price - item.price * (item.discount / 100)).toFixed(2)
+        : item.price
+    }</div>
+    <div>nuovo prezzo scontato: <span data-id="${item._id}"></span></div>`;
+    list.append(listItem);
+  }
+
+  showDiscount(0);
+}
+
+$("#discountModal").on("hide.bs.modal", async function (event) {
+  $("#discountList > ul").html("");
+  $("body").off("change", "#bulkDiscountRange");
+  $("body").off("click", "#confirmDiscountBtn");
+  $("#bulkDiscountRange").val(0).next().html("0");
+});
 
 $("#addModal").on("show.bs.modal", async function (event) {
   await reloadAutocomplete();
@@ -113,6 +231,7 @@ async function addModal() {
       url: "/nnplus/inv/insert",
       contentType: "application/json",
       data: JSON.stringify(compInstance),
+      beforeSend: showAlert("", $("#addButton")[0].parentElement),
     })
       .done(async (data) => {
         console.log(data);
@@ -166,6 +285,7 @@ async function editModal(event) {
       method: "PUT",
       url: "/nnplus/inv/editOne",
       data: newItem,
+      beforeSend: showAlert("", $("#addButton")[0].parentElement),
     })
       .done(async (data) => {
         console.log(data);
@@ -208,9 +328,10 @@ $("#deleteModal").on("show.bs.modal", function (event) {
       method: "DELETE",
       url: "/nnplus/inv/delete",
       data: { id },
-    }).done((data) => {
+    }).done(async (data) => {
       console.log(data);
-      reloadItems();
+      await reloadItems();
+      await populateFilters();
     });
   });
 });
@@ -305,6 +426,22 @@ async function reloadAutocomplete() {
 }
 
 function showAlert(text, parent, happy) {
+  $("#load").remove();
+
+  if (!text) {
+    const alert = document.createElement("span");
+    alert.setAttribute("role", "alert");
+    alert.textContent = "caricamento...";
+    alert.setAttribute("id", "load");
+    alert.classList.add(
+      "animate__animated",
+      "animate__pulse",
+      "animate__infinite"
+    );
+    alert.style.color = "blue";
+    parent.prepend(alert);
+    return;
+  }
   if (!document.getElementById("alert")) {
     const alert = document.createElement("span");
     alert.setAttribute("role", "alert");
@@ -321,19 +458,36 @@ function showAlert(text, parent, happy) {
   }
 }
 
-function reloadItems() {
-  $.get("/nnplus/inv/getAll")
+async function getAllItems() {
+  var items;
+  await $.get("/nnplus/inv/getAll")
+    .done(function (data) {
+      items = data;
+    })
+    .fail(function (err) {
+      console.error(err);
+    });
+  return items;
+}
+
+async function reloadItems() {
+  await $.get("/nnplus/inv/getAll")
     .done(function (data) {
       showItems(data);
     })
     .fail(function (err) {
-      conosole.error(err);
+      console.error(err);
     });
 }
 
 function showItems(items) {
   currentlyShowing = items;
   $("#itemsContainer")[0].innerHTML = "";
+
+  if (isEmpty(items)) {
+    return;
+  }
+
   items.forEach((item) => {
     const itemElement = document.createElement("div");
     itemElement.setAttribute(
@@ -349,13 +503,14 @@ function showItems(items) {
     <h5 class="card-title" tabindex="0">
       <div class="brand-card">${item.brand.toUpperCase()}</div>
       <div class="model-card">${item.model.toUpperCase()}</div>
+      <div class="ref-card">Rif: ${item._id}</div>
     </h5>
     <div class="info-card">
       <ul class="info-card-list">
         <li>
           <div class="info">
             <b>Tipo: </b>
-            <div class="types-card set-scroll">
+            <div class="types-card">
               <ul>
               </ul>
             </div>
@@ -403,7 +558,7 @@ function showItems(items) {
             <b>Prezzo scontato:</b>
             <span class="price-card">${
               item.discount
-                ? item.price - item.price * (item.discount / 100)
+                ? (item.price - item.price * (item.discount / 100)).toFixed(2)
                 : item.price
             }$/giorno</span>
           </div>
@@ -412,14 +567,12 @@ function showItems(items) {
         <li>
           <div class="text-container">
             <b>Descrizione:</b>
-            <span class="desc-card text-card set-scroll">${
-              item.description
-            }</span>
+            <span class="desc-card">${item.description}</span>
           </div>
         </li>
         <div class="text-container">
           <b>Note:</b>
-          <span class="note-card text-card set-scroll">${item.note}</span>
+          <span class="note-card ">${item.note}</span>
         </div>
         </li>
       </ul>
@@ -442,6 +595,21 @@ function showItems(items) {
     }
     $("#itemsContainer").append(itemElement);
   });
+}
+
+function isEmpty(items) {
+  $("#notFound").remove();
+  $("#bulkDiscountBtn").removeClass("disabled");
+
+  if (!items.length) {
+    const notFound = document.createElement("h3");
+    notFound.setAttribute("id", "notFound");
+    notFound.innerHTML = "Nessun computer trovato...:C";
+    $("#bulkDiscountBtn").addClass("disabled");
+    $(".items-list").append(notFound);
+  } else {
+    return false;
+  }
 }
 
 function populateModal(item) {
@@ -485,60 +653,25 @@ async function getModalData(item, id) {
     newImg = null;
   }
 
-  //console.log(typeof JSON.stringify(splitTypes($("#addType").val())));
-  //console.log(typeof $("#addPrice").val());
-
   const filteredItem = {
     id: id,
     ...(newImg ? { image: newImg } : {}),
-
-    ...(prepareInfo("#addBrand") !== item.brand
-      ? { brand: prepareInfo("#addBrand") }
-      : {}),
-
-    ...(prepareInfo("#addModel") !== item.model
-      ? { model: prepareInfo("#addModel") }
-      : {}),
-
-    ...(JSON.stringify(splitTypes($("#addType").val())) !==
-    JSON.stringify(item.type)
-      ? { type: splitTypes($("#addType").val()) }
-      : {}),
-
-    ...(prepareInfo("#addCpu") !== item.cpu
-      ? { cpu: prepareInfo("#addCpu") }
-      : {}),
-
-    ...(prepareInfo("#addGpu") !== item.gpu
-      ? { gpu: prepareInfo("#addGpu") }
-      : {}),
-
-    ...(prepareInfo("#addRam") !== item.ram
-      ? { ram: prepareInfo("#addRam") }
-      : {}),
-
-    ...($("#addPrice").val() !== JSON.stringify(item.price)
-      ? { price: $("#addPrice").val() }
-      : {}),
-
-    ...($("#addDiscount").val() !== JSON.stringify(item.discount)
-      ? { discount: $("#addDiscount").val() }
-      : {}),
-
-    ...($("#addDescr").val() !== item.description
-      ? { description: $("#addDescr").val() }
-      : {}),
-
-    ...($("#addCondition").val() !== JSON.stringify(item.condition)
-      ? { condition: $("#addCondition").val() }
-      : {}),
-
-    ...($("#addNote").val() !== item.note ? { note: $("#addNote").val() } : {}),
+    brand: $("#addBrand").val(),
+    model: $("#addModel").val(),
+    type: splitTypes($("#addType").val()),
+    cpu: $("#addCpu").val(),
+    gpu: $("#addGpu").val(),
+    ram: $("#addRam").val(),
+    price: $("#addPrice").val(),
+    description: $("#addDescr").val(),
+    condition: $("#addCondition").val(),
+    note: $("#addNote").val(),
   };
-
-  function prepareInfo(infoId) {
-    return $(infoId).val().toLowerCase().trim();
-  }
-
   return filteredItem;
+}
+
+function checkSession(evt, xhr, options) {
+  if (xhr.getResponseHeader("content-type").includes("html")) {
+    window.location.href = "/nnplus/login";
+  }
 }

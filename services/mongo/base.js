@@ -10,22 +10,13 @@ class baseService {
   }
 
   /* FINDS */
-  async findOne(params) {
-    return this._model.findOne(params);
+
+  async findOne(params, attrs = null) {
+    return this._model.findOne(params, attrs);
   }
 
-  async findOne(params, attr) {
-    return this._model.findOne(params, attr);
-  }
-
-  async find(params) {
-    return this._model.find(params, attributes);
-  }
-
-  async find(params, attributes) {
-    return attributes
-      ? this._model.find(params, attributes)
-      : this._model.find(params);
+  async find(params, attrs = null) {
+    return this._model.find(params, attrs)
   }
 
   /* UPDATES */

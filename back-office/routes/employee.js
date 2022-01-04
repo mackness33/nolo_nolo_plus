@@ -9,11 +9,13 @@ const userHelper = require("../../services/mongo/userService");
 const empService = require("../../services/mongo/employeeService");
 const computerService = require("../../services/mongo/computerService");
 const componentService = require("../../services/mongo/componentService");
+const bookingService = require("../../services/mongo/bookingService");
 
 router.use(async (req, res, next) => {
   await componentService.initialize();
   await computerService.initialize();
   await empService.initialize();
+  await bookingService.initialize();
   //await baseHelper.initialize(User);
 
   next();
@@ -32,15 +34,25 @@ router.get("/", async function (req, res, next) {
 });
 
 router.get("/anco", async (req, res, next) => {
-  const items = await computerService.find({}, "-image");
-  logger.info(items);
+  const book = {
+    user: "61c11e49c5fa076a8980e4d3",
+    computer: "61cdd2bcc4a1a19a470f337b",
+    begin: "2021-12-25",
+    end: "2022-12-28",
+    discounts: [{ reason: "sconto dispositivo", amount: 256 }],
+    final_condition: 5,
+    final_price: 180,
+  };
+  //await bookingService.insertOne(book);
+  //await bookingService.getAvailByDates("2022-01-01", "2022-01-30");
+  await bookingService.getUserScore("61c11e49c5fa076a8980e4d3");
+
   res.send("fatto");
 });
 
 router.get("/components", async (req, res, next) => {
   await componentService.addComponents({
-    brand: "hp",
-    model: "spectre",
+    model: "nitro",
     type: ["2-in-1", "ultrabook"],
     cpu: "intel i7-12000k 3.7ghz",
     gpu: "nvidia rtx 3060 12gb",
@@ -50,8 +62,8 @@ router.get("/components", async (req, res, next) => {
 });
 
 router.get("/attr", async (req, res, next) => {
-  const compLists = await componentService.getAll();
-  res.send(compLists);
+  await componentService.clear();
+  res.send("dio");
 });
 
 module.exports = router;

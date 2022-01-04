@@ -6,7 +6,6 @@ const MongoStore = require("connect-mongo");
 class mongo_helper {
   #mongo_uri = ""; // uri for mongo
   #conn; // connection promise
-  #toPopulate = "feedback.emplCode";
 
   constructor() {
     // creation of the mongo uri based on the environment

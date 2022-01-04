@@ -24,19 +24,21 @@ router.use(async (req, res, next) => {
 });
 
 router.get("/getOne", async (req, res, next) => {
-  var user = userService.format(
-    await userService.findOne({ "person.mail": req.query.mail }),
-    "person"
-  );
-  if (req.query.mode == "edit") {
-    user.feedback = userService.filterFeeds(user.feedback, req.session.mail);
+  var user = await userService.findOne({ "person.mail": req.query.mail });
+  user = user ? userService.format(user, "person") : user;
+
+  if (user) {
+    if (req.query.mode == "edit") {
+      user.feedback = userService.filterFeeds(user.feedback, req.session.mail);
+    }
+    for (let i = 0; i < user.feedback.length; i++) {
+      user.feedback[i].emplCode = userService.format(
+        user.feedback[i].emplCode,
+        "person"
+      );
+    }
   }
-  for (let i = 0; i < user.feedback.length; i++) {
-    user.feedback[i].emplCode = userService.format(
-      user.feedback[i].emplCode,
-      "person"
-    );
-  }
+
   res.send(user);
 });
 
@@ -60,7 +62,7 @@ router.post("/setOne", async (req, res, next) => {
 });
 
 router.get("/all", async (req, res, next) => {
-  const users = await userService.find();
+  const users = await userService.find(req.query.params, req.query.attributes);
   for (let i = 0; i < users.length; i++) {
     users[i] = userService.format(users[i], "person");
   }
