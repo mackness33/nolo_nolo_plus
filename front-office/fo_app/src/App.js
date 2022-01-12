@@ -1,5 +1,12 @@
+import React, { useState, useEffect, useRef } from "react";
+
 function App() {
-  return <h1>Hello World!</h1>;
+  const [name, setName] = useState('');
+
+  return (<h1>
+    <input type="text" onChange={(e)=>{setName(e.target.value)}} />
+    <div>{name}</div>
+  </h1>);
 }
 
 export default App;
