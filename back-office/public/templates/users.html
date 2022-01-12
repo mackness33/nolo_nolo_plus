@@ -186,6 +186,9 @@
             <div tabindex="0">
               <b>Status: </b><span id="infoModalStatus">noleggiato</span>
             </div>
+            <div tabindex="0">
+              <b>Punti fedelta': </b><span id="infoModalPoints">0</span>
+            </div>
             <div tabindex="0" aria-label="lista dei feedback">
               <h6 id="infoModalFeedback">Feedback:</h6>
               <ul id="infoFeedBackList">
@@ -238,6 +241,10 @@
                   <option value=2>Ritirato</option>
                   <option value=3>Da Restituire</option>
                 </select>
+              </div>
+              <div>
+                <b>Punti fedelta':</b>
+                <input type="number" naria-label="modifica i punti fedelta" id="editModalPoints" required>
               </div>
               <div>
                 <h6 id="editModalFeedback">Feedback:</h6>
@@ -300,6 +307,11 @@
                   <option value=2>Ritirato</option>
                   <option value=3>Da Restituire</option>
                 </select>
+              </div>
+              <div>
+                <b>Punti fedelta:</b>
+                <input type="number" name="" required id="addModalPoints" aria-label="inserisci i punti fedelta"
+                  value="0">
               </div>
             </section>
           </form>

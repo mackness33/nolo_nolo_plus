@@ -31,6 +31,11 @@ const user_schema = mongoose.Schema({
     required: true,
     default: 0,
   },
+  points: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
   feedback: [feedback_schema],
 });
 

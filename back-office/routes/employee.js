@@ -23,14 +23,18 @@ router.use(async (req, res, next) => {
 
 /* GET users listing. */
 router.get("/", async function (req, res, next) {
-  const em = await empService.insertOne({
-    "person.name": "mario",
-    "person.surname": "rossi",
-    "person.password": "cabbio",
-    "person.mail": "jojo@brando",
-    "person.role": 1,
-  });
-  res.send("arrived");
+  // const em = await empService.insertOne({
+  //   "person.name": "mario",
+  //   "person.surname": "rossi",
+  //   "person.password": "cabbio",
+  //   "person.mail": "jojo@brando",
+  //   "person.role": 1,
+  // });
+  const empl = await empService.findOne(
+    { "person.mail": req.session.mail },
+    "_id"
+  );
+  res.send(empl);
 });
 
 router.get("/anco", async (req, res, next) => {
@@ -43,9 +47,14 @@ router.get("/anco", async (req, res, next) => {
     final_condition: 5,
     final_price: 180,
   };
+
   //await bookingService.insertOne(book);
   //await bookingService.getAvailByDates("2022-01-01", "2022-01-30");
-  await bookingService.getUserScore("61c11e49c5fa076a8980e4d3");
+  //await bookingService.getUserScore("61c11e49c5fa076a8980e4d3");
+  await bookingService.getDefaultDiscount(
+    "61c11e49c5fa076a8980e4d3",
+    "61cdd2bcc4a1a19a470f337b"
+  );
 
   res.send("fatto");
 });

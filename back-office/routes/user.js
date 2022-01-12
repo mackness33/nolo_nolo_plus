@@ -74,6 +74,7 @@ router.post("/add", async (req, res, next) => {
     ...userService.setUpPerson(req.body),
     birth: req.body.birth,
     status: req.body.status,
+    points: req.body.points,
     feedback: [],
   };
   await userService.insertOne(user);

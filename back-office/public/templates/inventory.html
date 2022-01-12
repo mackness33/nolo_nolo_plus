@@ -18,6 +18,8 @@
     crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"
     integrity="sha256-hlKLmzaRlE8SCJC1Kw8zoUbU8BxA+8kR3gseuKfMjxA=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+
   <!-- <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
     crossorigin="anonymous"></script> -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
@@ -474,6 +476,87 @@
         <div class="modal-footer">
           <button type="button" id="confirmDiscountBtn" class="btn btn-primary">Conferma
           </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking modal -->
+  <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="bookingTitle" tabindex="0">Noleggia computer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addBookingForm" autocomplete="off">
+            <div id="formElements">
+              <h6>Compila i seguenti campi: </h6>
+              <div>
+                <label for="addUser">Inserisci l'email dell'utente:</label>
+                <input type="email" name="addUser" id="addUser" placeholder="mario.rossi@gmail.com">
+              </div>
+              <div>
+                <label for="addStartDate">Scegli la data dell'inizio della prenotazione:</label>
+                <input type="text" name="addStartDate" id="addStartDate">
+              </div>
+              <div>
+                <label for="addEndDate">Scegli la data di fine della prenotazione:</label>
+                <input type="text" name="addEndDate" id="addEndDate">
+              </div>
+              <div>
+                <label for="addComputer">Computer selezionato:</label>
+                <input type="text" name="addComputer" id="addComputer" disabled>
+              </div>
+              <button id="evalBtn" type="button" class="btn btn-warning" style="width:100%;">Calcola</button>
+
+              <div id="bookingPreview" hidden="true">
+                <div id="infoContainer">
+                  <div id="userInfo">
+                    <b>Utente: </b><span>Mario Rossi</span>
+                  </div>
+                  <div id="itemInfo">
+                    <b>Computer: </b><span>DELL LEGION</span>
+                  </div>
+                  <div id="beginInfo">
+                    <b>Inizio: </b><span>DELL LEGION</span>
+                  </div>
+                  <div id="endInfo">
+                    <b>Fine: </b><span>DELL LEGION</span>
+                  </div>
+                </div>
+                <h6>Anteprima prezzo: </h6>
+                <ul>
+                </ul>
+                <div id="pointsContainer">
+                  <label for="userPoints">Punti utente </label>
+                  <select name="userPoints" id="userPoints">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                  </select>
+                  <button id="pointsBtn" type="button" class="btn btn-success">Consuma</button>
+                </div>
+                <div id="customDiscount">
+                  <input id="discountReason" type="text" placeholder="Causale sconto">
+                  <input id="discountAmount" type="number" placeholder="Importo" value="0" step="0.01">
+                </div>
+
+                <button id="addDiscountBtn" type="button" class="btn btn-success">Aggiungi sconto</button>
+                <div id="noteContainer">
+                  <label for="addNote">note:</label>
+                  <textarea name="addNote" id="addNote"></textarea>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button id="addBookingBtn" form="addBookingForm" type="submit" class="btn btn-primary disabled">Crea
+            noleggio</button>
+
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
         </div>
       </div>

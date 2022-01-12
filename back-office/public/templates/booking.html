@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Front Office</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <!-- <script src="//code.jquery.com/jquery-3.6.0.min.js"></script> -->
+  <link rel="stylesheet" href="../stylesheets/nav.css">
+  <link rel="stylesheet" href="../stylesheets/booking.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"
+    integrity="sha256-hlKLmzaRlE8SCJC1Kw8zoUbU8BxA+8kR3gseuKfMjxA=" crossorigin="anonymous"></script>
+  <!-- <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+    crossorigin="anonymous"></script> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+</head>
+
+<body>
+  <!-- navbar -->
+  <nav class="navbar navbar-expand-md navbar-dark br-primary">
+
+    <!-- navbar content -->
+    <div class="container-fluid" id="nav-container">
+
+      <!-- navbar logo -->
+      <a class="navbar-brand" href="#" aria-hidden="true" tabindex="-1">
+        <img src="../images/logo.png" class="logo">
+      </a>
+
+      <!-- navbar toggle -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navElements"
+        aria-controls="navElements" aria-expanded="false" aria-label="Mostra navigazione">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- navbar navigation -->
+      <div class="collapse navbar-collapse" id="navElements">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="nav-list">
+          <li class="nav-item">
+            <a class="link" href="/nnplus/home" aria-label="Pagina Clienti" aria-current="page">Clienti</a>
+          </li>
+          <li class="nav-item">
+            <a class="link" href="/nnplus/home/inventory" aria-label="Pagina Inventario">Inventario</a>
+          </li>
+          <li class="nav-item">
+            <a class="link active-nav" href="/nnplus/home/booking" aria-label="Pagina Gestione">Noleggi</a>
+          </li>
+          <li class="nav-item">
+            <a class="link" href="/nnplus/logout" aria-label="Effettua il log out">Log Out</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- tab navigation -->
+
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link main-nav active" id="addPill" data-bs-toggle="pill" data-bs-target="#addTab"
+          type="button" role="tab" aria-controls="addTab" aria-selected="true">Aggiungi prenotazioni</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link main-nav" id="searchPill" data-bs-toggle="pill" data-bs-target="#searchTab"
+          type="button" role="tab" aria-controls="searchTab" aria-selected="false">Cerca prenotazioni</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link main-nav" id="managePill" data-bs-toggle="pill" data-bs-target="#manageTab"
+          type="button" role="tab" aria-controls="manageTab" aria-selected="false">Gestione prenotazioni</button>
+      </li>
+    </ul>
+
+    <!-- main container -->
+
+    <div class="contaier-fluid" id="main-container">
+
+      <!-- tab container -->
+
+      <div class="tab-content" id="pills-tabContent">
+
+
+
+
+
+        <!-- add tab -->
+
+        <div class="tab-pane fade show active" id="addTab" role="tabpanel" aria-labelledby="addPill">
+          <h5>Crea una nuova prenotazione</h5>
+          <form id="addForm" autocomplete="off">
+            <div id="formElements">
+              <h6>Compila i seguenti campi: </h6>
+              <div>
+                <label for="addUser">Inserisci l'email dell'utente:</label>
+                <input type="email" name="addUser" id="addUser" placeholder="mario.rossi@gmail.com">
+              </div>
+              <div>
+                <label for="addStartDate">Scegli la data dell'inizio della prenotazione:</label>
+                <input type="date" name="addStartDate" id="addStartDate">
+              </div>
+              <div>
+                <label for="addEndDate">Scegli la data di fine della prenotazione:</label>
+                <input type="date" name="addEndDate" id="addEndDate">
+              </div>
+              <div>
+                <label for="addComputer">Seleziona tra i computer disponibili:</label>
+                <input type="text" name="addComputer" id="addComputer" placeholder="61cefc5571b8ab09de86ad07">
+                <a id="showItem" class="btn btn-secondary" style="width: fit-content;">Mostra</a>
+              </div>
+              <button id="evalBtn" type="button" class="btn btn-warning" style="width:100%;">Calcola</button>
+
+              <div id="bookingPreview" hidden="true">
+                <div id="infoContainer">
+                  <div id="userInfo">
+                    <b>Utente: </b><span>Mario Rossi</span>
+                  </div>
+                  <div id="itemInfo">
+                    <b>Computer: </b><span>DELL LEGION</span>
+                  </div>
+                  <div id="beginInfo">
+                    <b>Inizio: </b><span>DELL LEGION</span>
+                  </div>
+                  <div id="endInfo">
+                    <b>Fine: </b><span>DELL LEGION</span>
+                  </div>
+                </div>
+                <h6>Anteprima prezzo: </h6>
+                <ul>
+                </ul>
+                <div id="pointsContainer">
+                  <label for="userPoints">Punti utente </label>
+                  <select name="userPoints" id="userPoints">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                  </select>
+                  <button id="pointsBtn" type="button" class="btn btn-success">Consuma</button>
+                </div>
+                <div id="customDiscount">
+                  <input id="discountReason" type="text" placeholder="Causale sconto">
+                  <input id="discountAmount" type="number" placeholder="Importo" value="0" step="0.01">
+                </div>
+
+                <button id="addDiscountBtn" type="button" class="btn btn-success">Aggiungi sconto</button>
+                <div id="noteContainer">
+                  <label for="addNote">note:</label>
+                  <textarea name="addNote" id="addNote"></textarea>
+                </div>
+                <button id="addBtn" type="submit" class="btn btn-primary">Crea noleggio</button>
+              </div>
+            </div>
+          </form>
+
+        </div>
+
+
+
+
+
+
+        <!-- search tab -->
+
+        <div class="tab-pane fade" id="searchTab" role="tabpanel" aria-labelledby="searchPill">secondo</div>
+
+
+
+
+
+
+        <!-- manage tab -->
+
+        <div class="tab-pane fade" id="manageTab" role="tabpanel" aria-labelledby="managePill">terzo</div>
+      </div>
+    </div>
+  </main>
+
+  <script src="../scripts/booking.js"></script>
+
+</body>
+
+</html>

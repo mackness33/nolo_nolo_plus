@@ -1,0 +1,180 @@
+:root {
+  --main-radius: 1rem;
+  --main-margin: 0.5rem;
+  --button-radius: 2rem;
+}
+
+body {
+  background-color: rgba(0, 0, 0, 0.822);
+  color: rgb(255, 255, 255);
+  font-size: medium;
+}
+
+.btn {
+  border-radius: var(--button-radius);
+}
+
+.modal {
+  color: black;
+}
+
+/* jquery ui elements */
+
+.ui-autocomplete {
+  color: black;
+  z-index: 5000;
+  list-style: none;
+  background-color: white;
+  border: 2px solid black;
+  border-radius: 0.2rem;
+  width: 16rem !important;
+  max-width: 16rem !important;
+  padding-left: 0% !important;
+  max-height: 6rem !important;
+  overflow: scroll;
+  -ms-overflow-style: none; /*hide scrollbar for IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.ui-autocomplete::-webkit-scrollbar {
+  display: none;
+}
+
+.ui-autocomplete > li:hover {
+  color: white;
+  background-color: rgb(0, 132, 255);
+}
+
+.ui-helper-hidden-accessible {
+  display: none;
+}
+
+/* main body decoration */
+main {
+  margin: var(--main-margin);
+}
+
+/* pills naviation */
+
+.nav-pills {
+  margin-top: 2rem;
+  margin-bottom: 0.3rem !important;
+}
+
+.main-nav {
+  border-radius: var(--button-radius) !important;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.397) !important;
+}
+
+/* main and tab containers */
+
+#main-container {
+  padding: 1rem;
+  background-color: rgba(36, 103, 230, 0.452);
+  border-radius: var(--main-radius);
+  padding-left: 0.1rem;
+  padding-right: 0.1rem;
+}
+
+/* add tab decoration */
+
+#addTab {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+#addForm {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#formElements > div {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  display: flex;
+  flex-direction: column;
+  max-width: 35rem;
+  margin-bottom: 0.8rem;
+}
+
+/* following is shown after user, item and dates have been inputted */
+
+#bookingPreview {
+  margin-top: 1.2rem;
+}
+
+#bookingPreview > ul {
+  list-style: none;
+  padding-left: 0 !important;
+  margin-bottom: 0.2rem;
+}
+
+#bookingPreview > ul > li {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid white;
+}
+
+#bookingPreview > button {
+  width: fit-content;
+}
+
+#infoContainer {
+  margin-bottom: 1rem;
+}
+
+#bookingPreview > ul > li:last-child {
+  font-weight: 700;
+  font-size: large;
+  border-bottom: none !important;
+  margin-top: 0.3rem;
+  margin-bottom: 0.3rem;
+}
+
+#customDiscount {
+  flex-direction: row;
+  margin-bottom: 0.5rem;
+}
+
+#customDiscount > * {
+  height: 2rem;
+  margin-right: 0.3rem;
+}
+
+#discountReason {
+  width: 70%;
+}
+
+#discountAmount {
+  width: 25%;
+}
+
+#pointsContainer {
+  margin-bottom: 0.8rem;
+}
+
+#noteContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 0.5rem;
+}
+
+#addBtn {
+  margin-top: 0.5rem;
+  height: 3rem;
+  width: 100% !important;
+  font-size: larger;
+}
+
+/* tablet/mobile responsive */
+
+@media only screen and (max-width: 768px) {
+  .nav-pills {
+    flex-direction: column;
+    margin-bottom: 1.5rem !important;
+  }
+}

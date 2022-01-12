@@ -321,6 +321,325 @@ $("#addModal").on("hide.bs.modal", function (event) {
   $("#rangeValue")[0].innerHTML = "5";
 });
 
+$("#bookingModal").on("show.bs.modal", async function (event) {
+  autocompleteUser();
+  $("#addComputer").val(event.relatedTarget.dataset.id);
+  var alreadyBooked = [];
+  console.log(event.relatedTarget.dataset.id);
+  const computerId = event.relatedTarget.dataset.id;
+  await $.ajax({
+    method: "GET",
+    url: "/nnplus/booking/getBookingsByItem",
+    data: { id: event.relatedTarget.dataset.id },
+  })
+    .done((data) => {
+      alreadyBooked = data;
+      console.log(alreadyBooked.length);
+    })
+    .fail((err) => {
+      console.error(err);
+    });
+
+  function dateFilter(date) {
+    for (let i = 0; i < alreadyBooked.length; i++) {
+      const begin = new Date(alreadyBooked[i].begin).getTime();
+      const end = new Date(alreadyBooked[i].end).getTime();
+      var current = new Date(date);
+      current.setTime(current.getTime() + 1 * 60 * 60 * 1000);
+      current = current.getTime();
+      if (begin <= current && current <= end) {
+        return [false];
+      }
+    }
+    return [true];
+  }
+
+  var dateFormat = "mm/dd/yy",
+    from = $("#addStartDate")
+      .datepicker({
+        changeMonth: true,
+        numberOfMonths: 1,
+        beforeShowDay: dateFilter,
+      })
+      .on("change", function () {
+        to.datepicker("option", "minDate", getDate(this));
+      }),
+    to = $("#addEndDate")
+      .datepicker({
+        changeMonth: true,
+        numberOfMonths: 1,
+        beforeShowDay: dateFilter,
+      })
+      .on("change", function () {
+        from.datepicker("option", "maxDate", getDate(this));
+      });
+
+  function getDate(element) {
+    var date;
+    try {
+      date = $.datepicker.parseDate(dateFormat, element.value);
+    } catch (error) {
+      date = null;
+    }
+
+    return date;
+  }
+
+  $("body").on("click", "#evalBtn", async (event) => {
+    var beginChoice = $("#addStartDate").datepicker("getDate").getTime();
+    var endChoice = $("#addEndDate").datepicker("getDate").getTime();
+    var valid = true;
+    for (let i = 0; i < alreadyBooked.length; i++) {
+      const begin = new Date(alreadyBooked[i].begin).getTime();
+      const end = new Date(alreadyBooked[i].end).getTime();
+      if (beginChoice < begin && end < endChoice) {
+        valid = false;
+      }
+    }
+
+    var user;
+    await $.ajax({
+      method: "GET",
+      url: "/nnplus/user/getOne",
+      data: { mail: $("#addUser").val() },
+    }).done((data) => {
+      user = data;
+    });
+    if (user && valid) {
+      console.log($("#addStartDate").val() + "   " + $("#addEndDate").val());
+
+      await $.ajax({
+        method: "GET",
+        url: "/nnplus/inv/getOne",
+        data: { id: computerId },
+      }).done(async (data) => {
+        await bookingPreview(
+          user,
+          data,
+          $("#addStartDate").val(),
+          $("#addEndDate").val()
+        );
+      });
+    } else {
+      $("#addStartDate").val("");
+      $("#addEndDate").val("");
+      showAlert(
+        "utente inesistente o periodo non disponibile!",
+        event.target.parentElement,
+        false
+      );
+      $("#bookingPreview").prop("hidden", true);
+    }
+  });
+});
+
+async function bookingPreview(user, computer, begin, end) {
+  // clean everything at every reload
+  $("#addBookingBtn").removeClass("disabled");
+  $("body").off("click", "#pointsBtn");
+  $("body").off("click", "#addDiscountBtn");
+  $("body").off("submit", "#addBookingForm");
+  $("#bookingPreview").prop("hidden", false);
+  $("#discountReason").val("");
+  $("#discountAmount").val(0);
+  $("#bookingPreview > ul").html("");
+  $("#userPoints").html("");
+
+  var discountList = [];
+  const priceList = $("#bookingPreview > ul");
+  var usedPoints = 0;
+  var employeeId;
+
+  $.ajax({
+    method: "GET",
+    url: "/nnplus/empl/",
+  })
+    .done((data) => {
+      employeeId = data._id;
+    })
+    .fail((err) => {
+      console.error(err);
+    });
+
+  const { name, surname } = adjustName(user.name, user.surname);
+  $("#userInfo > span").html(`${name} ${surname}`);
+
+  $("#itemInfo > span").html(
+    `${computer.brand.toUpperCase()} ${computer.model.toUpperCase()}`
+  );
+
+  $("#beginInfo > span").html(`${begin}`);
+
+  $("#endInfo > span").html(`${end}`);
+
+  const days = daysNumber(begin, end) + 1;
+  var price = days * computer.price;
+
+  // show full price
+  const initPrice = document.createElement("li");
+  initPrice.innerHTML = `<span>Prezzo iniziale:</span><span>${price}$</span>`;
+  $(priceList).append(initPrice);
+
+  const finalPrice = document.createElement("li");
+  finalPrice.innerHTML = `<span >Prezzo finale:</span><span id="finalPrice">${price}$</span>`;
+  $(priceList).append(finalPrice);
+
+  const updateFinal = (amount) => {
+    price = (price - amount).toFixed(2);
+    price = price < 0 ? 0 : price;
+    $("#finalPrice").html(`${price}$`);
+  };
+
+  const printDiscounts = (reason = "nessuna ragione", amount = 0) => {
+    const listItem = document.createElement("li");
+    listItem.innerHTML = `<span>${reason}:</span><span>-${amount}$</span>`;
+    $(listItem).insertBefore($("#finalPrice").parent());
+    updateFinal(amount);
+  };
+
+  const populatePointsSelect = (points) => {
+    for (let index = 0; index <= points; index++) {
+      const option = document.createElement("option");
+      option.setAttribute("value", index);
+      option.innerHTML = index;
+      $("#userPoints").append(option);
+    }
+  };
+
+  await $.ajax({
+    method: "GET",
+    url: "/nnplus/booking/getDiscounts",
+    data: { userId: user._id, computerId: computer._id, days: days },
+  })
+    .done((data) => {
+      console.log(data);
+      data.discounts.forEach((discount) => {
+        printDiscounts(discount.reason, discount.amount.toFixed(2));
+        discountList.push({
+          reason: discount.reason,
+          amount: discount.amount.toFixed(2),
+        });
+      });
+      populatePointsSelect(data.points);
+    })
+    .fail((err) => {
+      console.error(err);
+    });
+
+  $("body").on("click", "#pointsBtn", () => {
+    usedPoints = $("#userPoints").val();
+    const amount = $("#userPoints").val() / 10;
+    const used = $("#pointsConsumed");
+    if (amount > 0) {
+      if (used[0]) {
+        updateFinal(-used.attr("data-amount"));
+        $("#pointsVal").html(`-${amount}$`);
+        updateFinal(amount);
+        discountList = discountList.map((disc) => {
+          if (disc.reason === "punti fedelta") {
+            disc.amount = amount;
+          }
+          return disc;
+        });
+      } else {
+        const listItem = document.createElement("li");
+        listItem.setAttribute("id", "pointsConsumed");
+        listItem.setAttribute("data-amount", amount);
+        listItem.innerHTML = `<span>Punti fedelta':</span><span id="pointsVal">-${amount}$</span>`;
+
+        $(listItem).insertBefore($("#finalPrice").parent());
+        updateFinal(amount);
+        discountList.push({ reason: "punti fedelta", amount: amount });
+      }
+    } else {
+      updateFinal(-used.attr("data-amount"));
+      used.remove();
+      discountList = discountList.filter(
+        (disc) => disc.reason !== "punti fedelta"
+      );
+    }
+    console.log(discountList);
+  });
+
+  $("body").on("click", "#addDiscountBtn", () => {
+    discountList.push({
+      reason: $("#discountReason").val(),
+      amount: $("#discountAmount").val(),
+      employee: employeeId,
+    });
+    printDiscounts($("#discountReason").val(), $("#discountAmount").val());
+    $("#discountReason").val("");
+    $("#discountAmount").val(0);
+  });
+
+  $("body").on("submit", "#addBookingForm", async (event) => {
+    event.preventDefault();
+    console.log("ciaone");
+    const booking = {
+      user: user._id,
+      computer: computer._id,
+      begin: begin,
+      end: end,
+      discounts: discountList,
+      starting_price: computer.price * days,
+      final_price: price,
+      note: $("#addNote").val(),
+      points: usedPoints,
+    };
+    console.log(booking);
+    await $.ajax({
+      method: "POST",
+      url: "/nnplus/booking/addOne",
+      data: { data: JSON.stringify(booking) },
+    })
+      .done((data) => {
+        console.log(data);
+        showAlert(
+          "Noleggio creato con successo!",
+          $("#addBookingForm")[0],
+          true
+        );
+        $("#bookingPreview").prop("hidden", true);
+        $("#addBookingForm")[0].reset();
+        $("#addComputer").val(computer._id);
+
+        $("#addBookingBtn").addClass("disabled");
+      })
+      .fail((err) => {
+        console.log(err);
+      });
+  });
+}
+
+// makes fisrt letter of name and surname upercase and return object
+function adjustName(name, surname) {
+  const newName = name.charAt(0).toUpperCase() + name.slice(1);
+
+  const newSurname = surname.charAt(0).toUpperCase() + surname.slice(1);
+
+  return { name: newName, surname: newSurname };
+}
+
+function daysNumber(start, end) {
+  const date1 = new Date(start);
+  const date2 = new Date(end);
+
+  // One day in milliseconds
+  const oneDay = 1000 * 60 * 60 * 24;
+
+  // Calculating the time difference between two dates
+  const diffInTime = date2.getTime() - date1.getTime();
+
+  // Calculating the no. of days between two dates
+  const diffInDays = Math.round(diffInTime / oneDay);
+
+  return diffInDays;
+}
+
+$("#bookingModal").on("hide.bs.modal", async function (event) {
+  $("body").off("click", "#evalBtn");
+});
+
 $("#deleteModal").on("show.bs.modal", function (event) {
   $("#confirmBtn").one("click", async (evt) => {
     const id = event.relatedTarget.dataset.id;
@@ -410,6 +729,25 @@ function autocompleteDefault(DOMelement, list) {
     .focus(function () {
       $(this).autocomplete("search", "");
     });
+}
+
+async function autocompleteUser() {
+  var mails = [];
+
+  await $.ajax({
+    method: "GET",
+    url: "/nnplus/user/all",
+    data: { attributes: "person.mail" },
+  })
+    .done((data) => {
+      mails = data.map((user) => user.mail);
+      userAutoList = mails;
+    })
+    .fail((err) => {
+      console.error(err);
+    });
+
+  autocompleteDefault("#addUser", mails);
 }
 
 async function reloadAutocomplete() {
@@ -580,6 +918,9 @@ function showItems(items) {
         <button class="btn btn-primary" data-id="${
           item._id
         }" data-bs-toggle="modal" data-bs-target="#addModal" data-origin="edit">Cambia informazioni</button>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bookingModal" data-id="${
+          item._id
+        }">Noleggia computer</button>
         <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${
           item._id
         }">Elimina</button>

@@ -1,5 +1,6 @@
 const personService = require("./personService");
 const empHelper = require("./employeeService");
+const bookingService = require("./bookingService");
 const User = require("./schema/user");
 
 class userService extends personService {
@@ -10,6 +11,7 @@ class userService extends personService {
   async initialize() {
     await super.initialize(User);
     await empHelper.initialize();
+    //await bookingService.initialize();
   }
 
   // FINDS
@@ -37,6 +39,7 @@ class userService extends personService {
       ...person,
       ...(params.birth ? { birth: params.birth } : {}),
       ...(params.status ? { status: params.status } : {}),
+      ...(params.points ? { points: params.points } : {}),
     };
     console.log(user);
     if (params.feeds) {
@@ -81,6 +84,12 @@ class userService extends personService {
       return !feeds.includes(feed.id);
     });
 
+    await user.save();
+  }
+
+  async changePoints(userId, amount) {
+    const user = await super.findOne({ _id: userId });
+    user.points = user.points + amount;
     await user.save();
   }
 }

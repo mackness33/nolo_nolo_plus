@@ -156,12 +156,14 @@ async function populateModal(event, mode) {
   const birth = document.getElementById(`${mode}ModalBirth`);
   const mail = document.getElementById(`${mode}ModalMail`);
   const status = document.getElementById(`${mode}ModalStatus`);
+  const points = document.getElementById(`${mode}ModalPoints`);
 
   if (mode == "info") {
     name.innerHTML = user.name;
     surname.innerHTML = user.surname;
     birth.value = user.birth.split("T")[0];
     mail.innerHTML = user.mail;
+    points.innerHTML = user.points;
     switch (user.status) {
       case 0:
         status.innerHTML = "Inattivo";
@@ -182,7 +184,7 @@ async function populateModal(event, mode) {
     birth.value = user.birth.split("T")[0];
     mail.value = user.mail;
     status.value = user.status;
-
+    points.value = user.points;
     mail.setAttribute("data-old", user.mail);
     birth.setAttribute("max", new Date().toISOString().split("T")[0]);
   }
@@ -269,6 +271,7 @@ function setUpEdit(user) {
       oldMail: inputs[3].getAttribute("data-old"),
       mail: inputs[3].value,
       status: inputs[4].value,
+      points: inputs[5].value,
       feeds: deletedFeed,
       role: 2,
     };
@@ -306,6 +309,7 @@ async function addUser() {
     birth: inputs[3].value,
     mail: inputs[4].value,
     status: inputs[5].value,
+    points: inputs[6].value,
     role: 3,
   };
   await $.get("/nnplus/user/checkExist", {

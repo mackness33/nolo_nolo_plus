@@ -19,10 +19,15 @@ class computer_services extends baseService {
     }
 
     const result = await super.find(query);
-    // for (let i = 0; i < some.length; i++) {
-    //   logger.info(some[i].toObject());
-    // }
     return result;
+  }
+
+  async getDiscount(computerId) {
+    const discountPercentage = await super.findOne(
+      { _id: computerId },
+      "discount price"
+    );
+    return discountPercentage;
   }
 }
 
