@@ -3,11 +3,13 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import App2 from "./App2";
 import Navbar from './navbar.js'
+// import Drawer from './drawer.js'
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 ReactDOM.render(
   <React.StrictMode>
-   <Navbar />
+    <Navbar />
+    <Drawer />
     <Router>
       <Routes>
         <Route path='nn+'>

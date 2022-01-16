@@ -83,7 +83,6 @@ const Pages = () => {
       sx={{
         flexGrow: 1,
         display: { xs: 'none', md: 'flex' },
-        float: 'right'
       }}
     >
       {pages.map((page) => (
