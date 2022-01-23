@@ -9,6 +9,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
+import SearchButton from './searchButton';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -20,20 +21,26 @@ import DatePicker from './datePicker';
 
 const Searchbar = () => {
   return (
-      <Container maxWidth="xl">
-        <FormControl>
-          <Stack spacing={2} direction="row">
+      <Container >
+        { /* EXTRA SMALL SIZE */ }
+        <FormControl fullWidth sx={{ m: 10, flexGrow: 5, display: {xs: 'flex', md: 'flex'} }}>
+          <Stack
+            direction={{ xs: 'column', md: 'row' }}
+            justifyContent="space-evenly"
+            alignItems="center"
+            spacing={1}
+          >
             <MultiSelectChip>
             </MultiSelectChip>
             <MultiSelectChip>
             </MultiSelectChip>
-            <DatePicker>
+            <DatePicker xs={'flex'} md={'flex'}>
             </DatePicker>
-            <DatePicker>
+            <DatePicker xs={'flex'} md={'flex'}>
             </DatePicker>
-            <Button variant="contained">
+            <SearchButton variant="contained" xs={'flex'} md={'flex'}>
               SEARCH
-            </Button>
+            </SearchButton>
           </Stack>
         </FormControl>
       </Container>

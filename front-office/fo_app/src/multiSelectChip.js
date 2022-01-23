@@ -23,6 +23,12 @@ const names = [
   "David",
   "Fabio",
   "Alessandro",
+  "Ludovico",
+  "Michelangelo",
+  "Giovanni",
+  "a",
+  "b",
+  "c",
 ];
 
 function getStyles(name, personName, theme) {
@@ -34,9 +40,28 @@ function getStyles(name, personName, theme) {
   };
 }
 
-const MultipleSelectChip = () => {
-  const theme = useTheme();
+// const Logo = ({first = 'none', second = 'none', attr}) => {
+//   const [small, setSmall] = React.useState(first);
+//   const [medium, setMedium] = React.useState(second);
+//   attr.display.xs = first
+//   attr.display.md = second
+//
+//   // TODO: replace the logo with a real image
+//   return <Typography
+//     variant="h6"
+//     noWrap
+//     component="div"
+//     sx={{ ...attr }}
+//   >
+//     LOGO
+//   </Typography>;
+// }
+
+const MultipleSelectChip = ({xs = 'none', md = 'none'}) => {
+  const [small, setSmall] = React.useState(xs);
+  const [medium, setMedium] = React.useState(md);
   const [personName, setPersonName] = React.useState([]);
+  const theme = useTheme();
 
   const handleChange = (event) => {
     const {
@@ -50,11 +75,11 @@ const MultipleSelectChip = () => {
 
   return (
     <div>
-      <FormControl sx={{ m: 1, width: 300 }}>
-        <InputLabel id="demo-multiple-chip-label">Chip</InputLabel>
+      <FormControl sx={{minWidth:100, maxWidth:300}}>
+        <InputLabel id="search-multiple-chip-label">Chip</InputLabel>
         <Select
-          labelId="demo-multiple-chip-label"
-          id="demo-multiple-chip"
+          labelId="search-multiple-chip-label"
+          id="search-multiple-chip"
           multiple
           value={personName}
           onChange={handleChange}
