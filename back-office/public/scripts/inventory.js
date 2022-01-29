@@ -324,66 +324,37 @@ $("#addModal").on("hide.bs.modal", function (event) {
 $("#bookingModal").on("show.bs.modal", async function (event) {
   autocompleteUser();
   $("#addComputer").val(event.relatedTarget.dataset.id);
-  var alreadyBooked = [];
-  console.log(event.relatedTarget.dataset.id);
   const computerId = event.relatedTarget.dataset.id;
-  await $.ajax({
-    method: "GET",
-    url: "/nnplus/booking/getBookingsByItem",
-    data: { id: event.relatedTarget.dataset.id },
-  })
-    .done((data) => {
-      alreadyBooked = data;
-      console.log(alreadyBooked.length);
-    })
-    .fail((err) => {
-      console.error(err);
-    });
+  const alreadyBooked = await getBookedDates(computerId);
 
-  function dateFilter(date) {
-    for (let i = 0; i < alreadyBooked.length; i++) {
-      const begin = new Date(alreadyBooked[i].begin).getTime();
-      const end = new Date(alreadyBooked[i].end).getTime();
-      var current = new Date(date);
-      current.setTime(current.getTime() + 1 * 60 * 60 * 1000);
-      current = current.getTime();
-      if (begin <= current && current <= end) {
-        return [false];
-      }
-    }
-    return [true];
-  }
+  // function dateFilter(date) {
+  //   console.log(alreadyBooked);
+  //   for (let i = 0; i < alreadyBooked.length; i++) {
+  //     const begin = new Date(alreadyBooked[i].begin).getTime();
+  //     const end = new Date(alreadyBooked[i].end).getTime();
+  //     var current = new Date(date);
+  //     current.setTime(current.getTime() + 1 * 60 * 60 * 1000);
+  //     current = current.getTime();
+  //     if (begin <= current && current <= end) {
+  //       console.log(alreadyBooked[i].begin);
+  //       return [false];
+  //     }
+  //   }
+  //   return [true];
+  // }
 
-  var dateFormat = "mm/dd/yy",
-    from = $("#addStartDate")
-      .datepicker({
-        changeMonth: true,
-        numberOfMonths: 1,
-        beforeShowDay: dateFilter,
-      })
-      .on("change", function () {
-        to.datepicker("option", "minDate", getDate(this));
-      }),
-    to = $("#addEndDate")
-      .datepicker({
-        changeMonth: true,
-        numberOfMonths: 1,
-        beforeShowDay: dateFilter,
-      })
-      .on("change", function () {
-        from.datepicker("option", "maxDate", getDate(this));
-      });
+  // from = $("#addStartDate").datepicker({
+  //   changeMonth: true,
+  //   numberOfMonths: 1,
+  //   beforeShowDay: dateFilter,
+  // });
 
-  function getDate(element) {
-    var date;
-    try {
-      date = $.datepicker.parseDate(dateFormat, element.value);
-    } catch (error) {
-      date = null;
-    }
-
-    return date;
-  }
+  // to = $("#addEndDate").datepicker({
+  //   changeMonth: true,
+  //   numberOfMonths: 1,
+  //   beforeShowDay: dateFilter,
+  // });
+  setUpDatepicker(alreadyBooked);
 
   $("body").on("click", "#evalBtn", async (event) => {
     var beginChoice = $("#addStartDate").datepicker("getDate").getTime();
@@ -405,7 +376,7 @@ $("#bookingModal").on("show.bs.modal", async function (event) {
     }).done((data) => {
       user = data;
     });
-    if (user && valid) {
+    if (user && valid && beginChoice < endChoice) {
       console.log($("#addStartDate").val() + "   " + $("#addEndDate").val());
 
       await $.ajax({
@@ -433,8 +404,57 @@ $("#bookingModal").on("show.bs.modal", async function (event) {
   });
 });
 
+async function getBookedDates(id) {
+  var alreadyBooked = [];
+  await $.ajax({
+    method: "GET",
+    url: "/nnplus/booking/getBookingsByItem",
+    data: { id },
+  })
+    .done((data) => {
+      alreadyBooked = data;
+      console.log(alreadyBooked);
+    })
+    .fail((err) => {
+      console.error(err);
+    });
+
+  return alreadyBooked;
+}
+
+function setUpDatepicker(alreadyBooked) {
+  $("#addStartDate").datepicker("destroy");
+  $("#addEndDate").datepicker("destroy");
+  function dateFilter(date) {
+    for (let i = 0; i < alreadyBooked.length; i++) {
+      const begin = new Date(alreadyBooked[i].begin).getTime();
+      const end = new Date(alreadyBooked[i].end).getTime();
+      var current = new Date(date);
+      current.setTime(current.getTime() + 1 * 60 * 60 * 1000);
+      current = current.getTime();
+      if (begin <= current && current <= end) {
+        return [false];
+      }
+    }
+    return [true];
+  }
+
+  from = $("#addStartDate").datepicker({
+    changeMonth: true,
+    numberOfMonths: 1,
+    beforeShowDay: dateFilter,
+  });
+
+  to = $("#addEndDate").datepicker({
+    changeMonth: true,
+    numberOfMonths: 1,
+    beforeShowDay: dateFilter,
+  });
+}
+
 async function bookingPreview(user, computer, begin, end) {
   // clean everything at every reload
+
   $("#addBookingBtn").removeClass("disabled");
   $("body").off("click", "#pointsBtn");
   $("body").off("click", "#addDiscountBtn");
@@ -574,40 +594,44 @@ async function bookingPreview(user, computer, begin, end) {
 
   $("body").on("submit", "#addBookingForm", async (event) => {
     event.preventDefault();
-    console.log("ciaone");
+
+    const correctBegin = new Date(begin);
+    correctBegin.setTime(correctBegin.getTime() + 1 * 60 * 60 * 1000);
+    const correctEnd = new Date(end);
+    correctEnd.setTime(correctEnd.getTime() + 1 * 60 * 60 * 1000);
+
     const booking = {
       user: user._id,
       computer: computer._id,
-      begin: begin,
-      end: end,
+      begin: correctBegin,
+      end: correctEnd,
       discounts: discountList,
       starting_price: computer.price * days,
       final_price: price,
       note: $("#addNote").val(),
       points: usedPoints,
     };
-    console.log(booking);
     await $.ajax({
       method: "POST",
       url: "/nnplus/booking/addOne",
       data: { data: JSON.stringify(booking) },
     })
       .done((data) => {
-        console.log(data);
         showAlert(
           "Noleggio creato con successo!",
-          $("#addBookingForm")[0],
+          $("#addBookingBtn")[0].parentElement,
           true
         );
         $("#bookingPreview").prop("hidden", true);
         $("#addBookingForm")[0].reset();
         $("#addComputer").val(computer._id);
-
         $("#addBookingBtn").addClass("disabled");
       })
       .fail((err) => {
         console.log(err);
       });
+    let alreadyBooked = await getBookedDates(computer._id);
+    setUpDatepicker(alreadyBooked);
   });
 }
 
@@ -637,6 +661,9 @@ function daysNumber(start, end) {
 }
 
 $("#bookingModal").on("hide.bs.modal", async function (event) {
+  $("#addBookingBtn").addClass("disabled");
+  $("#bookingPreview").prop("hidden", true);
+  $("#addBookingForm")[0].reset();
   $("body").off("click", "#evalBtn");
 });
 
@@ -1004,6 +1031,7 @@ async function getModalData(item, id) {
     gpu: $("#addGpu").val(),
     ram: $("#addRam").val(),
     price: $("#addPrice").val(),
+    discount: $("#addDiscount").val(),
     description: $("#addDescr").val(),
     condition: $("#addCondition").val(),
     note: $("#addNote").val(),

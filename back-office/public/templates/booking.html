@@ -71,10 +71,6 @@
           type="button" role="tab" aria-controls="addTab" aria-selected="true">Aggiungi prenotazioni</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link main-nav" id="searchPill" data-bs-toggle="pill" data-bs-target="#searchTab"
-          type="button" role="tab" aria-controls="searchTab" aria-selected="false">Cerca prenotazioni</button>
-      </li>
-      <li class="nav-item" role="presentation">
         <button class="nav-link main-nav" id="managePill" data-bs-toggle="pill" data-bs-target="#manageTab"
           type="button" role="tab" aria-controls="manageTab" aria-selected="false">Gestione prenotazioni</button>
       </li>
@@ -163,22 +159,15 @@
         </div>
 
 
-
-
-
-
-        <!-- search tab -->
-
-        <div class="tab-pane fade" id="searchTab" role="tabpanel" aria-labelledby="searchPill">secondo</div>
-
-
-
-
-
-
         <!-- manage tab -->
 
-        <div class="tab-pane fade" id="manageTab" role="tabpanel" aria-labelledby="managePill">terzo</div>
+        <div class="tab-pane fade" id="manageTab" role="tabpanel" aria-labelledby="managePill">
+          <h5>Gestisci prenotazioni</h5>
+          <form id="searchBookingForm">
+            <input type="text">
+            <button>Cerca</button>
+          </form>
+        </div>
       </div>
     </div>
   </main>
