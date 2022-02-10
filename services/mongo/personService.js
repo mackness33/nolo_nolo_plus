@@ -9,6 +9,7 @@ class personService extends baseService {
       ...(params.surname ? { "person.surname": params.surname } : {}),
       ...(params.password ? { "person.password": params.password } : {}),
       ...(params.role ? { "person.role": params.role } : {}),
+      ...(params.picture ? { "person.picture": params.picture } : {}),
     };
     return person;
   }

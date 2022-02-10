@@ -301,6 +301,7 @@ function setUpEdit(user) {
 
 async function addUser() {
   const inputs = addUserForm.elements;
+  const img = await getdataUrl(inputs[7].files[0]);
 
   const user = {
     name: inputs[0].value.toLowerCase(),
@@ -310,6 +311,7 @@ async function addUser() {
     mail: inputs[4].value,
     status: inputs[5].value,
     points: inputs[6].value,
+    picture: img,
     role: 3,
   };
   await $.get("/nnplus/user/checkExist", {
@@ -481,4 +483,14 @@ function checkSession(evt, xhr, options) {
   if (xhr.getResponseHeader("content-type").includes("html")) {
     window.location.href = "/nnplus/login";
   }
+}
+
+function getdataUrl(img) {
+  const reader = new FileReader();
+  return new Promise((resolve, reject) => {
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+    reader.readAsDataURL(img);
+  });
 }
