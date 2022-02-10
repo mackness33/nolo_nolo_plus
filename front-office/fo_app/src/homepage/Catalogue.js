@@ -60,13 +60,28 @@ export default function SimpleContainer() {
 
 const FilterAccordion = () => {
   const [checked, setChecked] = React.useState([]);
-  const [checkedN, setCheckedN] = React.useState({ cpu: [], gpu: [], ram: [] });
+  const [checkedN, setCheckedN] = React.useState({
+    cpu: [],
+    gpu: [],
+    ram: [],
+    brand: [],
+    type: [],
+  });
   const [open, setOpen] = React.useState(false);
   const [openN, setOpenN] = React.useState([false, false, false]);
   const [open1, setOpen1] = React.useState(false);
+  const [components, setComponents] = React.useState({
+    cpu: [],
+    gpu: [],
+    ram: [],
+    brand: [],
+    type: [],
+  });
+  const mobile = useMediaQuery("(max-width: 768px)");
+
   const { computers, setComputers } = React.useContext(ComputerContext);
 
-  const filters = ["cpu", "gpu", "ram"];
+  const filters = ["cpu", "gpu", "ram", "brand", "type"];
 
   const handleToggle = (value) => () => {
     const newChecked = [...checked];
@@ -84,6 +99,11 @@ const FilterAccordion = () => {
     setOpen(!open);
   };
 
+  const getShownComponents = () => {
+    let components;
+    for (let i = 0; i < computers.length; i++) {}
+  };
+
   const handleToggleN = (label) => () => {
     // const newChecked = [...checked];
     // if (checked.indexOf(value) !== -1) {
@@ -94,7 +114,7 @@ const FilterAccordion = () => {
 
     // setChecked(newChecked);
     // console.log(checked);
-    console.log(checkedN[label]);
+    console.log(label);
   };
 
   const handleClickN = (i) => {
@@ -130,13 +150,20 @@ const FilterAccordion = () => {
       </Button>
       <Collapse in={open1} timeout='auto' unmountOnExit>
         <List
-          sx={{
-            width: "100%",
-            bgcolor: "background.paper",
-            boxShadow: 3,
-            borderRadius: "0.2rem",
-            display: "flex",
-          }}
+          sx={[
+            {
+              width: "100%",
+              bgcolor: "background.paper",
+              boxShadow: 3,
+              borderRadius: "0.2rem",
+              display: "flex",
+              flexWrap: "wrap",
+            },
+            mobile && {
+              flexWrap: "nowrap",
+              flexDirection: "column",
+            },
+          ]}
           dense
         >
           {[0, 1, 2, 3].map((value) => {
@@ -197,9 +224,12 @@ const FilterAccordion = () => {
                   }}
                 >
                   <ListItemIcon>
-                    <InboxIcon />
+                    <BsCpu />
                   </ListItemIcon>
-                  <ListItemText id='cpuSelect' primary={label} />
+                  <ListItemText
+                    id={`${label}Select`}
+                    primary={label.toUpperCase()}
+                  />
                   {openN[filters.indexOf(label)] ? (
                     <ExpandLess />
                   ) : (
@@ -211,11 +241,30 @@ const FilterAccordion = () => {
                   timeout='auto'
                   unmountOnExit
                 >
-                  <List component='div' dense>
+                  <List
+                    component='div'
+                    dense
+                    sx={[
+                      {
+                        maxHeight: "10rem",
+                        overflowY: "scroll",
+                        maxWidth: "15rem",
+                      },
+                      mobile && {
+                        maxWidth: "none",
+                      },
+                    ]}
+                  >
                     <ListItem>
-                      <ListItemButton
-                        onClick={handleToggleN(label)}
-                      ></ListItemButton>
+                      <ListItemButton onClick={handleToggleN(label)}>
+                        <Checkbox
+                          edge='start'
+                          // checked={checked.indexOf(value) !== -1}
+                          tabIndex={-1}
+                          // inputProps={{ "aria-labelledby": labelId }}
+                        />
+                        <ListItemText primary='wow' />
+                      </ListItemButton>
                     </ListItem>
                   </List>
                 </Collapse>
@@ -264,7 +313,8 @@ const Computercard = ({ computer }) => {
   return (
     <Card
       sx={{
-        minWidth: "18rem",
+        minWidth: "22rem",
+        maxWidth: "22rem",
         minHeight: "35rem",
         margin: "1rem",
         display: "flex",
@@ -283,47 +333,71 @@ const Computercard = ({ computer }) => {
         alt={`${computer.brand} ${computer.model}`}
       />
       <Divider />
-      <CardContent>
-        <Typography
-          sx={{
-            color: "text.secondary",
-            fontWeight: "bold",
-            textTransform: "capitalize",
-          }}
-          variant='h7'
-        >
-          {computer.brand}
-        </Typography>
-        <Typography
-          sx={{ fontWeight: "bold", textTransform: "capitalize" }}
-          gutterBottom
-          variant='h5'
-          component='div'
-        >
-          {computer.model}
-        </Typography>
-        <Typography variant='subtitle1' color='text.secondary'>
-          <List disablePadding dense>
-            <ListItem disablePadding>
-              <ListItemIcon sx={{ display: "flex", justifyContent: "center" }}>
-                <BsCpu />
-              </ListItemIcon>
-              <ListItemText primary={computer.cpu} />
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemIcon sx={{ display: "flex", justifyContent: "center" }}>
-                <GiProcessor />
-              </ListItemIcon>
-              <ListItemText primary={computer.gpu} />
-            </ListItem>
-            <ListItem disablePadding>
-              <ListItemIcon sx={{ display: "flex", justifyContent: "center" }}>
-                <FaMemory />
-              </ListItemIcon>
-              <ListItemText primary={computer.ram} />
-            </ListItem>
-          </List>
-        </Typography>
+      <CardContent
+        sx={{
+          height: "80%",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        <Container>
+          <Typography
+            sx={{
+              color: "text.secondary",
+              fontWeight: "bold",
+              textTransform: "capitalize",
+            }}
+            variant='h7'
+          >
+            {computer.brand}
+          </Typography>
+          <Typography
+            sx={{ fontWeight: "bold", textTransform: "capitalize" }}
+            gutterBottom
+            variant='h5'
+            component='div'
+          >
+            {computer.model}
+          </Typography>
+          <Typography variant='subtitle1' color='text.secondary'>
+            <List disablePadding dense>
+              <ListItem disablePadding>
+                <ListItemIcon
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <BsCpu />
+                </ListItemIcon>
+                <ListItemText
+                  sx={{ textTransform: "uppercase" }}
+                  primary={computer.cpu}
+                />
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemIcon
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <GiProcessor />
+                </ListItemIcon>
+                <ListItemText
+                  sx={{ textTransform: "uppercase" }}
+                  primary={computer.gpu}
+                />
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemIcon
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <FaMemory />
+                </ListItemIcon>
+                <ListItemText
+                  sx={{ textTransform: "uppercase" }}
+                  primary={computer.ram}
+                />
+              </ListItem>
+            </List>
+          </Typography>
+        </Container>
         <Container
           sx={{
             height: "2.5rem",
@@ -357,14 +431,14 @@ const Computercard = ({ computer }) => {
             <Typography
               sx={{ display: "flex", alignItems: "flex-end", ml: "0.3rem" }}
             >
-              $
+              $ / giorno
             </Typography>
           </Typography>
         </Container>
       </CardContent>
       <Divider />
       <CardActions
-        sx={{ display: "flex", justifyContent: "center", flexGrow: 2 }}
+        sx={{ display: "flex", justifyContent: "center", flexGrow: 1 }}
       >
         <Button size='large' variant='contained'>
           Prenota
