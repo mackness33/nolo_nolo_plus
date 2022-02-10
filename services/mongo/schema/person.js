@@ -22,6 +22,9 @@ const person_schema = mongoose.Schema({
     type: Number,
     required: true,
   },
+  picture: {
+    type: String,
+  },
 });
 
 module.exports = person_schema;
