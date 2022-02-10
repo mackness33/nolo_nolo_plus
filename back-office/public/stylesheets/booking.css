@@ -177,11 +177,46 @@ main {
   padding-right: 0.5rem;
 }
 
+#topContainer {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  display: flex;
+  flex-direction: column;
+  max-width: 45rem;
+}
+
+#searchBookingForm,
+#filterBookingForm {
+  display: flex;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+#searchBookingForm > button,
+#filterBookingForm > button {
+  margin-left: 1rem;
+}
+
+.searchFilter > label {
+  margin-left: 0.1rem;
+  margin-right: 1rem;
+}
+
 /* tablet/mobile responsive */
 
 @media only screen and (max-width: 768px) {
   .nav-pills {
     flex-direction: column;
     margin-bottom: 1.5rem !important;
+  }
+
+  #filterBookingForm {
+    flex-direction: column;
+  }
+
+  #filterBookingForm > div {
+    margin-bottom: 0.5rem;
   }
 }

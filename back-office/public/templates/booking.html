@@ -163,11 +163,32 @@
 
         <div class="tab-pane fade" id="manageTab" role="tabpanel" aria-labelledby="managePill">
           <h5>Gestisci prenotazioni</h5>
-          <form id="searchBookingForm">
-            <input type="text">
-            <button>Cerca</button>
-          </form>
+          <div id="topContainer">
+            <form id="searchBookingForm">
+              <input class="form-control" placeholder="Mail utente" type="text">
+              <button class="btn btn-primary">Cerca prenotazioni</button>
+            </form>
+            <form id="filterBookingForm">
+              <div class="searchFilter">
+                <input class="form-check-input" type="checkbox" id="futureBookings">
+                <label class="form-check-label" for="futureBookings">Prenotazioni future</label>
+              </div>
+              <div class="searchFilter">
+                <input class="form-check-input" type="checkbox" id="currentBookings">
+                <label class="form-check-label" for="currentBookings">Prenotazioni correnti</label>
+              </div>
+              <div class="searchFilter">
+                <input class="form-check-input" type="checkbox" id="pastBookings">
+                <label class="form-check-label" for="pastBookings">Prenotazioni passate</label>
+              </div>
+              <button class="btn btn-primary">Applica filtri</button>
+            </form>
+          </div>
         </div>
+
+
+
+
       </div>
     </div>
   </main>
