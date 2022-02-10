@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // app.use('/nn+1', back_office);
 app.use("/nnplus", back_office);
-app.use("/nolo-nolo", front_office);
+app.use("/front", front_office);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
