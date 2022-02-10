@@ -24,6 +24,7 @@ import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
 
 import Button from "@mui/material/Button";
+import { ComputerContext } from "./HomeContext";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -54,6 +55,8 @@ export default function Searchbar2() {
 
   const theme = useTheme();
   const [typeName, settypeName] = React.useState([]);
+
+  const { computers, setComputers } = React.useContext(ComputerContext);
 
   const handleBrandChange = (event) => {
     const {
@@ -95,10 +98,12 @@ export default function Searchbar2() {
       },
     });
     console.log(res.data);
+    setComputers(res.data);
   };
 
   React.useEffect(async () => {
     let computers = await axios.get("http://localhost:8000/front/home/getAll");
+    setComputers(computers.data);
     let res = await axios.get(
       "http://localhost:8000/front/home/getAllComponents"
     );

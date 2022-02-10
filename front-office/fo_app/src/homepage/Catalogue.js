@@ -28,7 +28,15 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 
+import Divider from "@mui/material/Divider";
+
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { ComputerContext } from "./HomeContext";
+
+import { BsCpu } from "react-icons/bs";
+import { GiProcessor } from "react-icons/gi";
+import { FaMemory } from "react-icons/fa";
+import { fontSize, textTransform } from "@mui/system";
 
 export default function SimpleContainer() {
   return (
@@ -52,8 +60,13 @@ export default function SimpleContainer() {
 
 const FilterAccordion = () => {
   const [checked, setChecked] = React.useState([]);
+  const [checkedN, setCheckedN] = React.useState({ cpu: [], gpu: [], ram: [] });
   const [open, setOpen] = React.useState(false);
+  const [openN, setOpenN] = React.useState([false, false, false]);
   const [open1, setOpen1] = React.useState(false);
+  const { computers, setComputers } = React.useContext(ComputerContext);
+
+  const filters = ["cpu", "gpu", "ram"];
 
   const handleToggle = (value) => () => {
     const newChecked = [...checked];
@@ -69,6 +82,25 @@ const FilterAccordion = () => {
 
   const handleClick = () => {
     setOpen(!open);
+  };
+
+  const handleToggleN = (label) => () => {
+    // const newChecked = [...checked];
+    // if (checked.indexOf(value) !== -1) {
+    //   newChecked.splice(checked.indexOf(value), 1);
+    // } else {
+    //   newChecked.push(value);
+    // }
+
+    // setChecked(newChecked);
+    // console.log(checked);
+    console.log(checkedN[label]);
+  };
+
+  const handleClickN = (i) => {
+    let tmp = [...openN];
+    tmp[i] = !tmp[i];
+    setOpenN(tmp);
   };
 
   return (
@@ -101,11 +133,11 @@ const FilterAccordion = () => {
           sx={{
             width: "100%",
             bgcolor: "background.paper",
-            display: "flex",
-            flexWrap: "wrap",
             boxShadow: 3,
             borderRadius: "0.2rem",
+            display: "flex",
           }}
+          dense
         >
           {[0, 1, 2, 3].map((value) => {
             const labelId = `checkbox-list-label-${value}`;
@@ -122,37 +154,69 @@ const FilterAccordion = () => {
                   {open ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
                 <Collapse in={open} timeout='auto' unmountOnExit>
-                  <List component='div' disablePadding>
-                    <ListItemButton
-                      sx={{ pl: 4 }}
-                      onClick={handleToggle(value)}
-                    >
-                      <ListItemIcon>
-                        <Checkbox
-                          edge='start'
-                          checked={checked.indexOf(value) !== -1}
-                          tabIndex={-1}
-                          disableRipple
-                          inputProps={{ "aria-labelledby": labelId }}
-                        />
-                      </ListItemIcon>
-                      <ListItemText primary='Starred' />
-                    </ListItemButton>
-                    <ListItemButton
-                      sx={{ pl: 4 }}
-                      onClick={handleToggle(value)}
-                    >
-                      <ListItemIcon>
-                        <Checkbox
-                          edge='start'
-                          checked={checked.indexOf(value) !== -1}
-                          tabIndex={-1}
-                          disableRipple
-                          inputProps={{ "aria-labelledby": labelId }}
-                        />
-                      </ListItemIcon>
-                      <ListItemText primary='Starred' />
-                    </ListItemButton>
+                  <List component='div' dense>
+                    <ListItem>
+                      <ListItemButton onClick={handleToggle(value)}>
+                        <ListItemIcon>
+                          <Checkbox
+                            edge='start'
+                            checked={checked.indexOf(value) !== -1}
+                            tabIndex={-1}
+                            disableRipple
+                            inputProps={{ "aria-labelledby": labelId }}
+                          />
+                        </ListItemIcon>
+                        <ListItemText primary='Starred' />
+                      </ListItemButton>
+                    </ListItem>
+                    <ListItem>
+                      <ListItemButton onClick={handleToggle(value)}>
+                        <ListItemIcon>
+                          <Checkbox
+                            edge='start'
+                            checked={checked.indexOf(value) !== -1}
+                            tabIndex={-1}
+                            disableRipple
+                            inputProps={{ "aria-labelledby": labelId }}
+                          />
+                        </ListItemIcon>
+                        <ListItemText primary='Starred' />
+                      </ListItemButton>
+                    </ListItem>
+                  </List>
+                </Collapse>
+              </div>
+            );
+          })}
+          {filters.map((label) => {
+            return (
+              <div>
+                <ListItemButton
+                  onClick={() => {
+                    handleClickN(filters.indexOf(label));
+                  }}
+                >
+                  <ListItemIcon>
+                    <InboxIcon />
+                  </ListItemIcon>
+                  <ListItemText id='cpuSelect' primary={label} />
+                  {openN[filters.indexOf(label)] ? (
+                    <ExpandLess />
+                  ) : (
+                    <ExpandMore />
+                  )}
+                </ListItemButton>
+                <Collapse
+                  in={openN[filters.indexOf(label)]}
+                  timeout='auto'
+                  unmountOnExit
+                >
+                  <List component='div' dense>
+                    <ListItem>
+                      <ListItemButton
+                        onClick={handleToggleN(label)}
+                      ></ListItemButton>
+                    </ListItem>
                   </List>
                 </Collapse>
               </div>
@@ -166,6 +230,8 @@ const FilterAccordion = () => {
 
 const CardContainer = () => {
   const mobile = useMediaQuery("(max-width: 768px)");
+  const { computers, setComputers } = React.useContext(ComputerContext);
+
   return (
     <Box>
       <Container
@@ -176,53 +242,133 @@ const CardContainer = () => {
             ml: "0rem",
             mr: "0rem",
             minWidth: "100%",
-          },
-          mobile && {
             justifyContent: "center",
           },
         ]}
         disableGutters
       >
-        <Computercard />
-        <Computercard />
-        <Computercard />
-        <Computercard />
-        <Computercard />
-        <Computercard />
-        <Computercard />
+        {computers?.map((computer) => {
+          // console.log(computer);
+          return <Computercard computer={computer} />;
+        })}
       </Container>
     </Box>
   );
 };
 
-const Computercard = () => {
+const Computercard = ({ computer }) => {
   const res = useMediaQuery("(max-width: 768px)");
+
+  console.log(computer);
 
   return (
     <Card
       sx={{
-        maxWidth: "15rem",
+        minWidth: "18rem",
+        minHeight: "35rem",
         margin: "1rem",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <CardMedia
+        sx={[
+          {
+            height: "15rem",
+            objectFit: "contain",
+          },
+        ]}
         component='img'
-        height='140'
-        image='https://www.gettyimages.it/gi-resources/images/500px/983794168.jpg'
-        alt='green iguana'
+        src={computer.image}
+        alt={`${computer.brand} ${computer.model}`}
       />
+      <Divider />
       <CardContent>
-        <Typography gutterBottom variant='h5' component='div'>
-          Lizard
+        <Typography
+          sx={{
+            color: "text.secondary",
+            fontWeight: "bold",
+            textTransform: "capitalize",
+          }}
+          variant='h7'
+        >
+          {computer.brand}
         </Typography>
-        <Typography variant='body2' color='text.secondary'>
-          Lizards are a widespread group of squamate reptiles, with over 6,000
-          species, ranging across all continents except Antarctica
+        <Typography
+          sx={{ fontWeight: "bold", textTransform: "capitalize" }}
+          gutterBottom
+          variant='h5'
+          component='div'
+        >
+          {computer.model}
         </Typography>
+        <Typography variant='subtitle1' color='text.secondary'>
+          <List disablePadding dense>
+            <ListItem disablePadding>
+              <ListItemIcon sx={{ display: "flex", justifyContent: "center" }}>
+                <BsCpu />
+              </ListItemIcon>
+              <ListItemText primary={computer.cpu} />
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemIcon sx={{ display: "flex", justifyContent: "center" }}>
+                <GiProcessor />
+              </ListItemIcon>
+              <ListItemText primary={computer.gpu} />
+            </ListItem>
+            <ListItem disablePadding>
+              <ListItemIcon sx={{ display: "flex", justifyContent: "center" }}>
+                <FaMemory />
+              </ListItemIcon>
+              <ListItemText primary={computer.ram} />
+            </ListItem>
+          </List>
+        </Typography>
+        <Container
+          sx={{
+            height: "2.5rem",
+            display: "flex",
+            justifyContent: "center",
+            my: "0.5rem",
+          }}
+        >
+          {computer.discount !== 0 ? (
+            <Typography
+              sx={{ fontSize: 20, mr: "0.5rem", color: "text.secondary" }}
+            >
+              <del>{computer.price.toFixed(2)} $</del>
+            </Typography>
+          ) : (
+            <></>
+          )}
+          <Typography
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              fontSize: 45,
+              fontWeight: "bold",
+              fontStyle: "italic",
+            }}
+          >
+            {(
+              computer.price -
+              (computer.discount / 100) * computer.price
+            ).toFixed(2)}
+            <Typography
+              sx={{ display: "flex", alignItems: "flex-end", ml: "0.3rem" }}
+            >
+              $
+            </Typography>
+          </Typography>
+        </Container>
       </CardContent>
-      <CardActions>
-        <Button size='small'>Share</Button>
-        <Button size='small'>Learn More</Button>
+      <Divider />
+      <CardActions
+        sx={{ display: "flex", justifyContent: "center", flexGrow: 2 }}
+      >
+        <Button size='large' variant='contained'>
+          Prenota
+        </Button>
       </CardActions>
     </Card>
   );
