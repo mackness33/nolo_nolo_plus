@@ -5,6 +5,7 @@ import App2 from "./App2";
 import Navbar from "./navbar.js";
 import Container from "@mui/material/Container";
 
+import Profile from "./profile/Profile";
 import Home from "./homepage/HomeContainer";
 
 ReactDOM.render(
@@ -19,7 +20,8 @@ ReactDOM.render(
         minHeight: "100vh",
       }}
     >
-      <Home />
+    { /*<Profile /> */ }
+      <Profile />
     </Container>
   </React.StrictMode>,
   document.getElementById("root")

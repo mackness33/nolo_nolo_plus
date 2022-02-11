@@ -102,12 +102,13 @@ export default function Searchbar2() {
   };
 
   React.useEffect(async () => {
-    let computers = await axios.get("http://localhost:8000/front/home/getAll");
-    setComputers(computers.data);
-    let res = await axios.get(
-      "http://localhost:8000/front/home/getAllComponents"
-    );
-    setComponents(res.data);
+    //let computers = await axios.get("http://localhost:8000/front/home/getAll");
+    //setComputers(computers.data);
+    //console.log(computers)
+    //let res = await axios.get(
+    //  "http://localhost:8000/front/home/getAllComponents"
+    //);
+    //setComponents(res.data);
   }, []);
 
   return (

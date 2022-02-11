@@ -23,13 +23,13 @@ router.use(async (req, res, next) => {
 
 /* GET users listing. */
 router.get("/", async function (req, res, next) {
-  // const em = await empService.insertOne({
-  //   "person.name": "mario",
-  //   "person.surname": "rossi",
-  //   "person.password": "cabbio",
-  //   "person.mail": "jojo@brando",
-  //   "person.role": 1,
-  // });
+   // const em = await empService.insertOne({
+   //   "person.name": "mario",
+   //   "person.surname": "rossi",
+   //   "person.password": "cabbio",
+   //   "person.mail": "jojo@brando",
+   //   "person.role": 1,
+   // });
   const empl = await empService.findOne(
     { "person.mail": req.session.mail },
     "_id"
