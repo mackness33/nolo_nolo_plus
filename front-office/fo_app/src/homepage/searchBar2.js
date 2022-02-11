@@ -26,6 +26,8 @@ import DatePicker from "@mui/lab/DatePicker";
 import Button from "@mui/material/Button";
 import { ComputerContext, ComputerBackup } from "./HomeContext";
 
+import Slide from "@mui/material/Fade";
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -114,8 +116,8 @@ export default function Searchbar2() {
 
   return (
     <>
-      <form>
-        <Container maxWidth='xl' sx={{ mt: "1rem" }}>
+      <Slide direction='up' in={true}>
+        <Container maxWidth='lg' sx={{ mt: "1rem" }}>
           <Paper
             elevation={5}
             sx={[
@@ -302,7 +304,7 @@ export default function Searchbar2() {
             </Container>
           </Paper>
         </Container>
-      </form>
+      </Slide>
     </>
   );
 }

@@ -1,4 +1,5 @@
 import * as React from "react";
+import CardContainer from "./CardContainer";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
@@ -40,18 +41,25 @@ import { SiBrandfolder } from "react-icons/si";
 import { GrNetwork } from "react-icons/gr";
 import { fontSize, textTransform } from "@mui/system";
 
+const filters = ["cpu", "gpu", "ram", "brand", "type"];
+
 export default function SimpleContainer() {
+  const mobile = useMediaQuery("(max-width: 768px)");
+
   return (
     <React.Fragment>
       <CssBaseline />
 
       <Container
         maxWidth='xl'
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          mt: "2rem",
-        }}
+        sx={[
+          {
+            display: "flex",
+            flexDirection: "column",
+            mt: "2rem",
+            px: 0,
+          },
+        ]}
       >
         <FilterAccordion />
         <CardContainer />
@@ -68,7 +76,6 @@ const FilterAccordion = () => {
     brand: [],
     type: [],
   };
-  const filters = ["cpu", "gpu", "ram", "brand", "type"];
 
   const [checkedN, setCheckedN] = React.useState(defaultFilters);
   const [openN, setOpenN] = React.useState([false, false, false, false, false]);
@@ -156,12 +163,17 @@ const FilterAccordion = () => {
           in={open1}
           sx={mobile && { width: "100%" }}
           timeout='auto'
+          addEndListener={() => {
+            if (!open1) {
+              setComputers(computersB);
+              setCheckedN(defaultFilters);
+            }
+          }}
           unmountOnExit
         >
           <List
             sx={[
               {
-                width: "100%",
                 bgcolor: "background.paper",
                 boxShadow: 3,
                 borderRadius: "0.2rem",
@@ -192,7 +204,13 @@ const FilterAccordion = () => {
                     </ListItemIcon>
                     <ListItemText
                       id={`${label}Select`}
-                      primary={label.toUpperCase()}
+                      primary={
+                        label !== "brand" && label !== "type"
+                          ? label.toUpperCase()
+                          : label === "brand"
+                          ? "MARCA"
+                          : "TIPO"
+                      }
                     />
                     {openN[filters.indexOf(label)] ? (
                       <ExpandLess />
@@ -201,28 +219,29 @@ const FilterAccordion = () => {
                     )}
                   </ListItemButton>
                   <Collapse in={openN[filters.indexOf(label)]} timeout='auto'>
-                    <List
-                      component='div'
-                      dense
-                      sx={[
-                        {
-                          maxHeight: "10rem",
-                          overflowY: "scroll",
-                          maxWidth: "15rem",
-                          overflowX: "auto",
-                        },
-                        mobile && {
-                          maxWidth: "none",
-                        },
-                      ]}
-                    >
-                      <InnerFilterList
-                        components={components}
-                        setCheckedN={setCheckedN}
-                        checked={checkedN}
-                        label={label}
-                      />
-                    </List>
+                    <div>
+                      <List
+                        component='div'
+                        sx={[
+                          {
+                            maxHeight: "15rem",
+                            overflowY: "scroll",
+                            maxWidth: "15rem",
+                            overflowX: "auto",
+                          },
+                          mobile && {
+                            maxWidth: "none",
+                          },
+                        ]}
+                      >
+                        <InnerFilterList
+                          components={components}
+                          setCheckedN={setCheckedN}
+                          checked={checkedN}
+                          label={label}
+                        />
+                      </List>
+                    </div>
                   </Collapse>
                 </div>
               );
@@ -234,34 +253,33 @@ const FilterAccordion = () => {
   );
 };
 
-const InnerFilterList = ({
-  components,
-  setCheckedN,
-  checked,
-  label,
-  globalCheck,
-}) => {
+const InnerFilterList = ({ components, setCheckedN, checked, label }) => {
   const { computers, setComputers } = React.useContext(ComputerContext);
   const { computersB, setComputersB } = React.useContext(ComputerBackup);
 
   const handle = (key, el) => {
     let tmpCheck = checked;
-    let tmpComputers = computers;
+    let tmpComputers = computersB;
 
     if (tmpCheck[key].includes(el)) {
       tmpCheck[key] = tmpCheck[key].filter((item) => item !== el);
-      let missing = computersB.filter((pc) => {
-        return pc[key] !== el;
-      });
-      tmpComputers = [...tmpComputers, ...missing];
     } else {
       tmpCheck[key] = [...tmpCheck[key], el];
+    }
+
+    for (const [comp, val] of Object.entries(tmpCheck)) {
       tmpComputers = tmpComputers.filter((pc) => {
-        return pc[key] === el;
+        if (val.length === 0) {
+          return true;
+        } else if (comp === "type") {
+          return pc[comp].some((k) => val.includes(k));
+        } else {
+          return val.includes(pc[comp]);
+        }
       });
     }
+
     tmpComputers = [...new Set(tmpComputers)];
-    console.log(tmpComputers);
     setComputers(tmpComputers);
     setCheckedN(tmpCheck);
   };
@@ -270,7 +288,7 @@ const InnerFilterList = ({
     <>
       {components[label]?.map((el) => {
         return (
-          <ListItem>
+          <ListItem disablePadding>
             <ListItemButton>
               <ListItemIcon>
                 <Checkbox
@@ -288,174 +306,5 @@ const InnerFilterList = ({
         );
       })}
     </>
-  );
-};
-
-const CardContainer = () => {
-  const mobile = useMediaQuery("(max-width: 768px)");
-  const { computers, setComputers } = React.useContext(ComputerContext);
-
-  return (
-    <Box>
-      <Container
-        sx={[
-          {
-            display: "flex",
-            flexWrap: "wrap",
-            ml: "0rem",
-            mr: "0rem",
-            minWidth: "100%",
-            justifyContent: "center",
-          },
-        ]}
-        disableGutters
-      >
-        {computers?.map((computer) => {
-          // console.log(computer);
-          return <Computercard computer={computer} />;
-        })}
-      </Container>
-    </Box>
-  );
-};
-
-const Computercard = ({ computer }) => {
-  const res = useMediaQuery("(max-width: 768px)");
-
-  return (
-    <Card
-      sx={{
-        minWidth: "22rem",
-        maxWidth: "22rem",
-        minHeight: "35rem",
-        margin: "1rem",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <CardMedia
-        sx={[
-          {
-            height: "15rem",
-            objectFit: "contain",
-          },
-        ]}
-        component='img'
-        src={computer.image}
-        alt={`${computer.brand} ${computer.model}`}
-      />
-      <Divider />
-      <CardContent
-        sx={{
-          height: "80%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-        }}
-      >
-        <Container>
-          <Typography
-            sx={{
-              color: "text.secondary",
-              fontWeight: "bold",
-              textTransform: "capitalize",
-            }}
-            variant='h7'
-          >
-            {computer.brand}
-          </Typography>
-          <Typography
-            sx={{ fontWeight: "bold", textTransform: "capitalize" }}
-            gutterBottom
-            variant='h5'
-            component='div'
-          >
-            {computer.model}
-          </Typography>
-          <Typography variant='subtitle1' color='text.secondary'>
-            <List disablePadding dense>
-              <ListItem disablePadding>
-                <ListItemIcon
-                  sx={{ display: "flex", justifyContent: "center" }}
-                >
-                  <BsCpu />
-                </ListItemIcon>
-                <ListItemText
-                  sx={{ textTransform: "uppercase" }}
-                  primary={computer.cpu}
-                />
-              </ListItem>
-              <ListItem disablePadding>
-                <ListItemIcon
-                  sx={{ display: "flex", justifyContent: "center" }}
-                >
-                  <GiProcessor />
-                </ListItemIcon>
-                <ListItemText
-                  sx={{ textTransform: "uppercase" }}
-                  primary={computer.gpu}
-                />
-              </ListItem>
-              <ListItem disablePadding>
-                <ListItemIcon
-                  sx={{ display: "flex", justifyContent: "center" }}
-                >
-                  <FaMemory />
-                </ListItemIcon>
-                <ListItemText
-                  sx={{ textTransform: "uppercase" }}
-                  primary={computer.ram}
-                />
-              </ListItem>
-            </List>
-          </Typography>
-        </Container>
-        <Container
-          sx={{
-            height: "2.5rem",
-            display: "flex",
-            justifyContent: "center",
-            my: "0.5rem",
-          }}
-        >
-          {computer.discount !== 0 ? (
-            <Typography
-              sx={{ fontSize: 20, mr: "0.5rem", color: "text.secondary" }}
-            >
-              <del>{computer.price.toFixed(2)} $</del>
-            </Typography>
-          ) : (
-            <></>
-          )}
-          <Typography
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              fontSize: 45,
-              fontWeight: "bold",
-              fontStyle: "italic",
-            }}
-          >
-            {(
-              computer.price -
-              (computer.discount / 100) * computer.price
-            ).toFixed(2)}
-            <Typography
-              sx={{ display: "flex", alignItems: "flex-end", ml: "0.3rem" }}
-            >
-              $ / giorno
-            </Typography>
-          </Typography>
-        </Container>
-      </CardContent>
-      <Divider />
-      <CardActions
-        sx={{ display: "flex", justifyContent: "center", flexGrow: 1 }}
-      >
-        <Button size='large' variant='contained'>
-          Prenota
-        </Button>
-      </CardActions>
-    </Card>
   );
 };
