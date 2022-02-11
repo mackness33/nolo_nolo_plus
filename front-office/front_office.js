@@ -30,7 +30,7 @@ app.use(async (req, res, next) => {
   next();
 });
 
-app.get("/getOne", async (req, res, next) => {
+app.get("/getUser", async (req, res, next) => {
   var user = await userService.findOne({ "person.mail": req.query.mail });
   user = user ? userService.format(user, "person") : user;
 

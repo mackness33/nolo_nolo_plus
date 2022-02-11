@@ -29,17 +29,39 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
 
 import Tab from "@mui/material/Tab";
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 const vars = React.createContext({domain: 'http://localhost:8000/front', url: 'cicca'});
 const pics = React.createContext(null);
+
+const theme = createTheme({
+  palette: {
+    background: {
+      paper: '#fff',
+    },
+    primary: {
+      light: '#757ce8',
+      main: '#3f50b5',
+      dark: '#002884',
+      contrastText: '#fff',
+    },
+    secondary: {
+      light: '#52b202',
+      main: '#76ff03',
+      dark: '#91ff35',
+      contrastText: '#000',
+    },
+  },
+})
 
 export default function SimpleContainer() {
   const [tmp, setTmp] = React.useState('ciao');
@@ -59,7 +81,15 @@ export default function SimpleContainer() {
       >
       <pics.Provider value={{tmp, setTmp}}>
         <ProfilePicture />
-        <OptionsTabs />
+        <Stack
+          direction="row"
+          justifyContent="center"
+          alignItems="baseline"
+          spacing={8}
+        >
+          <OptionsTabs />
+          <Description />
+        </Stack>
       </pics.Provider>
       </Container>
     </React.Fragment>
@@ -98,15 +128,84 @@ const ProfilePicture = (props) => {
   }, []);
 
   return (
-    <Container sx={{display: 'flex', flexDirection: 'column' ,alignItems: 'center'}}>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        minWidth: 300,
+        minHeight: 300,
+      }}
+    >
       <Avatar
           alt={full_name}
           src={picture}
           sx={{ width: 300, height: 300 }}
         />
       <div>{full_name}</div>
-    </Container>
+    </Box>
   );
+}
+
+const Description = (props) => {
+  const [user, setUser] = React.useState(null);
+
+  const var_ = React.useContext(vars);
+  const {tmp, setTmp} = React.useContext(pics);
+
+  const handleUser = (user) => {
+    setUser(user);
+  };
+  /**
+  * This call
+  */
+  React.useEffect(async () => {
+    const res = await axios(`${var_.domain}/getOne`, {params: {mail: 'd@d'}});
+    console.log("In Description");
+    console.log(`user: ${JSON.stringify(res.data)}`);
+    handleUser(res.data);
+  }, []);
+
+  return (
+    <Box
+      sx={{
+        borderRadius: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        minWidth: 300,
+        minHeight: 300,
+        color: 'secondary',
+        border: '1px dashed grey',
+      }}
+    >
+    <Text text={user?.full_name} variant='h3'/>
+    </Box>
+  );
+}
+
+const Text = ({text, variants}) => {
+  // [text, setText] = React.useState('');
+  //
+  // React.useEffect(async () => {
+  //   const res = await axios(`${var_.domain}/getOne`, {params: {mail: 'd@d'}});
+  //   console.log("In Description");
+  //   console.log(`user: ${JSON.stringify(res.data)}`);
+  //   handleUser(res.data);
+  // }, []);
+
+  return <Typography
+    sx={{
+      textTransform: 'capitalize',
+      display: 'flex',
+      fontSize: "2rem",
+      lineHeight: 10,
+      fontFamily: 'Monospace',
+    }}
+    variant={variants} gutterBottom component="div"
+  >
+  {text}
+  </Typography>
 }
 
 const OptionsTabs = () => {
@@ -144,6 +243,12 @@ const OptionsTabs = () => {
         flexDirection: "column",
         alignItems: "center",
         mr: "2rem",
+        borderRadius: 2,
+        alignItems: 'center',
+        minWidth: 300,
+        minHeight: 300,
+        border: '1px dashed grey',
+        color: 'primary',
       }}
     >
       <TabContext value={value}>
