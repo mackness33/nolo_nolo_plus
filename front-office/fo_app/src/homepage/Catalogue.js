@@ -31,11 +31,13 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { ComputerContext } from "./HomeContext";
+import { ComputerContext, ComputerBackup } from "./HomeContext";
 
 import { BsCpu } from "react-icons/bs";
 import { GiProcessor } from "react-icons/gi";
 import { FaMemory } from "react-icons/fa";
+import { SiBrandfolder } from "react-icons/si";
+import { GrNetwork } from "react-icons/gr";
 import { fontSize, textTransform } from "@mui/system";
 
 export default function SimpleContainer() {
@@ -59,62 +61,41 @@ export default function SimpleContainer() {
 }
 
 const FilterAccordion = () => {
-  const [checked, setChecked] = React.useState([]);
-  const [checkedN, setCheckedN] = React.useState({
+  const defaultFilters = {
     cpu: [],
     gpu: [],
     ram: [],
     brand: [],
     type: [],
-  });
-  const [open, setOpen] = React.useState(false);
-  const [openN, setOpenN] = React.useState([false, false, false]);
+  };
+  const filters = ["cpu", "gpu", "ram", "brand", "type"];
+
+  const [checkedN, setCheckedN] = React.useState(defaultFilters);
+  const [openN, setOpenN] = React.useState([false, false, false, false, false]);
   const [open1, setOpen1] = React.useState(false);
-  const [components, setComponents] = React.useState({
-    cpu: [],
-    gpu: [],
-    ram: [],
-    brand: [],
-    type: [],
-  });
+  const [components, setComponents] = React.useState(defaultFilters);
   const mobile = useMediaQuery("(max-width: 768px)");
 
   const { computers, setComputers } = React.useContext(ComputerContext);
-
-  const filters = ["cpu", "gpu", "ram", "brand", "type"];
-
-  const handleToggle = (value) => () => {
-    const newChecked = [...checked];
-    if (checked.indexOf(value) !== -1) {
-      newChecked.splice(checked.indexOf(value), 1);
-    } else {
-      newChecked.push(value);
-    }
-
-    setChecked(newChecked);
-    console.log(checked);
-  };
-
-  const handleClick = () => {
-    setOpen(!open);
-  };
+  const { computersB, setComputersB } = React.useContext(ComputerBackup);
 
   const getShownComponents = () => {
-    let components;
-    for (let i = 0; i < computers.length; i++) {}
-  };
-
-  const handleToggleN = (label) => () => {
-    // const newChecked = [...checked];
-    // if (checked.indexOf(value) !== -1) {
-    //   newChecked.splice(checked.indexOf(value), 1);
-    // } else {
-    //   newChecked.push(value);
-    // }
-
-    // setChecked(newChecked);
-    // console.log(checked);
-    console.log(label);
+    const tmpComponents = defaultFilters;
+    for (let i = 0; i < computersB.length; i++) {
+      for (const [key, value] of Object.entries(computersB[i])) {
+        if (filters.includes(key)) {
+          if (key !== "type") {
+            tmpComponents[key].push(computersB[i][key]);
+          } else {
+            tmpComponents[key] = [...tmpComponents[key], ...computersB[i][key]];
+          }
+          tmpComponents[key] = [...new Set(tmpComponents[key])];
+        }
+      }
+    }
+    console.log(tmpComponents);
+    setComponents(tmpComponents);
+    console.log(components);
   };
 
   const handleClickN = (i) => {
@@ -126,154 +107,187 @@ const FilterAccordion = () => {
   return (
     <Box
       component={"div"}
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        mr: "2rem",
-      }}
+      sx={[
+        {
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+        },
+        mobile && {
+          alignItems: "center",
+        },
+      ]}
     >
-      <Button
-        onClick={() => {
-          setOpen1(!open1);
-        }}
-        variant='contained'
-        endIcon={
-          open1 ? (
-            <FilterListOffIcon sx={{ ml: "1rem" }} />
-          ) : (
-            <FilterListIcon sx={{ ml: "1rem" }} />
-          )
-        }
-      >
-        Filtri
-      </Button>
-      <Collapse in={open1} timeout='auto' unmountOnExit>
-        <List
-          sx={[
-            {
-              width: "100%",
-              bgcolor: "background.paper",
-              boxShadow: 3,
-              borderRadius: "0.2rem",
-              display: "flex",
-              flexWrap: "wrap",
-            },
-            mobile && {
-              flexWrap: "nowrap",
-              flexDirection: "column",
-            },
-          ]}
-          dense
+      <form>
+        <Box>
+          <Button
+            sx={mobile && { width: "100%" }}
+            onClick={() => {
+              setOpen1(!open1);
+              getShownComponents();
+            }}
+            variant='contained'
+            endIcon={
+              open1 ? (
+                <FilterListOffIcon sx={{ ml: "1rem" }} />
+              ) : (
+                <FilterListIcon sx={{ ml: "1rem" }} />
+              )
+            }
+          >
+            Filtri
+          </Button>
+          <Button
+            sx={[
+              { ml: "1rem" },
+              mobile && { ml: "0", my: "0.5rem", width: "100%" },
+            ]}
+            onClick={(e) => {
+              setComputers(computersB);
+              setCheckedN(defaultFilters);
+              setOpen1(false);
+            }}
+            variant='contained'
+          >
+            Pulisci Filtri
+          </Button>
+        </Box>
+        <Collapse
+          in={open1}
+          sx={mobile && { width: "100%" }}
+          timeout='auto'
+          unmountOnExit
         >
-          {[0, 1, 2, 3].map((value) => {
-            const labelId = `checkbox-list-label-${value}`;
-            return (
-              <div>
-                <ListItemButton role={undefined} onClick={handleClick} dense>
-                  <ListItemIcon>
-                    <InboxIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    id={labelId}
-                    primary={`Line item ${value + 1}`}
-                  />
-                  {open ? <ExpandLess /> : <ExpandMore />}
-                </ListItemButton>
-                <Collapse in={open} timeout='auto' unmountOnExit>
-                  <List component='div' dense>
-                    <ListItem>
-                      <ListItemButton onClick={handleToggle(value)}>
-                        <ListItemIcon>
-                          <Checkbox
-                            edge='start'
-                            checked={checked.indexOf(value) !== -1}
-                            tabIndex={-1}
-                            disableRipple
-                            inputProps={{ "aria-labelledby": labelId }}
-                          />
-                        </ListItemIcon>
-                        <ListItemText primary='Starred' />
-                      </ListItemButton>
-                    </ListItem>
-                    <ListItem>
-                      <ListItemButton onClick={handleToggle(value)}>
-                        <ListItemIcon>
-                          <Checkbox
-                            edge='start'
-                            checked={checked.indexOf(value) !== -1}
-                            tabIndex={-1}
-                            disableRipple
-                            inputProps={{ "aria-labelledby": labelId }}
-                          />
-                        </ListItemIcon>
-                        <ListItemText primary='Starred' />
-                      </ListItemButton>
-                    </ListItem>
-                  </List>
-                </Collapse>
-              </div>
-            );
-          })}
-          {filters.map((label) => {
-            return (
-              <div>
-                <ListItemButton
-                  onClick={() => {
-                    handleClickN(filters.indexOf(label));
-                  }}
-                >
-                  <ListItemIcon>
-                    <BsCpu />
-                  </ListItemIcon>
-                  <ListItemText
-                    id={`${label}Select`}
-                    primary={label.toUpperCase()}
-                  />
-                  {openN[filters.indexOf(label)] ? (
-                    <ExpandLess />
-                  ) : (
-                    <ExpandMore />
-                  )}
-                </ListItemButton>
-                <Collapse
-                  in={openN[filters.indexOf(label)]}
-                  timeout='auto'
-                  unmountOnExit
-                >
-                  <List
-                    component='div'
-                    dense
-                    sx={[
-                      {
-                        maxHeight: "10rem",
-                        overflowY: "scroll",
-                        maxWidth: "15rem",
-                      },
-                      mobile && {
-                        maxWidth: "none",
-                      },
-                    ]}
+          <List
+            sx={[
+              {
+                width: "100%",
+                bgcolor: "background.paper",
+                boxShadow: 3,
+                borderRadius: "0.2rem",
+                display: "flex",
+                flexWrap: "wrap",
+              },
+              mobile && {
+                flexWrap: "nowrap",
+                flexDirection: "column",
+              },
+            ]}
+            dense
+          >
+            {filters.map((label) => {
+              return (
+                <div>
+                  <ListItemButton
+                    onClick={() => {
+                      handleClickN(filters.indexOf(label));
+                    }}
                   >
-                    <ListItem>
-                      <ListItemButton onClick={handleToggleN(label)}>
-                        <Checkbox
-                          edge='start'
-                          // checked={checked.indexOf(value) !== -1}
-                          tabIndex={-1}
-                          // inputProps={{ "aria-labelledby": labelId }}
-                        />
-                        <ListItemText primary='wow' />
-                      </ListItemButton>
-                    </ListItem>
-                  </List>
-                </Collapse>
-              </div>
-            );
-          })}
-        </List>
-      </Collapse>
+                    <ListItemIcon>
+                      {(label === "cpu" && <BsCpu />) ||
+                        (label === "ram" && <FaMemory />) ||
+                        (label === "type" && <GrNetwork />) ||
+                        (label === "brand" && <SiBrandfolder />) ||
+                        (label === "gpu" && <GiProcessor />)}
+                    </ListItemIcon>
+                    <ListItemText
+                      id={`${label}Select`}
+                      primary={label.toUpperCase()}
+                    />
+                    {openN[filters.indexOf(label)] ? (
+                      <ExpandLess />
+                    ) : (
+                      <ExpandMore />
+                    )}
+                  </ListItemButton>
+                  <Collapse in={openN[filters.indexOf(label)]} timeout='auto'>
+                    <List
+                      component='div'
+                      dense
+                      sx={[
+                        {
+                          maxHeight: "10rem",
+                          overflowY: "scroll",
+                          maxWidth: "15rem",
+                          overflowX: "auto",
+                        },
+                        mobile && {
+                          maxWidth: "none",
+                        },
+                      ]}
+                    >
+                      <InnerFilterList
+                        components={components}
+                        setCheckedN={setCheckedN}
+                        checked={checkedN}
+                        label={label}
+                      />
+                    </List>
+                  </Collapse>
+                </div>
+              );
+            })}
+          </List>
+        </Collapse>
+      </form>
     </Box>
+  );
+};
+
+const InnerFilterList = ({
+  components,
+  setCheckedN,
+  checked,
+  label,
+  globalCheck,
+}) => {
+  const { computers, setComputers } = React.useContext(ComputerContext);
+  const { computersB, setComputersB } = React.useContext(ComputerBackup);
+
+  const handle = (key, el) => {
+    let tmpCheck = checked;
+    let tmpComputers = computers;
+
+    if (tmpCheck[key].includes(el)) {
+      tmpCheck[key] = tmpCheck[key].filter((item) => item !== el);
+      let missing = computersB.filter((pc) => {
+        return pc[key] !== el;
+      });
+      tmpComputers = [...tmpComputers, ...missing];
+    } else {
+      tmpCheck[key] = [...tmpCheck[key], el];
+      tmpComputers = tmpComputers.filter((pc) => {
+        return pc[key] === el;
+      });
+    }
+    tmpComputers = [...new Set(tmpComputers)];
+    console.log(tmpComputers);
+    setComputers(tmpComputers);
+    setCheckedN(tmpCheck);
+  };
+
+  return (
+    <>
+      {components[label]?.map((el) => {
+        return (
+          <ListItem>
+            <ListItemButton>
+              <ListItemIcon>
+                <Checkbox
+                  edge='start'
+                  disableRipple
+                  tabIndex={-1}
+                  onChange={() => {
+                    handle(label, el);
+                  }}
+                />
+              </ListItemIcon>
+              <ListItemText sx={{ textTransform: "uppercase" }} primary={el} />
+            </ListItemButton>
+          </ListItem>
+        );
+      })}
+    </>
   );
 };
 
@@ -307,8 +321,6 @@ const CardContainer = () => {
 
 const Computercard = ({ computer }) => {
   const res = useMediaQuery("(max-width: 768px)");
-
-  console.log(computer);
 
   return (
     <Card
