@@ -34,23 +34,33 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 export default function ComputerContent() {
   let params = useParams();
   const [computer, setComputer] = useState();
+  const [bookings, setBookings] = useState();
+  const [rangeBind, setRangeBind] = useState(new Date());
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [orientation, setOrientation] = useState();
   const mobile = useMediaQuery("(max-width: 768px)");
   const tablet = useMediaQuery("(max-width: 1024px)");
 
   useEffect(async () => {
-    let mounted = true;
-    axios
-      .get("http://localhost:8000/front/item/getOne", {
+    const comps = await axios.get("http://localhost:8000/front/item/getOne", {
+      params: { id: params.id },
+    });
+    setComputer(comps.data);
+
+    const dates = await axios.get(
+      "http://localhost:8000/front/item/getBookingsByItem",
+      {
         params: { id: params.id },
-      })
-      .then((res) => {
-        console.log(res.data);
-        if (mounted) {
-          setComputer(res.data);
-        }
-      });
+      }
+    );
+
+    setBookings(dates.data);
   }, []);
+
+  const tmp = () => {
+    console.log(new Date(bookings[0].begin));
+  };
 
   const [value, setValue] = React.useState(new Date("2014-08-18T21:11:54"));
 
@@ -59,6 +69,10 @@ export default function ComputerContent() {
   };
   const cane = (date) => {
     return false;
+  };
+
+  const handleStartChange = (date) => {
+    console.log(new Date(date.toUTCString()));
   };
 
   useEffect(() => {
@@ -85,6 +99,7 @@ export default function ComputerContent() {
               width: "auto",
             },
           ]}
+          onClick={tmp}
           component='img'
           image={computer?.image}
           alt='green iguana'
@@ -345,8 +360,8 @@ export default function ComputerContent() {
               <MobileDatePicker
                 label='Inizio'
                 inputFormat='dd/MM/yyyy'
-                value={value}
-                onChange={handleChange}
+                value={startDate}
+                onChange={handleStartChange}
                 renderInput={(params) => <TextField {...params} />}
                 shouldDisableDate={cane}
               />
@@ -356,7 +371,7 @@ export default function ComputerContent() {
               <MobileDatePicker
                 label='secondo'
                 inputFormat='dd/MM/yyyy'
-                value={value}
+                value={endDate}
                 onChange={handleChange}
                 renderInput={(params) => <TextField {...params} />}
                 shouldDisableDate={cane}

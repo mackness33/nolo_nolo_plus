@@ -21,4 +21,15 @@ router.get("/getOne", async (req, res, next) => {
   res.send(item);
 });
 
+router.get("/getBookingsByItem", async (req, res, next) => {
+  logger.info(JSON.stringify(req.query.id));
+
+  const bookingDates = await bookingService.find(
+    { computer: req.query.id },
+    "begin end"
+  );
+  console.log(bookingDates);
+  res.send(bookingDates);
+});
+
 module.exports = router;
