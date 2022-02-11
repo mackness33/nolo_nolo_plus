@@ -27,4 +27,8 @@ const person_schema = mongoose.Schema({
   },
 });
 
+person_schema.virtual('full_name').get(function() {
+  return `${this.name} ${this.surname}`;
+});
+
 module.exports = person_schema;

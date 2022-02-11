@@ -2,6 +2,8 @@ const personService = require("./personService");
 const empHelper = require("./employeeService");
 const bookingService = require("./bookingService");
 const User = require("./schema/user");
+const logger = require("../../logger");
+
 
 class userService extends personService {
   constructor() {
@@ -15,19 +17,30 @@ class userService extends personService {
   }
 
   // FINDS
-  async findOne(params) {
-    var user = await super.findOne(params);
-    if (user) {
+  async findOne(params, attributes = null) {
+    var user = await super.findOne(params, attributes);
+    user.full_name = user.person.full_name;
+
+    if (user && user.feedback) {
       await user.populate("feedback.emplCode");
     }
+
     return user;
   }
 
-  async find(params, attributes) {
+  async find(params, attributes = null) {
     var users = await super.find(params, attributes);
-    for (let i = 0; i < users.length; i++) {
-      await users[i].populate("feedback.emplCode");
+
+    for (user of users){
+      user.full_name = user.person.full_name;
+      if (user.feedback) {
+        await user.populate("feedback.emplCode");
+      }
     }
+    // for (let i = 0; i < users.length; i++) {
+    //   await users[i].populate("feedback.emplCode");
+    // }
+
     return users;
   }
 
