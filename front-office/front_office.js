@@ -13,17 +13,19 @@ const session = require("express-session");
 const authService = require("../services/auth");
 const userService = require("../services/mongo/userService");
 
-//app.use(express.static(path.join(__dirname, "fo_app", "build")));
-
-// app.get("/", (req, res, next) => {
-//   res.sendFile(path.join(__dirname, "./my-app/build/index.html"));
-// });
-
 const homepageRouter = require("./routes/homepage");
+const itemRouter = require("./routes/item");
 
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, "fo_app", "build")));
 
 app.use("/home", homepageRouter);
+app.use("/item", itemRouter);
+
+app.get("*", (req, res, next) => {
+  console.log("dio");
+  res.sendFile(path.join(__dirname, "./fo_app/build/index.html"));
+});
 
 app.use(async (req, res, next) => {
   await userService.initialize();

@@ -24,7 +24,9 @@ import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
 
 import Button from "@mui/material/Button";
-import { ComputerContext } from "./HomeContext";
+import { ComputerContext, ComputerBackup } from "./HomeContext";
+
+import Slide from "@mui/material/Fade";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -57,6 +59,7 @@ export default function Searchbar2() {
   const [typeName, settypeName] = React.useState([]);
 
   const { computers, setComputers } = React.useContext(ComputerContext);
+  const { computersB, setComputersB } = React.useContext(ComputerBackup);
 
   const handleBrandChange = (event) => {
     const {
@@ -102,19 +105,19 @@ export default function Searchbar2() {
   };
 
   React.useEffect(async () => {
-    //let computers = await axios.get("http://localhost:8000/front/home/getAll");
-    //setComputers(computers.data);
-    //console.log(computers)
-    //let res = await axios.get(
-    //  "http://localhost:8000/front/home/getAllComponents"
-    //);
-    //setComponents(res.data);
+    let computers = await axios.get("http://localhost:8000/front/home/getAll");
+    setComputers(computers.data);
+    setComputersB(computers.data);
+    let res = await axios.get(
+      "http://localhost:8000/front/home/getAllComponents"
+    );
+    setComponents(res.data);
   }, []);
 
   return (
     <>
-      <form>
-        <Container maxWidth='xl' sx={{ mt: "1rem" }}>
+      <Slide direction='up' in={true}>
+        <Container maxWidth='lg' sx={{ mt: "1rem" }}>
           <Paper
             elevation={5}
             sx={[
@@ -301,7 +304,7 @@ export default function Searchbar2() {
             </Container>
           </Paper>
         </Container>
-      </form>
+      </Slide>
     </>
   );
 }
