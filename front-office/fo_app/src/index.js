@@ -6,7 +6,7 @@ import Navbar from "./navbar.js";
 import Container from "@mui/material/Container";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
-import Profile from "./profile/Profile";
+import Profile from "./profile/Profile2";
 import Home from "./homepage/HomeContainer";
 import ProductPage from "./productPage/ProductPage";
 import RegisterLogin from "./registerLogin/RegisterLogin";
@@ -29,7 +29,7 @@ ReactDOM.render(
           sx={{
             boxShadow: 24,
             pt: "1rem",
-            bgcolor: "rgba(255, 255, 255, 0.95)",
+            bgcolor: "whitesmoke",
             minHeight: "100vh",
           }}
         >

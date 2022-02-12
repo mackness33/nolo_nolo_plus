@@ -49,7 +49,8 @@ const Computercard = ({ computer }) => {
             boxShadow: 4,
           },
           mobile && {
-            width: 22,
+            minWidth: 0,
+            minHeight: "42rem",
             margin: "0.3rem",
           },
         ]}
