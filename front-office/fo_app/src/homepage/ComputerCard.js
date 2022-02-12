@@ -49,7 +49,7 @@ const Computercard = ({ computer }) => {
             boxShadow: 4,
           },
           mobile && {
-            minWidth: 0,
+            width: 22,
             margin: "0.3rem",
           },
         ]}
@@ -64,7 +64,7 @@ const Computercard = ({ computer }) => {
               height: "20rem",
             },
           ]}
-          component="img"
+          component='img'
           src={computer.image}
           alt={`${computer.brand} ${computer.model}`}
         />
@@ -84,19 +84,18 @@ const Computercard = ({ computer }) => {
                 fontWeight: "bold",
                 textTransform: "capitalize",
               }}
-              variant="h7"
             >
               {computer.brand}
             </Typography>
             <Typography
               sx={{ fontWeight: "bold", textTransform: "capitalize" }}
               gutterBottom
-              variant="h5"
-              component="div"
+              variant='h5'
+              component='div'
             >
               {computer.model}
             </Typography>
-            <Typography variant="subtitle1" color="text.secondary">
+            <Typography variant='subtitle1' color='text.secondary'>
               <List disablePadding dense>
                 <ListItem disablePadding>
                   <ListItemIcon
@@ -190,8 +189,8 @@ const Computercard = ({ computer }) => {
           <Button
             component={Link}
             to={`/product/${computer._id}`}
-            size="large"
-            variant="contained"
+            size='large'
+            variant='contained'
           >
             prenota
           </Button>

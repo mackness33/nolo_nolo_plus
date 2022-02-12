@@ -39,6 +39,8 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 
 import Computercard from "../homepage/ComputerCard";
 
+import Grow from "@mui/material/Fade";
+
 export default function ComputerContent() {
   let params = useParams();
   const [computer, setComputer] = useState();
@@ -160,263 +162,270 @@ export default function ComputerContent() {
   }, [tablet]);
 
   return (
-    <Container maxWidth="xl" sx={{ mt: "0rem" }} disableGutters>
-      <Card
-        sx={[
-          { display: "flex", minHeight: "30rem" },
-          tablet && { flexDirection: "column" },
-        ]}
-      >
-        <CardMedia
+    <Container maxWidth='xl' sx={{ mt: "1rem" }} disableGutters>
+      <Grow timeout={500} in={true}>
+        <Card
           sx={[
-            {
-              height: "25rem",
-              width: "20rem",
-              objectFit: "contain",
-            },
-            tablet && {
-              display: "flex",
-              justifyContent: "center",
-              width: "auto",
-            },
-          ]}
-          onClick={tmp}
-          component="img"
-          image={computer?.image}
-          alt="green iguana"
-        />
-        <CardContent
-          sx={[
-            {
-              width: "60%",
-              display: "flex",
-              flexDirection: "column",
-            },
+            { display: "flex", minHeight: "30rem" },
+            tablet && { flexDirection: "column" },
           ]}
         >
-          <Container>
-            <Typography
-              sx={{ fontWeight: "bold", textTransform: "uppercase" }}
-              variant="h5"
-              gutterBottom
-            >
-              {computer?.brand} {computer?.model}
-            </Typography>
-
-            <Container
-              sx={[
-                {
-                  my: "0.5rem",
-                },
-              ]}
-              disableGutters
-            >
-              <Typography>Prezzo giornaliero:</Typography>
-              <Typography sx={{ pl: "1rem", fontSize: 40, fontWeight: "bold" }}>
-                {`${(
-                  computer?.price -
-                  (computer?.discount / 100) * computer?.price
-                ).toFixed(2)} $`}
+          <CardMedia
+            sx={[
+              {
+                height: "25rem",
+                width: "20rem",
+                objectFit: "contain",
+              },
+              tablet && {
+                display: "flex",
+                justifyContent: "center",
+                width: "auto",
+              },
+            ]}
+            onClick={tmp}
+            component='img'
+            image={computer?.image}
+            alt='green iguana'
+          />
+          <CardContent
+            sx={[
+              {
+                width: "60%",
+                display: "flex",
+                flexDirection: "column",
+              },
+            ]}
+          >
+            <Container>
+              <Typography
+                sx={{ fontWeight: "bold", textTransform: "uppercase" }}
+                variant='h5'
+                gutterBottom
+              >
+                {computer?.brand} {computer?.model}
               </Typography>
-              <Typography sx={{ pl: "1rem", display: "flex" }}>
-                {computer?.discount !== 0 ? (
-                  <>
-                    <Typography
-                      sx={{
-                        fontSize: 20,
-                        mr: "0.5rem",
-                        color: "text.secondary",
-                      }}
-                    >
-                      <del>{computer?.price.toFixed(2)} $</del>
-                    </Typography>
-                    <Typography
-                      sx={{
-                        display: "flex",
-                        alignItems: "flex-end",
-                        color: "error.main",
-                      }}
-                    >
-                      {`Scontato del ${computer?.discount}%!`}
-                    </Typography>
-                  </>
-                ) : (
-                  <></>
-                )}
-              </Typography>
-            </Container>
 
-            <Typography sx={{ fontSize: "large" }} color="text.primary">
-              <Typography variant="subtitle2" color="text.secondary">
-                Specifiche:
-              </Typography>
-              <List disablePadding dense>
-                <ListItem>
-                  <ListItemIcon
-                    sx={{ display: "flex", justifyContent: "center" }}
-                  >
-                    <BsCpu size={30} />
-                  </ListItemIcon>
-                  <ListItemText
-                    primaryTypographyProps={{
-                      textTransform: "uppercase",
-                      fontSize: "medium",
-                    }}
-                    primary={computer?.cpu}
-                    secondary="Processore"
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon
-                    sx={{ display: "flex", justifyContent: "center" }}
-                  >
-                    <GiProcessor size={30} />
-                  </ListItemIcon>
-                  <ListItemText
-                    primaryTypographyProps={{
-                      textTransform: "uppercase",
-                      fontSize: "medium",
-                    }}
-                    primary={computer?.gpu}
-                    secondary="Scheda Grafica"
-                  />
-                </ListItem>
-
-                <ListItem>
-                  <ListItemIcon
-                    sx={{ display: "flex", justifyContent: "center" }}
-                  >
-                    <FaMemory size={30} />
-                  </ListItemIcon>
-                  <ListItemText
-                    primaryTypographyProps={{
-                      textTransform: "uppercase",
-                      fontSize: "medium",
-                    }}
-                    primary={computer?.ram}
-                    secondary="Memoria"
-                  />
-                </ListItem>
-
-                <ListItem>
-                  <ListItemIcon
-                    sx={{ display: "flex", justifyContent: "center" }}
-                  >
-                    <MdOutlineCategory size={30} />
-                  </ListItemIcon>
-                  <ListItemText
-                    primaryTypographyProps={{
-                      textTransform: "uppercase",
-                      fontSize: "medium",
-                    }}
-                    primary={computer?.type.toString().replaceAll(",", "  ")}
-                    secondary="Tipo"
-                  />
-                </ListItem>
-
-                <Tooltip
-                  placement="bottom-start"
-                  title="Valutazione del prodotto eseguita dai nostri tecnici al termine dell'ultimo noleggio"
+              <Container
+                sx={[
+                  {
+                    my: "0.5rem",
+                  },
+                ]}
+                disableGutters
+              >
+                <Typography>Prezzo giornaliero:</Typography>
+                <Typography
+                  sx={{ pl: "1rem", fontSize: 40, fontWeight: "bold" }}
                 >
+                  {`${(
+                    computer?.price -
+                    (computer?.discount / 100) * computer?.price
+                  ).toFixed(2)} $`}
+                </Typography>
+                <Typography sx={{ pl: "1rem", display: "flex" }}>
+                  {computer?.discount !== 0 ? (
+                    <>
+                      <Typography
+                        sx={{
+                          fontSize: 20,
+                          mr: "0.5rem",
+                          color: "text.secondary",
+                        }}
+                      >
+                        <del>{computer?.price.toFixed(2)} $</del>
+                      </Typography>
+                      <Typography
+                        sx={{
+                          display: "flex",
+                          alignItems: "flex-end",
+                          color: "error.main",
+                        }}
+                      >
+                        {`Scontato del ${computer?.discount}%!`}
+                      </Typography>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </Typography>
+              </Container>
+
+              <Typography sx={{ fontSize: "large" }} color='text.primary'>
+                <Typography variant='subtitle2' color='text.secondary'>
+                  Specifiche:
+                </Typography>
+                <List disablePadding dense>
                   <ListItem>
                     <ListItemIcon
                       sx={{ display: "flex", justifyContent: "center" }}
                     >
-                      <GoChecklist size={30} />
+                      <BsCpu size={30} />
                     </ListItemIcon>
                     <ListItemText
                       primaryTypographyProps={{
                         textTransform: "uppercase",
                         fontSize: "medium",
                       }}
-                      primary={`${computer?.condition} / 10`}
-                      secondary="Condizione"
+                      primary={computer?.cpu}
+                      secondary='Processore'
                     />
                   </ListItem>
-                </Tooltip>
-              </List>
-            </Typography>
-          </Container>
-        </CardContent>
-        <Divider orientation={orientation} flexItem />
-        <CardActions
-          sx={[
-            {
-              width: "30%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              m: "0.5rem",
-            },
-            tablet && {
-              width: "auto",
-            },
-          ]}
-          disableSpacing
-        >
-          <Typography sx={{ my: "0.8rem", fontSize: "medium" }}>
-            Seleziona tra le date disponibili per vedere il prezzo
-          </Typography>
-          <Container
+                  <ListItem>
+                    <ListItemIcon
+                      sx={{ display: "flex", justifyContent: "center" }}
+                    >
+                      <GiProcessor size={30} />
+                    </ListItemIcon>
+                    <ListItemText
+                      primaryTypographyProps={{
+                        textTransform: "uppercase",
+                        fontSize: "medium",
+                      }}
+                      primary={computer?.gpu}
+                      secondary='Scheda Grafica'
+                    />
+                  </ListItem>
+
+                  <ListItem>
+                    <ListItemIcon
+                      sx={{ display: "flex", justifyContent: "center" }}
+                    >
+                      <FaMemory size={30} />
+                    </ListItemIcon>
+                    <ListItemText
+                      primaryTypographyProps={{
+                        textTransform: "uppercase",
+                        fontSize: "medium",
+                      }}
+                      primary={computer?.ram}
+                      secondary='Memoria'
+                    />
+                  </ListItem>
+
+                  <ListItem>
+                    <ListItemIcon
+                      sx={{ display: "flex", justifyContent: "center" }}
+                    >
+                      <MdOutlineCategory size={30} />
+                    </ListItemIcon>
+                    <ListItemText
+                      primaryTypographyProps={{
+                        textTransform: "uppercase",
+                        fontSize: "medium",
+                      }}
+                      primary={computer?.type.toString().replaceAll(",", "  ")}
+                      secondary='Tipo'
+                    />
+                  </ListItem>
+
+                  <Tooltip
+                    placement='bottom-start'
+                    title="Valutazione del prodotto eseguita dai nostri tecnici al termine dell'ultimo noleggio"
+                  >
+                    <ListItem>
+                      <ListItemIcon
+                        sx={{ display: "flex", justifyContent: "center" }}
+                      >
+                        <GoChecklist size={30} />
+                      </ListItemIcon>
+                      <ListItemText
+                        primaryTypographyProps={{
+                          textTransform: "uppercase",
+                          fontSize: "medium",
+                        }}
+                        primary={`${computer?.condition} / 10`}
+                        secondary='Condizione'
+                      />
+                    </ListItem>
+                  </Tooltip>
+                </List>
+              </Typography>
+            </Container>
+          </CardContent>
+          <Divider orientation={orientation} flexItem />
+          <CardActions
             sx={[
               {
-                height: "8rem",
+                width: "30%",
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "space-between",
+                justifyContent: "flex-start",
+                alignItems: "center",
+                m: "0.5rem",
               },
-              {
-                width: "15rem",
+              tablet && {
+                width: "auto",
               },
             ]}
+            disableSpacing
           >
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <MobileDatePicker
-                label="Inizio noleggio"
-                inputFormat="dd/MM/yyyy"
-                value={startDate}
-                onChange={handleStartChange}
-                renderInput={(params) => <TextField {...params} />}
-                shouldDisableDate={handleDisable}
-              />
-            </LocalizationProvider>
+            <Typography sx={{ my: "0.8rem", fontSize: "medium" }}>
+              Seleziona tra le date disponibili per vedere il prezzo
+            </Typography>
+            <Container
+              sx={[
+                {
+                  height: "6rem",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                },
+                {
+                  width: "15rem",
+                },
+              ]}
+            >
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <MobileDatePicker
+                  label='Inizio noleggio'
+                  inputFormat='dd/MM/yyyy'
+                  value={startDate}
+                  onChange={handleStartChange}
+                  renderInput={(params) => (
+                    <TextField size='small' {...params} />
+                  )}
+                  shouldDisableDate={handleDisable}
+                />
+              </LocalizationProvider>
 
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <MobileDatePicker
-                label="Fine noleggio"
-                inputFormat="dd/MM/yyyy"
-                value={endDate}
-                onChange={handleEndChange}
-                renderInput={(params) => <TextField {...params} />}
-                shouldDisableDate={handleDisable}
-              />
-            </LocalizationProvider>
-          </Container>
-          {showCal && (
-            <>
-              {showUnavail ? (
-                <Typography
-                  sx={{ mt: "2rem", color: "error.main", fontWeight: "bold" }}
-                >
-                  Date non disponibili
-                </Typography>
-              ) : (
-                <>
-                  <FormControl sx={{ mt: "1rem", width: "15rem" }}>
-                    <InputLabel id="pointsSelectLabel">
-                      Usa i tuoi punti
-                    </InputLabel>
-                    <Select
-                      labelId="pointsSelectLabel"
-                      label="Usa i tuoi punti"
-                    >
-                      <MenuItem value={0}>0</MenuItem>
-                      <MenuItem value={1}>1</MenuItem>
-                      <MenuItem value={2}>2</MenuItem>
-                    </Select>
-                  </FormControl>
-                  {/* <Typography
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <MobileDatePicker
+                  label='Fine noleggio'
+                  inputFormat='dd/MM/yyyy'
+                  value={endDate}
+                  onChange={handleEndChange}
+                  renderInput={(params) => (
+                    <TextField size='small' {...params} />
+                  )}
+                  shouldDisableDate={handleDisable}
+                />
+              </LocalizationProvider>
+            </Container>
+            {showCal && (
+              <>
+                {showUnavail ? (
+                  <Typography
+                    sx={{ mt: "2rem", color: "error.main", fontWeight: "bold" }}
+                  >
+                    Periodo non disponibile
+                  </Typography>
+                ) : (
+                  <>
+                    <FormControl sx={{ mt: "1rem", width: "15rem" }}>
+                      <InputLabel id='pointsSelectLabel'>
+                        Usa i tuoi punti
+                      </InputLabel>
+                      <Select
+                        labelId='pointsSelectLabel'
+                        label='Usa i tuoi punti'
+                      >
+                        <MenuItem value={0}>0</MenuItem>
+                        <MenuItem value={1}>1</MenuItem>
+                        <MenuItem value={2}>2</MenuItem>
+                      </Select>
+                    </FormControl>
+                    {/* <Typography
                     variant="h3"
                     sx={{
                       mt: "1rem",
@@ -430,51 +439,57 @@ export default function ComputerContent() {
                   >
                     {`${finalPrice} $`}
                   </Typography> */}
-                  <TextField
-                    sx={{ mt: "1rem" }}
-                    id="outlined-read-only-input"
-                    value={`${finalPrice} $`}
-                    label="Prezzo Finale"
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                  />
-                  <Button
-                    fullWidth
-                    sx={{ mt: "2rem" }}
-                    variant="contained"
-                    size="large"
-                  >
-                    prenota
-                  </Button>
-                </>
-              )}
-            </>
-          )}
-        </CardActions>
-      </Card>
-      <Card sx={{ mt: "0.5rem" }}>
-        <CardContent>
-          <Typography variant="h6" color="text.secondary">
-            Descrizione
-          </Typography>
-          <Divider sx={{ mb: "0.4rem" }} />
-          <Typography>{computer?.description}</Typography>
-        </CardContent>
-      </Card>
-      <Card sx={{ mt: "0.5rem" }}>
-        <CardContent>
-          <Typography variant="h6" color="text.secondary">
-            Consigliati per te
-          </Typography>
-          <Divider sx={{ mb: "0.4rem" }} />
-          <Container sx={{ display: "flex", overflowX: "scroll" }}>
-            {similarComputer?.map((pc) => {
-              return <Computercard computer={pc} />;
-            })}
-          </Container>
-        </CardContent>
-      </Card>
+                    <TextField
+                      sx={{ mt: "1rem" }}
+                      id='outlined-read-only-input'
+                      value={`${finalPrice} $`}
+                      label='Prezzo Finale'
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                    />
+                    <Button
+                      fullWidth
+                      sx={{ mt: "2rem" }}
+                      variant='contained'
+                      size='large'
+                    >
+                      prenota
+                    </Button>
+                  </>
+                )}
+              </>
+            )}
+          </CardActions>
+        </Card>
+      </Grow>
+
+      <Grow timeout={500} in={true}>
+        <Card sx={{ mt: "0.5rem" }}>
+          <CardContent>
+            <Typography variant='h6' color='text.secondary'>
+              Descrizione
+            </Typography>
+            <Divider sx={{ mb: "0.4rem" }} />
+            <Typography>{computer?.description}</Typography>
+          </CardContent>
+        </Card>
+      </Grow>
+      <Grow timeout={500} in={true}>
+        <Card sx={{ mt: "0.5rem" }}>
+          <CardContent>
+            <Typography variant='h6' color='text.secondary'>
+              Ti potrebbe anche interessare
+            </Typography>
+            <Divider sx={{ mb: "0.4rem" }} />
+            <Container sx={{ display: "flex", overflowX: "scroll" }}>
+              {similarComputer?.map((pc) => {
+                return <Computercard computer={pc} />;
+              })}
+            </Container>
+          </CardContent>
+        </Card>
+      </Grow>
     </Container>
   );
 }

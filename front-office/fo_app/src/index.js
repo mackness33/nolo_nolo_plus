@@ -9,6 +9,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Profile from "./profile/Profile";
 import Home from "./homepage/HomeContainer";
 import ProductPage from "./productPage/ProductPage";
+import RegisterLogin from "./registerLogin/RegisterLogin";
 
 const Wrapper = ({ children }) => {
   const location = useLocation();
@@ -20,11 +21,11 @@ const Wrapper = ({ children }) => {
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter basename="front">
+    <BrowserRouter basename='front'>
+      <Navbar />
       <Wrapper>
-        <Navbar />
         <Container
-          maxWidth="xl"
+          maxWidth='xl'
           sx={{
             boxShadow: 24,
             pt: "1rem",
@@ -33,9 +34,10 @@ ReactDOM.render(
           }}
         >
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="product/:id" element={<ProductPage />} />
+            <Route path='/' element={<Home />} />
+            <Route path='/registerLogin' element={<RegisterLogin />} />
+            <Route path='/profile' element={<Profile />} />
+            <Route path='product/:id' element={<ProductPage />} />
           </Routes>
         </Container>
       </Wrapper>
