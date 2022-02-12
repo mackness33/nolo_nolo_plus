@@ -4,7 +4,6 @@ const bookingService = require("./bookingService");
 const User = require("./schema/user");
 const logger = require("../../logger");
 
-
 class userService extends personService {
   constructor() {
     super();
@@ -31,7 +30,7 @@ class userService extends personService {
   async find(params, attributes = null) {
     var users = await super.find(params, attributes);
 
-    for (user of users){
+    for (const user of users) {
       user.full_name = user.person.full_name;
       if (user.feedback) {
         await user.populate("feedback.emplCode");

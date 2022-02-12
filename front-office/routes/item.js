@@ -32,4 +32,17 @@ router.get("/getBookingsByItem", async (req, res, next) => {
   res.send(bookingDates);
 });
 
+router.get("/findSimilar", async (req, res, next) => {
+  const comp = await computerService.findOne({ _id: req.query.id });
+  const similarType = await computerService.find({ type: { $in: comp.type } });
+  const similarBrand = await computerService.find({ brand: comp.brand });
+
+  let final = [...similarType, ...similarBrand];
+  final = final.filter((el) => el.id !== req.query.id);
+  console.log(final);
+  var check = new Set();
+  final = final.filter((obj) => !check.has(obj.id) && check.add(obj.id));
+  res.send(final);
+});
+
 module.exports = router;

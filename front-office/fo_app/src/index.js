@@ -4,33 +4,42 @@ import App from "./App";
 import App2 from "./App2";
 import Navbar from "./navbar.js";
 import Container from "@mui/material/Container";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
 import Profile from "./profile/Profile";
 import Home from "./homepage/HomeContainer";
 import ProductPage from "./productPage/ProductPage";
 
+const Wrapper = ({ children }) => {
+  const location = useLocation();
+  React.useLayoutEffect(() => {
+    document.documentElement.scrollTo(0, 0);
+  }, [location.pathname]);
+  return children;
+};
+
 ReactDOM.render(
   <React.StrictMode>
-    <Navbar />
-
-    <Container
-      maxWidth='xl'
-      sx={{
-        boxShadow: 24,
-        pt: "1rem",
-        bgcolor: "rgba(255, 255, 255, 0.95)",
-        minHeight: "100vh",
-      }}
-    >
-      <BrowserRouter basename='front'>
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/profile' element={<Profile />} />
-          <Route path='product/:id' element={<ProductPage />} />
-        </Routes>
-      </BrowserRouter>
-    </Container>
+    <BrowserRouter basename="front">
+      <Wrapper>
+        <Navbar />
+        <Container
+          maxWidth="xl"
+          sx={{
+            boxShadow: 24,
+            pt: "1rem",
+            bgcolor: "rgba(255, 255, 255, 0.95)",
+            minHeight: "100vh",
+          }}
+        >
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="product/:id" element={<ProductPage />} />
+          </Routes>
+        </Container>
+      </Wrapper>
+    </BrowserRouter>
     {/* <Container
       maxWidth='xl'
       sx={{
