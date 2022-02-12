@@ -49,6 +49,7 @@ class auth_service {
 
   // returns a boolean. If session.mail !== undefined -> true | otherwise -> false
   check_if_user_logged_in(session) {
+    logger.info("session: " + JSON.stringify(session));
     return !!session.mail;
   }
 
@@ -95,6 +96,7 @@ class auth_service {
         res.redirect(302, home_url);
       },
       () => {
+        logger.info("here is the prob bro");
         next();
       }
     );

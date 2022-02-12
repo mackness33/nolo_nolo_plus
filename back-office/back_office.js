@@ -9,7 +9,6 @@ const logger = require("./../logger");
 const morgan = require("morgan");
 const cors = require("cors");
 const session = require("express-session");
-const authService = require("../services/auth");
 
 const authRouter = require("./routes/auth");
 const homeRouter = require("./routes/home");
@@ -24,7 +23,7 @@ app.use(morgan("combined"));
 
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(authService.get_session());
+
 app.use("/", authRouter);
 app.use("/home", homeRouter);
 app.use("/user", userListRouter);

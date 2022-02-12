@@ -29,28 +29,4 @@ app.get("*", (req, res, next) => {
   res.sendFile(path.join(__dirname, "./fo_app/build/index.html"));
 });
 
-app.use(async (req, res, next) => {
-  await userService.initialize();
-  next();
-});
-
-app.get("/getUser", async (req, res, next) => {
-  var user = await userService.findOne({ "person.mail": req.query.mail });
-  user = user ? userService.format(user, "person") : user;
-
-  if (user) {
-    if (req.query.mode == "edit") {
-      user.feedback = userService.filterFeeds(user.feedback, req.session.mail);
-    }
-    for (let i = 0; i < user.feedback.length; i++) {
-      user.feedback[i].emplCode = userService.format(
-        user.feedback[i].emplCode,
-        "person"
-      );
-    }
-  }
-
-  res.send(user);
-});
-
 module.exports = app;

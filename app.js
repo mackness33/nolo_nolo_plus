@@ -11,6 +11,7 @@ var mongoose = require("mongoose");
 
 var back_office = require("./back-office/back_office");
 var front_office = require("./front-office/front_office");
+const authService = require("./services/auth");
 
 var app = express();
 
@@ -28,8 +29,8 @@ app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: false, limit: "100mb" }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-
 // app.use('/nn+1', back_office);
+app.use(authService.get_session());
 app.use("/nnplus", back_office);
 app.use("/front", front_office);
 
