@@ -1,75 +1,15 @@
 <!DOCTYPE html>
-<html lang="it">
-
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Front Office</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-    crossorigin="anonymous"></script>
-  <!-- <script src="//code.jquery.com/jquery-3.6.0.min.js"></script> -->
-  <link rel="stylesheet" href="./base.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-</head>
-
-<body>
-  <!-- navbar -->
-  <nav class="navbar navbar-expand-md navbar-dark br-primary">
-
-    <!-- navbar content -->
-    <div class="container-fluid" id="nav-container">
-
-      <!-- navbar logo -->
-      <a class="navbar-brand" href="#" aria-hidden="true" tabindex="-1">
-        <img src="./logo.png" class="logo">
-      </a>
-
-      <!-- navbar toggle -->
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navElements"
-        aria-controls="navElements" aria-expanded="false" aria-label="Mostra e nascondi navigazione">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <!-- navbar navigation -->
-      <div class="collapse navbar-collapse" id="navElements">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="nav-list">
-          <li class="nav-item">
-            <a class="link active-nav" href="/nnplus/home" aria-label="Pagina Clienti" aria-current="page">Clienti</a>
-          </li>
-          <li class="nav-item">
-            <a class="link" href="/nnplus/home/inventory" aria-label="Pagina Inventario">Inventario</a>
-          </li>
-          <li class="nav-item">
-            <a class="link" href="/nnplus/home/booking" aria-label="Pagina Gestione">Noleggi</a>
-          </li>
-          <li class="nav-item">
-            <a class="link" href="/nnplus/dashboard/" aria-label="Pagina Gestione">Dashboards</a>
-          </li>
-          <li class="nav-item">
-            <a class="link" href="/nnplus/logout" aria-label="Effettua il log out">Log Out</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-
-
-  <!-- main content -->
-  <main>
-
-    <!-- add and search customer -->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+  </head>
+  <body>
     <div class="container-fluid" id="main-container">
         <div id="app"></div>
         <script type="module" src="/src/main.js"></script>
     </div>
-  </main>
-</body>
-
+  </body>
 </html>
