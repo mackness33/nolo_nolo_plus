@@ -7,13 +7,13 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("./logger.js");
 const morgan = require("morgan");
-var mongoose = require("mongoose");
+const mongoose = require("mongoose");
 
-var back_office = require("./back-office/back_office");
-var front_office = require("./front-office/front_office");
+const back_office = require("./back-office/back_office");
+const front_office = require("./front-office/front_office");
 const authService = require("./services/auth");
 
-var app = express();
+const app = express();
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
