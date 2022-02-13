@@ -52,7 +52,11 @@ class bookingService extends baseService {
     if (userScore <= 2) {
       discounts.push({
         reason: "sconto buona condotta",
-        amount: computerInfo.price * ((5 * (3 - userScore)) / 100) * days,
+        amount: (
+          computerInfo.price *
+          ((5 * (3 - userScore)) / 100) *
+          days
+        ).toFixed(2),
       });
     }
     console.log(discounts);

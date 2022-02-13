@@ -1,5 +1,6 @@
 import * as React from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
@@ -13,11 +14,25 @@ import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePicker from "@mui/lab/DatePicker";
 
+import { NetworkContext } from "../NetworkContext";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import Grow from "@mui/material/Fade";
 
+import "animate.css";
+
 const userSchema = {
+  name: "",
+  surname: "",
+  password: "",
+  birth: "",
+  mail: "",
+  status: 0,
+  points: 0,
+  picture: null,
+  role: 3,
+};
+const userSchemaB = {
   name: "",
   surname: "",
   password: "",
@@ -38,10 +53,16 @@ export default function RegisterLogin() {
   const [user, setUser] = React.useState(userSchema);
   const [login, setLogin] = React.useState(loginSchema);
 
-  const [birthDate, setBirtDate] = React.useState(null);
+  const [birthDate, setBirthDate] = React.useState(null);
   const [proPic, setProPic] = React.useState(null);
 
+  const [loginError, setLoginError] = React.useState(false);
+  const [subscribeError, setSubscribeError] = React.useState(false);
+  const [msg, setMsg] = React.useState("");
+
   const tablet = useMediaQuery("(max-width: 1024px)");
+  const { globalUser, setGlobalUser } = React.useContext(NetworkContext);
+  const navigate = useNavigate();
 
   const handleRegistrationChange = (e, key) => {
     let tmpUser = user;
@@ -55,18 +76,59 @@ export default function RegisterLogin() {
     setLogin(tmpLogin);
   };
 
-  const handleRegistrationSubmit = (e) => {
+  const handleRegistrationSubmit = async (e) => {
     e.preventDefault();
+
+    const regis = await axios.post(
+      "http://localhost:8000/front/user/subscribe",
+      user
+    );
     console.log(user);
+    if (regis.data.success) {
+      const res = await axios.post("http://localhost:8000/front/auth/login", {
+        user: user.mail,
+        psw: user.password,
+      });
+
+      if (res.data.success) {
+        setGlobalUser(res.data.user);
+        navigate("/");
+      }
+      setMsg("Registrazione avvenuta ma login fallito");
+      setSubscribeError(true);
+      setTimeout(() => {
+        setSubscribeError(false);
+      }, 3000);
+    } else {
+      setMsg(regis.data.error);
+      setSubscribeError(true);
+      setTimeout(() => {
+        setSubscribeError(false);
+      }, 3000);
+    }
+
+    e.target.reset();
+    setProPic(null);
   };
 
-  const handleLoginSubmit = async (e) => {
-    e.preventDefault();
+  const handleLoginSubmit = async (e = null) => {
+    if (e != null) {
+      e.preventDefault();
+    }
     const res = await axios.post("http://localhost:8000/front/auth/login", {
       user: login.mail,
       psw: login.password,
     });
-    console.log(res);
+
+    if (!res.data.success) {
+      setLoginError(true);
+      setTimeout(() => {
+        setLoginError(false);
+      }, 3000);
+      return;
+    }
+    setGlobalUser(res.data.user);
+    navigate("/");
   };
 
   const handleImageUpload = async (e) => {
@@ -126,6 +188,9 @@ export default function RegisterLogin() {
                 <Typography variant='h5'>Registrati adesso!</Typography>
 
                 <Avatar
+                  onClick={() => {
+                    console.log(login);
+                  }}
                   src={proPic}
                   sx={{ mt: "2rem", height: "4rem", width: "4rem" }}
                 />
@@ -192,10 +257,10 @@ export default function RegisterLogin() {
                     clearable
                     value={birthDate}
                     onChange={(date) => {
-                      setBirtDate(date);
+                      setBirthDate(date);
                       handleRegistrationChange(
                         { target: { value: date.toISOString().split("T")[0] } },
-                        "mail"
+                        "birth"
                       );
                     }}
                     label='Data di Nascita'
@@ -210,6 +275,19 @@ export default function RegisterLogin() {
                     )}
                   />
                 </LocalizationProvider>
+                {subscribeError && (
+                  <Typography
+                    sx={{
+                      mt: "1rem",
+                      fontWeight: "bold",
+                      fontSize: 20,
+                      color: "red",
+                    }}
+                    className='animate__animated animate__bounceIn'
+                  >
+                    {msg}
+                  </Typography>
+                )}
                 <Button
                   size='large'
                   sx={{ mt: "2rem" }}
@@ -261,6 +339,19 @@ export default function RegisterLogin() {
                   }}
                   required
                 ></TextField>
+                {loginError && (
+                  <Typography
+                    sx={{
+                      mt: "1rem",
+                      fontWeight: "bold",
+                      fontSize: 20,
+                      color: "red",
+                    }}
+                    className='animate__animated animate__bounceIn'
+                  >
+                    Login Fallito
+                  </Typography>
+                )}
                 <Button
                   size='large'
                   sx={{ mt: "2rem" }}

@@ -17,12 +17,15 @@ router.use(async (req, res, next) => {
 });
 
 router.get("/getAll", async (req, res, next) => {
-  console.log("wow");
+  logger.warn("IN homepage -- getAll");
+
   const items = await computerService.find();
   res.send(items);
 });
 
 router.get("/search", async (req, res, next) => {
+  logger.warn("IN homepage -- search");
+
   console.log(req.query);
   let filters = {
     ...(req.query.brand ? { brand: req.query.brand } : {}),
@@ -46,6 +49,8 @@ router.get("/search", async (req, res, next) => {
 });
 
 router.get("/getAllComponents", async (req, res, next) => {
+  logger.warn("IN homepage -- getAllComponents");
+
   const comps = await componentService.getAllComponents();
   res.send(comps);
 });

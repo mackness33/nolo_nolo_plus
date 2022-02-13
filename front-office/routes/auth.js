@@ -49,6 +49,7 @@ router.post(
         user = userService.format(user, "person");
 
         SessionService.generate(req.session, user);
+        return user;
       })
       // if successfully logged the user in then send it to the nnplus home
       .then(successful_login)
@@ -58,11 +59,11 @@ router.post(
       .finally(send_result);
 
     // create the data to send to the client
-    function successful_login() {
+    function successful_login(user) {
       const port = process.env.PORT ? ":" + process.env.PORT : "";
       // OPTIMIZE: : use the url package to make the href
       let href = req.protocol + "://" + req.hostname + port + "/nnplus/home";
-      data = { url: href, success: true };
+      data = { url: href, success: true, user: user };
     }
 
     // send to the client that the user couldn't log in
@@ -84,20 +85,13 @@ router.post(
 /* LOGOUT */
 
 // first we check whether a user is already logged in
-router.get(
-  "/logout",
-  (req, res, next) => {
-    logger.info("in pre-logout GET");
-    SessionService.not_already_logged(req, res, next, "/nnplus/login");
-  },
-  (req, res, next) => {
-    logger.info("in logout GET");
+router.get("/logout", (req, res, next) => {
+  logger.info("in logout GET");
 
-    // destroy the session and then redirect to the login/unauth home
-    SessionService.destroy(req.session, res);
+  // destroy the session and then redirect to the login/unauth home
+  SessionService.destroy(req.session, res);
 
-    res.redirect(302, "/nnplus/login");
-  }
-);
+  res.send({ success: true });
+});
 
 module.exports = router;

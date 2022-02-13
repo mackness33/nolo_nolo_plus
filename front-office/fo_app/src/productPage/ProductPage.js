@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from "react";
-import Container from "@mui/material/Container";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { checkLogged, identity } from "../comms";
+import { NetworkContext } from "../NetworkContext";
 
+import Container from "@mui/material/Container";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -41,20 +44,61 @@ import Computercard from "../homepage/ComputerCard";
 
 import Grow from "@mui/material/Fade";
 
+import "animate.css";
+
 export default function ComputerContent() {
   let params = useParams();
+  const navigate = useNavigate();
   const [computer, setComputer] = useState();
   const [bookings, setBookings] = useState();
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [showCal, setShowCalc] = useState(false);
   const [showUnavail, setShowUnavail] = useState(true);
+  const [points, setPoints] = useState(0);
+  const [userDiscount, setUserDiscount] = useState(0);
+  const [discountArray, setDiscountArray] = useState();
+  const [days, setDays] = useState(0);
   const [finalPrice, setFinalPrice] = useState(0);
   const [orientation, setOrientation] = useState();
+
+  const [trigger, setTrigger] = useState(false);
+  const [trigger2, setTrigger2] = useState(false);
+
+  const [user, setUser] = useState();
+  const [isLogged, setIsLogged] = useState();
+
+  const [showMsg, setShowMsg] = useState(false);
+  const [positive, setPositive] = useState(true);
 
   const [similarComputer, setSimilarComputer] = useState([]);
   const mobile = useMediaQuery("(max-width: 768px)");
   const tablet = useMediaQuery("(max-width: 1024px)");
+
+  const { globalUser, setGlobalUser } = useContext(NetworkContext);
+
+  /**
+   * use effect that checks at each product page change
+   * if user is logged, in which case it makes the points selection available
+   */
+
+  useEffect(async () => {
+    const res = await checkLogged();
+    setIsLogged(res);
+
+    if (res) {
+      const user = await identity();
+      setUser(user.payload);
+      setGlobalUser(user.payload);
+    } else {
+      setUser(null);
+    }
+  }, [params.id]);
+
+  /**
+   * at each page change, gets the item, its booking and
+   * some similar computers and sets them in their react states
+   */
 
   useEffect(async () => {
     const comp = await axios.get("http://localhost:8000/front/item/getOne", {
@@ -76,11 +120,48 @@ export default function ComputerContent() {
     );
 
     setBookings(dates.data);
-  }, [params.id]);
+  }, [params.id, trigger2]);
 
-  useEffect(() => {
+  /**
+   * triggers at each date change, calculates and shows
+   * the final price and sets the corresponding states
+   * for final price and days
+   */
+
+  useEffect(async () => {
     if (startDate && endDate) {
-      setShowCalc(true);
+      let days1 =
+        (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24);
+      days1++;
+      setDays(days1);
+      let tmpUserDiscount = 0;
+
+      if (isLogged) {
+        const res = await axios.get(
+          "http://localhost:8000/front/item/getDiscounts",
+          {
+            params: { userId: user._id, computerId: params.id, days },
+          }
+        );
+        console.log(res.data);
+        setDiscountArray(res.data);
+        if (
+          res.data.discounts.length > 0 &&
+          res.data.discounts.some((el) => el.reason === "sconto buona condotta")
+        ) {
+          const disc = res.data.discounts.find(
+            (el) => el.reason === "sconto buona condotta"
+          );
+          console.log(disc);
+          tmpUserDiscount = parseFloat(disc.amount).toFixed(2);
+        } else {
+          tmpUserDiscount = 0;
+        }
+      }
+
+      // setUserDiscount(2 * days);
+
+      // setShowCalc(true);
       setShowUnavail(false);
       for (let i = 0; i < bookings.length; i++) {
         const begin = new Date(bookings[i].begin);
@@ -93,24 +174,40 @@ export default function ComputerContent() {
           return;
         }
       }
-      evalFinalPrice();
+      // evalFinalPrice();
+      setUserDiscount(tmpUserDiscount);
+      setTrigger(!trigger);
     } else {
       setShowCalc(false);
     }
   }, [startDate, endDate]);
 
+  useEffect(() => {
+    evalFinalPrice();
+  }, [userDiscount, trigger, points]);
+
   const tmp = () => {
-    console.log(computer);
+    console.log(startDate);
   };
 
+  /**
+   * calculates the final price based on daily price
+   * computer discount, user discount and number of days
+   */
+
   const evalFinalPrice = () => {
-    let days = (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24);
-    setFinalPrice(
-      (
-        (days + 1) *
-        (computer.price - (computer.price * computer.discount) / 100)
-      ).toFixed(2)
-    );
+    if (computer) {
+      const val = (
+        days * (computer.price - (computer.price * computer.discount) / 100) -
+        userDiscount -
+        points / 10
+      ).toFixed(2);
+      if (val > 0) {
+        setFinalPrice(val);
+      } else {
+        setFinalPrice(0);
+      }
+    }
   };
 
   const handleDisable = (date) => {
@@ -153,6 +250,14 @@ export default function ComputerContent() {
     }
   };
 
+  const showResponse = (happy) => {
+    setPositive(happy);
+    setShowMsg(true);
+    setTimeout(() => {
+      setShowMsg(false);
+    }, 3000);
+  };
+
   useEffect(() => {
     if (tablet) {
       setOrientation("horizontal");
@@ -160,6 +265,153 @@ export default function ComputerContent() {
       setOrientation("vertical");
     }
   }, [tablet]);
+
+  /**
+   *
+   * NEW BOOKING HANDLE
+   *
+   *
+   * 
+   * 
+   * 
+   * 
+   * 
+   * 
+   * 
+   * 
+   * 
+   * 
+   * 
+   * 
+
+
+
+
+
+
+
+
+
+
+
+
+
+   * 
+   *
+   */
+
+  const handleBooking = async () => {
+    if (!isLogged) {
+      showResponse(false);
+      return;
+    }
+
+    const t1 = new Date(startDate);
+    t1.setHours(1, 0, 0, 0);
+    const t2 = new Date(endDate);
+    t2.setHours(1, 0, 0, 0);
+
+    const booking = {
+      user: user._id,
+      computer: params.id,
+      begin: t1.toISOString().split("T")[0],
+      end: t2.toISOString().split("T")[0],
+      discounts: discountArray.discounts,
+      starting_price: computer.price * days,
+      final_price: finalPrice,
+      points: user.points - (user.points - points),
+    };
+
+    console.log(booking);
+
+    console.log(booking);
+    const res = await axios.post("http://localhost:8000/front/item/addOne", {
+      ...booking,
+    });
+
+    if (res.data.success) {
+      showResponse(true);
+      setTrigger2(!trigger2);
+    }
+
+    // const user = await identity();
+    // const booking = {
+    //   user: user._id,
+    //   computer: params.id,
+    //   begin: startDate,
+    //   end: endDate,
+    //   discounts: discountList,
+    //   starting_price: computer.price * days,
+    //   final_price: price,
+    //   note: $("#addNote").val(),
+    //   points: usedPoints,
+    // };
+  };
+
+  /**
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   *
+   */
 
   return (
     <Container maxWidth='xl' sx={{ mt: "1rem" }} disableGutters>
@@ -381,7 +633,15 @@ export default function ComputerContent() {
                   label='Inizio noleggio'
                   inputFormat='dd/MM/yyyy'
                   value={startDate}
+                  onOpen={() => {
+                    setShowCalc(false);
+                  }}
                   onChange={handleStartChange}
+                  onAccept={() => {
+                    if (startDate) {
+                      setShowCalc(true);
+                    }
+                  }}
                   renderInput={(params) => (
                     <TextField size='small' {...params} />
                   )}
@@ -394,7 +654,15 @@ export default function ComputerContent() {
                   label='Fine noleggio'
                   inputFormat='dd/MM/yyyy'
                   value={endDate}
+                  onOpen={() => {
+                    setShowCalc(false);
+                  }}
                   onChange={handleEndChange}
+                  onAccept={() => {
+                    if (endDate) {
+                      setShowCalc(true);
+                    }
+                  }}
                   renderInput={(params) => (
                     <TextField size='small' {...params} />
                   )}
@@ -417,12 +685,18 @@ export default function ComputerContent() {
                         Usa i tuoi punti
                       </InputLabel>
                       <Select
+                        onChange={(e) => {
+                          setPoints(e.target.value);
+                        }}
+                        value={points}
+                        disabled={!user?.points}
                         labelId='pointsSelectLabel'
                         label='Usa i tuoi punti'
                       >
-                        <MenuItem value={0}>0</MenuItem>
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
+                        {user &&
+                          [...Array(user.points)].map((el, i) => {
+                            return <MenuItem value={i + 1}>{i + 1}</MenuItem>;
+                          })}
                       </Select>
                     </FormControl>
                     {/* <Typography
@@ -439,6 +713,19 @@ export default function ComputerContent() {
                   >
                     {`${finalPrice} $`}
                   </Typography> */}
+                    {userDiscount > 0 && (
+                      <Typography
+                        sx={{
+                          fontSize: "small",
+                          fontWeight: "bold",
+                          mt: "0.3rem",
+                          textAlign: "center",
+                        }}
+                      >
+                        In base alla tua condotta, hai diritto ad uno sconto di{" "}
+                        {userDiscount}$ sul prezzo finale!
+                      </Typography>
+                    )}
                     <TextField
                       sx={{ mt: "1rem" }}
                       id='outlined-read-only-input'
@@ -453,9 +740,33 @@ export default function ComputerContent() {
                       sx={{ mt: "2rem" }}
                       variant='contained'
                       size='large'
+                      onClick={handleBooking}
                     >
                       prenota
                     </Button>
+                  </>
+                )}
+                {showMsg && (
+                  <>
+                    {positive ? (
+                      <Typography
+                        sx={{
+                          fontWeight: "bold",
+                          mt: "0.5rem",
+                          color: "green",
+                        }}
+                        className='animate__animated animate__bounceIn'
+                      >
+                        Prenotazione effettuata con successo!
+                      </Typography>
+                    ) : (
+                      <Typography
+                        sx={{ fontWeight: "bold", mt: "0.5rem", color: "red" }}
+                        className='animate__animated animate__bounceIn'
+                      >
+                        Devi effettuare l'accesso per prenotare!
+                      </Typography>
+                    )}
                   </>
                 )}
               </>

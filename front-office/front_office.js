@@ -16,6 +16,7 @@ const userService = require("../services/mongo/userService");
 const homepageRouter = require("./routes/homepage");
 const itemRouter = require("./routes/item");
 const authRouter = require("./routes/auth");
+const userRouter = require("./routes/user");
 
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "fo_app", "build")));
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, "fo_app", "build")));
 app.use("/home", homepageRouter);
 app.use("/item", itemRouter);
 app.use("/auth", authRouter);
+app.use("/user", userRouter);
 
 app.get("*", (req, res, next) => {
   console.log("dio");

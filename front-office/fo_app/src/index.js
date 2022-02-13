@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import App from "./App";
 import App2 from "./App2";
@@ -10,20 +10,26 @@ import Profile from "./profile/Profile2";
 import Home from "./homepage/HomeContainer";
 import ProductPage from "./productPage/ProductPage";
 import RegisterLogin from "./registerLogin/RegisterLogin";
+import { NetworkContext } from "./NetworkContext";
 
 const Wrapper = ({ children }) => {
+  const [globalUser, setGlobalUser] = useState();
   const location = useLocation();
   React.useLayoutEffect(() => {
     document.documentElement.scrollTo(0, 0);
   }, [location.pathname]);
-  return children;
+  return (
+    <NetworkContext.Provider value={{ globalUser, setGlobalUser }}>
+      {children}
+    </NetworkContext.Provider>
+  );
 };
 
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter basename='front'>
-      <Navbar />
       <Wrapper>
+        <Navbar />
         <Container
           maxWidth='xl'
           sx={{

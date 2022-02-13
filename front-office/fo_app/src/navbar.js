@@ -1,4 +1,7 @@
 import * as React from "react";
+import axios from "axios";
+import { checkLogged, identity, logOut } from "./comms";
+
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -15,14 +18,17 @@ import MenuItem from "@mui/material/MenuItem";
 import logo from "./images/logo.png";
 import colors from "./images/colors.jpg";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { NetworkContext } from "./NetworkContext";
 
 const pages = ["Catalog", "Rental"];
 const settings = ["Profile", "Logout"];
 
 const Navbar = () => {
+  const [logged, setLogged] = React.useState(false);
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const { globalUser, setGlobalUser } = React.useContext(NetworkContext);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -40,6 +46,20 @@ const Navbar = () => {
     setAnchorElUser(null);
   };
 
+  /**
+   * at each globalUser context change, check if user is still logged
+   * in which case update the navbar
+   */
+
+  React.useEffect(async () => {
+    const res = await checkLogged();
+    if (res) {
+      setLogged(true);
+    } else {
+      setLogged(false);
+    }
+  }, [globalUser]);
+
   return (
     <AppBar position='static'>
       <Container maxWidth='xl'>
@@ -53,7 +73,20 @@ const Navbar = () => {
           <Pages />
 
           {/* ALL SIZE */}
-          <UserSetting />
+          {logged ? (
+            <UserSetting />
+          ) : (
+            <Button
+              component={Link}
+              to='/registerLogin'
+              size='large'
+              key='home'
+              onClick={Navbar.handleCloseNavMenu}
+              sx={{ my: 2, color: "white", display: "block" }}
+            >
+              log in
+            </Button>
+          )}
         </Toolbar>
       </Container>
     </AppBar>
@@ -125,6 +158,9 @@ const Pages = () => {
 
 const UserSetting = () => {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const navigate = useNavigate();
+  const { globalUser, setGlobalUser } = React.useContext(NetworkContext);
+  const [user, setUser] = React.useState();
 
   const handleOpenUserMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -134,12 +170,34 @@ const UserSetting = () => {
     setAnchorElUser(null);
   };
 
+  const LogoutHandler = async () => {
+    const res = await logOut();
+    if (res) {
+      setGlobalUser(null);
+    } else {
+      alert("logout fallito");
+    }
+    console.log(res);
+    navigate("/");
+  };
+
+  React.useEffect(async () => {
+    const res = await identity();
+    if (!res.success) {
+      setGlobalUser(null);
+      navigate("/");
+      return;
+    }
+    setGlobalUser(res.paylaod);
+    setUser(res.payload);
+  }, []);
+
   return (
     <Box sx={{ flexGrow: 0 }}>
       <Tooltip title='Open user settings'>
         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
           {/* TODO: add as the alt the name of the user + it's profile pic if present */}
-          <Avatar alt='User to be Added' src='/static/images/avatar/2.jpg' />
+          <Avatar alt='User to be Added' src={user?.picture} />
         </IconButton>
       </Tooltip>
       <Menu
@@ -161,7 +219,7 @@ const UserSetting = () => {
         <MenuItem key='profile' component={Link} to='/profile'>
           <Typography textAlign='center'>Profilo</Typography>
         </MenuItem>
-        <MenuItem key='logout' component={Link} to='/registerLogin'>
+        <MenuItem key='logout' onClick={LogoutHandler}>
           <Typography textAlign='center'>Logout</Typography>
         </MenuItem>
       </Menu>
@@ -171,6 +229,7 @@ const UserSetting = () => {
 
 const SmallMenu = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const { globalUser, setGlobalUser } = React.useContext(NetworkContext);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -213,7 +272,7 @@ const SmallMenu = () => {
         <MenuItem key='homepage'>
           <Typography textAlign='center'>Homepage</Typography>
         </MenuItem>
-        <MenuItem key='catalogo' component={Link} to='/'>
+        <MenuItem key='catalogo'>
           <Typography textAlign='center'>Catalogo</Typography>
         </MenuItem>
       </Menu>

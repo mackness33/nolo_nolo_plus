@@ -50,7 +50,7 @@ class auth_service {
   // returns a boolean. If session.mail !== undefined -> true | otherwise -> false
   check_if_user_logged_in(session) {
     logger.info("session: " + JSON.stringify(session));
-    return !!session.mail;
+    return !!session && !!session.mail;
   }
 
   // function to check if the user has the right authorization to enter the url
@@ -118,6 +118,19 @@ class auth_service {
     );
 
     // next();
+  }
+
+  // check if the mail saved in the session has a
+  // corresponding account in the model
+  async check_model(req, res, model, next) {
+    let readyModel = await model;
+    const userCount = await readyModel
+      .find({ "person.mail": req.session.mail })
+      .count();
+    if (userCount === 0) {
+      this.destroy(req.session, res);
+    }
+    next();
   }
 
   /* SESSION OPERATIONS */

@@ -18,7 +18,6 @@ class userService extends personService {
   // FINDS
   async findOne(params, attributes = null) {
     var user = await super.findOne(params, attributes);
-    user.full_name = user.person.full_name;
 
     if (user && user.feedback) {
       await user.populate("feedback.emplCode");

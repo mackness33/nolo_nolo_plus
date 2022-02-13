@@ -9,6 +9,7 @@ const logger = require("./../logger");
 const morgan = require("morgan");
 const cors = require("cors");
 const session = require("express-session");
+const authService = require("../services/auth");
 
 const authRouter = require("./routes/auth");
 const homeRouter = require("./routes/home");
