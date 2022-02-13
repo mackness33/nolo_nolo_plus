@@ -1,0 +1,368 @@
+:root {
+  --main-radius: 1rem;
+  --main-margin: 0.5rem;
+  --button-radius: 2rem;
+}
+
+body {
+  background-color: rgba(0, 0, 0, 0.822);
+  color: white;
+  font-size: medium;
+}
+
+.btn {
+  border-radius: var(--button-radius);
+}
+
+.modal {
+  color: black;
+}
+
+/* nav elements */
+
+nav {
+  background-color: rgb(34, 99, 196);
+  border-radius: var(--main-radius);
+  margin: var(--main-margin);
+}
+
+#nav-container {
+  margin: 1rem;
+}
+
+.logo {
+  height: 3rem;
+}
+
+#nav-container > a {
+  margin-right: 2rem;
+}
+
+.link {
+  margin-left: 2rem;
+  color: white;
+  text-decoration: none;
+  background-color: rgb(42, 126, 252);
+  padding: 0.5rem;
+  border-radius: var(--main-radius);
+  transition: color 500ms;
+}
+
+.link:hover {
+  color: black;
+  transition: color 500ms;
+}
+
+.link.active-nav {
+  background-color: rgb(84, 148, 243);
+}
+
+/* main body decoration */
+
+main {
+  margin: var(--main-margin);
+}
+
+#main-container {
+  padding: 1rem;
+  background-color: rgba(36, 103, 230, 0.452);
+
+  border-radius: var(--main-radius);
+  padding-left: 0.1rem;
+  padding-right: 0.1rem;
+}
+
+/* add and search elements */
+
+#filterAndSearch {
+  display: flex;
+  flex-direction: column;
+}
+
+#interact-container {
+  display: flex;
+}
+
+#interact-container > button {
+  margin-right: 3rem;
+}
+
+#interact-container form {
+  display: flex;
+  justify-content: left;
+}
+#interact-container form button {
+  margin-right: 1rem;
+}
+
+#interact-container form div {
+  display: flex;
+  overflow: hidden;
+}
+
+#interact-container form div > * {
+  border: none;
+}
+
+#interact-container form div > *:focus {
+  outline: none;
+}
+
+#searchType {
+  text-align: center;
+}
+
+#resetBtn {
+  margin-left: 1rem;
+}
+
+/* filters elements */
+
+#filters {
+  margin-top: 1rem;
+  display: flex;
+}
+
+#filterForm {
+  display: flex;
+  align-items: center;
+}
+
+.filter {
+  color: black;
+  display: flex;
+  align-items: center;
+  margin-right: 0.4rem;
+}
+
+#filterBtn {
+  margin-right: 0%;
+}
+
+/* customer list elements */
+
+#customerContainer {
+  padding: 0.2rem;
+  border-radius: var(--main-radius);
+  margin: 1rem;
+  background-color: rgba(0, 0, 0, 0.39);
+  box-shadow: inset 0 0 10px #000000;
+}
+
+.customer-list {
+  list-style: none;
+  padding: 1rem;
+  padding-top: 0;
+}
+
+.customer-list > * {
+  margin-top: 1.5rem;
+  padding: 0.7rem;
+  padding-left: 2rem;
+  border-radius: var(--main-radius);
+  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.customer-element {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.customer-info {
+  display: flex;
+  width: 100%;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.no-btns {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.no-btns > * {
+  display: flex;
+  width: 33%;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.detail {
+  display: flex;
+  justify-content: start;
+  margin-left: 3rem;
+}
+
+.customer-btn {
+  display: flex;
+  width: 100%;
+  justify-content: end;
+  align-items: center;
+}
+
+.customer-btn > * {
+  margin-left: 1rem;
+}
+
+/* information Modal */
+
+.userModal div {
+  margin-bottom: 1rem;
+}
+
+.userModal div h6 {
+  margin-bottom: 0rem;
+}
+
+#infoModalFeedback {
+  margin-bottom: 0.5rem !important;
+}
+
+#infoFeedBackList {
+  list-style: none;
+  padding-left: 1rem;
+}
+
+.feedback div {
+  margin-bottom: 0.5rem;
+}
+
+.feedback {
+  padding: 0.5rem;
+  border-left: 1px solid rgb(42, 126, 252);
+  margin-bottom: 2rem;
+}
+
+/* editing Modal */
+
+#editFeedBackList {
+  list-style: none;
+  padding-left: 1rem;
+}
+
+@media only screen and (max-width: 1024px) {
+  #main-container {
+    padding-left: 0.1rem;
+    padding-right: 0.1rem;
+  }
+
+  .no-btns {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .no-btns > * {
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+  .detail {
+    width: 100%;
+    flex-direction: column;
+    margin: 0;
+  }
+
+  #customerContainer {
+    padding: 0.2rem;
+  }
+}
+
+/* Feedback Modal */
+
+#feedText {
+  width: 100%;
+}
+
+@media only screen and (max-width: 767px) {
+  /* nav elements */
+
+  .nav-item {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.7rem;
+  }
+  .link {
+    margin-left: 0;
+  }
+
+  /* add and search element */
+
+  #interact-container {
+    flex-direction: column;
+  }
+
+  .customer-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #interact-container form button {
+    margin-right: 0rem;
+    margin-top: 0.5rem;
+  }
+
+  #interact-container > button {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 1rem;
+  }
+
+  #searchBox {
+    display: flex;
+    flex-direction: column;
+  }
+  #idSearch {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* filter elements */
+
+  #filters {
+    flex-direction: column;
+  }
+
+  #filterForm {
+    flex-direction: column;
+  }
+
+  /* customer list */
+
+  .no-btns {
+    width: 100%;
+  }
+
+  .no-btns > * {
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .customer-element {
+    flex-direction: column;
+  }
+
+  .customer-info {
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .customer-btn {
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .customer-btn > * {
+    margin-top: 0.5rem;
+    margin-left: 0;
+  }
+
+  .detail {
+    margin: 0;
+    justify-content: center;
+  }
+}

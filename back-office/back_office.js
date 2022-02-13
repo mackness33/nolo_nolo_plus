@@ -17,6 +17,8 @@ const emplListRoter = require("./routes/employee");
 const inventoryRouter = require("./routes/inventory");
 const bookingRouter = require("./routes/booking");
 
+const dashboard = require("./manager/dashboard.js");
+
 const app = express();
 
 app.use(morgan("combined"));
@@ -30,6 +32,7 @@ app.use("/user", userListRouter);
 app.use("/empl", emplListRoter);
 app.use("/inv", inventoryRouter);
 app.use("/booking", bookingRouter);
+app.use("/dashboard", dashboard);
 
 // catch 404 and forward to error handler
 app.use("/", function (req, res, next) {
