@@ -1,25 +1,18 @@
 <template>
-  <div class="helloworld">
-    <h1>{{ msg }}</h1>
-  </div>
+  <NavButton text='hola' />
+  <NavButton text='hola' />
+  <NavButton text='hola' />
+    <NavButton text='hola' />
 </template>
 
 <script>
+import NavButton from './NavButton.vue'
 
-  export default {
-    name: 'HelloWorld',
-    props: {
-      msg: String,
-    }
-  }
-</script>
+export default {
+  name: 'HelloWorld',
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
+  components: {
+    NavButton
   }
 }
-</style>
+</script>
