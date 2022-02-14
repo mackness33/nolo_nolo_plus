@@ -355,11 +355,16 @@ $("#bookingModal").on("show.bs.modal", async function (event) {
   //   beforeShowDay: dateFilter,
   // });
   setUpDatepicker(alreadyBooked);
+  var valid = true;
 
   $("body").on("click", "#evalBtn", async (event) => {
-    var beginChoice = $("#addStartDate").datepicker("getDate").getTime();
-    var endChoice = $("#addEndDate").datepicker("getDate").getTime();
-    var valid = true;
+    try {
+      var beginChoice = $("#addStartDate").datepicker("getDate").getTime();
+      var endChoice = $("#addEndDate").datepicker("getDate").getTime();
+    } catch (error) {
+      valid = false;
+    }
+
     for (let i = 0; i < alreadyBooked.length; i++) {
       const begin = new Date(alreadyBooked[i].begin).getTime();
       const end = new Date(alreadyBooked[i].end).getTime();
@@ -534,10 +539,10 @@ async function bookingPreview(user, computer, begin, end) {
     .done((data) => {
       console.log(data);
       data.discounts.forEach((discount) => {
-        printDiscounts(discount.reason, discount.amount.toFixed(2));
+        printDiscounts(discount.reason, parseFloat(discount.amount).toFixed(2));
         discountList.push({
           reason: discount.reason,
-          amount: discount.amount.toFixed(2),
+          amount: parseFloat(discount.amount).toFixed(2),
         });
       });
       populatePointsSelect(data.points);
@@ -1040,6 +1045,7 @@ async function getModalData(item, id) {
 }
 
 function checkSession(evt, xhr, options) {
+  console.log(xhr);
   if (xhr.getResponseHeader("content-type").includes("html")) {
     window.location.href = "/nnplus/login";
   }
