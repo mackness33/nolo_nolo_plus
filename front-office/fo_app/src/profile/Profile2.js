@@ -503,6 +503,7 @@ function reducer(state, action) {
       return { ...state, computer: action.payload };
     case "reset":
       return init(action.payload);
+    default:
       throw new Error();
   }
 }
@@ -512,6 +513,7 @@ const BookingItem = ({ booking, filter, fireTrigger, trigger }) => {
 
   const [bookDates, setBookDates] = React.useState();
   const [edit, setEdit] = React.useState(false);
+  const [days, setDays] = React.useState(0);
   const [onlyReceipt, setOnlyReceipt] = React.useState(false);
   const [bookingState, bookingDispatch] = React.useReducer(
     reducer,
@@ -520,26 +522,66 @@ const BookingItem = ({ booking, filter, fireTrigger, trigger }) => {
   );
 
   const setColor = () => {
-    switch (bookingState.status) {
+    switch (booking.status) {
       case 0:
-        return "black";
+        return "#00000080";
         break;
       case 1:
-        return "grey";
+        return "#6969698f";
         break;
       case 2:
-        return "green";
+        return "rgba(0, 255, 64, 0.507)";
         break;
       case 3:
-        return "yellow";
+        return "#ffff0081";
         break;
       case 4:
-        return "red";
+        return "#ff000081";
         break;
       case 5:
-        return "glue";
+        return "#0084ffaf";
         break;
     }
+  };
+
+  const handleDisable = (date) => {
+    date.setHours(0, 0, 0, 0);
+
+    for (let i = 0; i < bookDates?.length; i++) {
+      const begin = new Date(bookDates[i].begin);
+      begin.setHours(0, 0, 0, 0);
+      const end = new Date(bookDates[i].end);
+      end.setHours(0, 0, 0, 0);
+
+      if (begin <= date && date <= end) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const formatDate = (date, h = 0) => {
+    const d = new Date(date);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  };
+
+  const getDays = (date1, date2) => {
+    const d1 = formatDate(date1);
+    const d2 = formatDate(date2);
+    console.log(d1);
+    console.log(d2);
+
+    var difference = d2.getTime() - d1.getTime();
+    var days = Math.ceil(difference / (1000 * 3600 * 24));
+
+    return days + 1;
+  };
+
+  const compareDates = (date1, date2) => {
+    const d1 = formatDate(date1);
+    const d2 = formatDate(date2);
+    return d1 < d2;
   };
 
   /**
@@ -555,7 +597,7 @@ const BookingItem = ({ booking, filter, fireTrigger, trigger }) => {
         id: booking._id,
         begin: booking.begin,
         end: booking.end,
-        points: booking.points,
+        final_price: booking.final_price,
       },
     });
 
@@ -571,8 +613,22 @@ const BookingItem = ({ booking, filter, fireTrigger, trigger }) => {
     setBookDates(tmp);
   }, [trigger]);
 
+  React.useEffect(() => {
+    if (bookDates) {
+      for (const [key, value] of Object.entries(bookDates)) {
+        console.log(key);
+        console.log(value);
+      }
+    }
+  }, [bookingState.begin, bookingState.end]);
+
   return (
-    <Paper sx={{ bgcolor: "purple", color: "white" }}>
+    <Paper
+      sx={{ bgcolor: setColor, color: "white" }}
+      onClick={() => {
+        console.log(bookingState);
+      }}
+    >
       <ListItem
         sx={[
           { minHeight: "10rem", my: "1rem", display: "flex" },
@@ -584,8 +640,8 @@ const BookingItem = ({ booking, filter, fireTrigger, trigger }) => {
         ]}
       >
         <Container sx={{ width: "75vw", p: 0 }}>
-          <Box>
-            <Box width='60%'>
+          <Box sx={{ display: "flex" }}>
+            <Box width='40%'>
               <Typography
                 sx={{ fontWeight: "bold", textTransform: "capitalize" }}
               >
@@ -600,7 +656,67 @@ const BookingItem = ({ booking, filter, fireTrigger, trigger }) => {
                 );
               })}
             </Box>
-            <Box></Box>
+            <Paper
+              elevation={6}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                px: "0.5rem",
+              }}
+            >
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  disabled={edit}
+                  clearable
+                  value={bookingState?.begin}
+                  label='Inizio'
+                  // minDate={new Date()}
+                  renderInput={(props) => (
+                    <TextField
+                      variant='filled'
+                      size='small'
+                      sx={{
+                        my: "0.5rem",
+                        width: "275px",
+                        color: "white",
+                      }}
+                      {...props}
+                    />
+                  )}
+                  onChange={(date) => {
+                    const d = formatDate(date).toISOString().split("T")[0];
+                    bookingDispatch({ type: "updateStart", payload: d });
+                  }}
+                  shouldDisableDate={handleDisable}
+                />
+              </LocalizationProvider>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  disabled={edit}
+                  clearable
+                  value={bookingState?.end}
+                  label='Fine'
+                  // minDate={new Date()}
+                  renderInput={(props) => (
+                    <TextField
+                      variant='filled'
+                      size='small'
+                      sx={{
+                        my: "0.5rem",
+                        width: "275px",
+                        color: "white",
+                      }}
+                      {...props}
+                    />
+                  )}
+                  onChange={(date) => {
+                    const d = formatDate(date).toISOString().split("T")[0];
+                    bookingDispatch({ type: "updateEnd", payload: d });
+                  }}
+                  shouldDisableDate={handleDisable}
+                />
+              </LocalizationProvider>
+            </Paper>
           </Box>
         </Container>
         <Container
