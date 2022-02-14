@@ -291,30 +291,53 @@ async function bookingPreview(user, computer, begin, end) {
 $("#searchBtn").on("click", async (event) => {
   event.preventDefault();
   console.log('at searchBtn');
-  const user = await $.ajax({
+  const req = {
     method: "GET",
-    url: "/nnplus/user/getOne",
-    data: { mail: $("#searchUser").val() },
-  });
+    url: "/nnplus/booking/getBookings",
+  }
 
-  console.log(user);
-  if (user) {
-    $.ajax({
+  if ($("#searchUser").val()){
+    console.log(user);
+    const  user = await $.ajax({
       method: "GET",
-      url: "/nnplus/booking/getBookingsByUser",
-      data: { user: user._id },
-    }).done(async (data) => {
-      console.log(data);
-      showBookings(data);
+      url: "/nnplus/user/getOne",
+      data: { mail: $("#searchUser").val() },
     });
+
+    req['data'] = { user: user._id };
+  }
+
+  bookings = await $.ajax(req);
+
+  if (bookings){
+    showBookings(bookings)
   } else {
+    console.log("no booking to see");
     showAlert(
       "Utente inesistente o computer non disponibile!",
       $("#searchBookingForm"),
       false
     );
-    // $("#bookingPreview").prop("hidden", true);
   }
+
+  // if (user) {
+  //   $.ajax({
+  //     method: "GET",
+  //     url: "/nnplus/booking/getBookingsByUser",
+  //     data: { user: user._id },
+  //   }).done(async (data) => {
+  //     console.log(data);
+  //     showBookings(data);
+  //   });
+  // } else {
+  //   $.ajax({
+  //     method: "GET",
+  //     url: "/nnplus/booking/getBookings",
+  //   }).done(async (data) => {
+  //     console.log(data);
+  //     showBookings(data);
+  //   });
+  // }
 });
 
 function showBookings (bookings) {
@@ -366,13 +389,13 @@ function showBookings (bookings) {
 function statusToColor (status) {
   let color;
   switch(status) {
-    1 : color = rgb(138, 138, 138); break;
-    2 : color = rgb(75, 201, 54); break;
-    3 : color = rgb(215, 203, 33); break;
-    4 : color = rgb(203, 36, 36); break;
-    5 : color = rgb(32, 102, 208); break;
+    case 1 : color = "rgb(138, 138, 138)"; break;
+    case 2 : color = "rgb(75, 201, 54)"; break;
+    case 3 : color = "rgb(215, 203, 33)"; break;
+    case 4 : color = "rgb(203, 36, 36)"; break;
+    case 5 : color = "rgb(32, 102, 208)"; break;
     // default: color = rgb(1, 1, 1);
-    default: color = rgb(32, 102, 208);
+    default: color = "rgb(32, 102, 208)";
   }
 
   return color;

@@ -62,13 +62,20 @@ router.get("/getBookingsByItem", async (req, res, next) => {
   res.send(bookingDates);
 });
 
+router.get("/getBookings", async (req, res, next) => {
+  const attributes = req.query.attributes ? req.query.attributes : null;
+  const bookings = await bookingService.getPopulatedBookings(req.query.user, attributes);
+  
+  res.send(bookings);
+});
+
 router.get("/getBookingsByUser", async (req, res, next) => {
   logger.info(JSON.stringify(req.query.user));
   logger.info("in booking");
 
   const attributes = req.query.attributes ? req.query.attributes : null;
   const bookings = await bookingService.getPopulatedBookingsByUser(req.query.user, attributes);
-  console.log(bookings);
+  // console.log(bookings);
   res.send(bookings);
 });
 
