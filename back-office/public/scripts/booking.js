@@ -289,27 +289,27 @@ async function bookingPreview(user, computer, begin, end) {
 
 $("#searchBtn").on("click", async (event) => {
   event.preventDefault();
-  console.log('at searchBtn');
+  console.log("at searchBtn");
   const req = {
     method: "GET",
     url: "/nnplus/booking/getBookings",
-  }
+  };
 
-  if ($("#searchUser").val()){
+  if ($("#searchUser").val()) {
     console.log(user);
-    const  user = await $.ajax({
+    const user = await $.ajax({
       method: "GET",
       url: "/nnplus/user/getOne",
       data: { mail: $("#searchUser").val() },
     });
 
-    req['data'] = { user: user._id };
+    req["data"] = { user: user._id };
   }
 
   bookings = await $.ajax(req);
 
-  if (bookings){
-    showBookings(bookings)
+  if (bookings) {
+    showBookings(bookings);
   } else {
     console.log("no booking to see");
     showAlert(
@@ -343,8 +343,14 @@ function showBookings(bookings) {
   for (const booking of bookings) {
     const list = document.getElementById("bookingList");
 
-    const computer_model = adjustName(booking.computer.brand, booking.computer.model);
-    const user_name = adjustName(booking.user.person.name, booking.user.person.surname);
+    const computer_model = adjustName(
+      booking.computer.brand,
+      booking.computer.model
+    );
+    const user_name = adjustName(
+      booking.user.person.name,
+      booking.user.person.surname
+    );
     const color_status = statusToColor(booking.status);
 
     const listItem = document.createElement("li");
@@ -385,21 +391,31 @@ function showBookings(bookings) {
   showAlert("Lets go!", $("searchBtn"), true);
 }
 
-function statusToColor (status) {
+function statusToColor(status) {
   let color;
-  switch(status) {
-    case 1 : color = "rgb(138, 138, 138)"; break;
-    case 2 : color = "rgb(75, 201, 54)"; break;
-    case 3 : color = "rgb(215, 203, 33)"; break;
-    case 4 : color = "rgb(203, 36, 36)"; break;
-    case 5 : color = "rgb(32, 102, 208)"; break;
+  switch (status) {
+    case 1:
+      color = "rgb(138, 138, 138)";
+      break;
+    case 2:
+      color = "rgb(75, 201, 54)";
+      break;
+    case 3:
+      color = "rgb(215, 203, 33)";
+      break;
+    case 4:
+      color = "rgb(203, 36, 36)";
+      break;
+    case 5:
+      color = "rgb(32, 102, 208)";
+      break;
     // default: color = rgb(1, 1, 1);
-    default: color = "rgb(32, 102, 208)";
+    default:
+      color = "rgb(32, 102, 208)";
   }
 
   return color;
 }
-
 
 function showAlert(text, parent, happy) {
   $("#load").remove();
