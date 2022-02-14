@@ -71,6 +71,14 @@ const booking_schema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  onHold: {
+    type: Boolean,
+    default: false,
+  },
+  defaulted: {
+    type: Boolean,
+    default: false,
+  },
   final_condition: {
     type: Number,
     default: 5,
