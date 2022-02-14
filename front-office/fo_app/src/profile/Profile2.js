@@ -89,6 +89,8 @@ const Profile = () => {
   const [points, setPoints] = React.useState("");
   const [proPic, setProPic] = React.useState("");
 
+  const tablet = useMediaQuery("(max-width: 1024px)");
+
   const handleEditButton = () => {
     setEditable(true);
   };
@@ -206,8 +208,13 @@ const Profile = () => {
   };
 
   return (
-    <Container maxWidth='xl'>
-      <Paper sx={{ height: "55vh", display: "flex", alignItems: "center" }}>
+    <Container maxWidth="xl">
+      <Paper
+        sx={[
+          { display: "flex", alignItems: "center", py: "2rem" },
+          tablet && { flexDirection: "column" },
+        ]}
+      >
         <Box sx={{ width: "40%", display: "flex", justifyContent: "center" }}>
           <Avatar
             onClick={() => {
@@ -219,14 +226,16 @@ const Profile = () => {
         </Box>
         <form style={{ height: "100%" }} onSubmit={handleSaveEdit}>
           <Container
-            sx={{
-              ml: "0rem",
-              pt: "3rem",
-              display: "flex",
-              flexDirection: "column",
-            }}
+            sx={[
+              {
+                ml: "0rem",
+                display: "flex",
+                flexDirection: "column",
+              },
+              tablet && { mt: "2rem" },
+            ]}
           >
-            <Typography sx={{ mb: "1rem" }} variant='h5'>
+            <Typography sx={{ mb: "1rem" }} variant="h5">
               I tuoi dati:
             </Typography>
 
@@ -234,8 +243,8 @@ const Profile = () => {
               sx={{ my: "0.5rem" }}
               inputProps={{ style: { textTransform: "capitalize" } }}
               value={name}
-              size='small'
-              label='Nome'
+              size="small"
+              label="Nome"
               required
               disabled={!editable}
               onChange={(e) => {
@@ -248,8 +257,8 @@ const Profile = () => {
               sx={{ my: "0.5rem" }}
               inputProps={{ style: { textTransform: "capitalize" } }}
               value={surname}
-              size='small'
-              label='Cognome'
+              size="small"
+              label="Cognome"
               required
               disabled={!editable}
               onChange={(e) => {
@@ -261,12 +270,12 @@ const Profile = () => {
                 disabled={!editable}
                 clearable
                 value={birth}
-                label='Data di Nascita'
+                label="Data di Nascita"
                 maxDate={new Date()}
                 renderInput={(props) => (
                   <TextField
                     required
-                    size='small'
+                    size="small"
                     sx={{ my: "0.5rem", width: "275px" }}
                     {...props}
                   />
@@ -277,17 +286,17 @@ const Profile = () => {
               />
             </LocalizationProvider>
             <Tooltip
-              placement='right'
+              placement="right"
               title="Per questioni di sicurezza, se si modifica la mail si verra' scollegati."
             >
               <TextField
                 sx={{ my: "0.5rem" }}
                 value={mail}
-                size='small'
-                label='E-mail'
+                size="small"
+                label="E-mail"
                 required
                 disabled={!editable}
-                type='email'
+                type="email"
                 onChange={(e) => {
                   setMail(e.target.value);
                 }}
@@ -297,8 +306,8 @@ const Profile = () => {
               <TextField
                 sx={{ my: "0.5rem" }}
                 value={password}
-                size='small'
-                label='Password'
+                size="small"
+                label="Password"
                 required
                 disabled={!editable}
                 type={showPsw ? "text" : "password"}
@@ -317,18 +326,18 @@ const Profile = () => {
             <TextField
               sx={{ my: "0.5rem" }}
               value={points}
-              size='small'
-              label='Punti'
+              size="small"
+              label="Punti"
               disabled
-              type='text'
+              type="text"
             ></TextField>
             {!editable ? (
               <>
                 <Button
                   onClick={handleEditButton}
                   sx={{ width: "7rem" }}
-                  variant='outlined'
-                  size='small'
+                  variant="outlined"
+                  size="small"
                 >
                   modifica
                 </Button>
@@ -340,7 +349,7 @@ const Profile = () => {
                       fontSize: 20,
                       color: { color },
                     }}
-                    className='animate__animated animate__bounceIn'
+                    className="animate__animated animate__bounceIn"
                   >
                     {msg}
                   </Typography>
@@ -350,10 +359,10 @@ const Profile = () => {
               <>
                 <Box>
                   <Button
-                    type='submit'
+                    type="submit"
                     sx={{ width: "7rem", mr: "0.5rem" }}
-                    variant='contained'
-                    size='small'
+                    variant="contained"
+                    size="small"
                   >
                     salva
                   </Button>
@@ -361,24 +370,24 @@ const Profile = () => {
                   <Button
                     onClick={handleCancelEdit}
                     sx={{ width: "7rem" }}
-                    variant='outlined'
-                    size='small'
+                    variant="outlined"
+                    size="small"
                   >
                     annulla
                   </Button>
                 </Box>
                 <input
                   onChange={handleProPicChange}
-                  type='file'
+                  type="file"
                   hidden
-                  id='fileUpload'
+                  id="fileUpload"
                 />
-                <label htmlFor='fileUpload'>
+                <label htmlFor="fileUpload">
                   <Button
-                    component='span'
+                    component="span"
                     sx={{ width: "8rem", mt: "0.5rem" }}
-                    variant='contained'
-                    size='small'
+                    variant="contained"
+                    size="small"
                   >
                     cambia avatar
                   </Button>
@@ -398,8 +407,12 @@ const BookingContainer = () => {
   const [bookings, setBookings] = React.useState();
 
   React.useEffect(async () => {
-    const res = await axios.get("http://localhost:8000/front/user/getBookings");
-
+    const user = await identity();
+    const res = await axios.get(
+      "http://localhost:8000/front/user/getBookings",
+      { params: { mail: "primo@levi" } }
+    );
+    // console.log(res);
     setBookings(res.data);
   }, []);
 
@@ -413,8 +426,21 @@ const BookingContainer = () => {
     setAlignment(newAlignment);
   };
 
+  const compareDates = (date1, date2) => {
+    const d1 = new Date(date1);
+    const d2 = new Date(date2);
+    d1.setHours(0, 0, 0, 0);
+    d2.setHours(0, 0, 0, 0);
+    return d1 < d2;
+  };
+
   return (
     <Paper
+      onClick={() => {
+        console.log(
+          compareDates("2021-10-09T00:00:00.000Z", "2021-10-11T00:00:00.000Z")
+        );
+      }}
       sx={{
         mt: "1rem",
         display: "flex",
@@ -423,33 +449,53 @@ const BookingContainer = () => {
         p: "2rem",
       }}
     >
-      <Typography variant='h5'>Noleggi</Typography>
+      <Typography variant="h5">Noleggi</Typography>
       <Divider flex />
       <ToggleButtonGroup
         sx={{ mt: "2rem", display: "flex", justifyContent: "center" }}
-        color='secondary'
+        color="secondary"
         value={alignment}
         exclusive
         onChange={handleChange}
       >
-        <ToggleButton value='0'>passati</ToggleButton>
-        <ToggleButton value='1'>attivi</ToggleButton>
-        <ToggleButton value='2'>futuri</ToggleButton>
+        <ToggleButton value="0">passati</ToggleButton>
+        <ToggleButton value="1">attivi</ToggleButton>
+        <ToggleButton value="2">futuri</ToggleButton>
       </ToggleButtonGroup>
       <List dense sx={{ width: "100%" }}>
-        {[0, 1, 2, 3, 4, 5].map(() => {
-          return (
-            <Paper elevation={3} sx={{ bgcolor: "orangered" }}>
-              <ListItem
-                sx={{ height: "5rem", my: "1rem" }}
-                secondaryAction={<Button variant='outlined'>modifica</Button>}
-              >
-                <Typography>dio cane</Typography>
-              </ListItem>
-            </Paper>
-          );
+        {bookings?.map((el) => {
+          return <BookingItem booking={el} />;
         })}
       </List>
+    </Paper>
+  );
+};
+
+const BookingItem = ({ booking }) => {
+  const tablet = useMediaQuery("(max-width: 1024px)");
+  React.useEffect(() => {
+    console.log(booking);
+  }, []);
+
+  return (
+    <Paper elevation={3} sx={{ bgcolor: "green", color: "white" }}>
+      <ListItem
+        sx={[
+          { height: "5rem", my: "1rem" },
+          tablet && {
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          },
+        ]}
+      >
+        <Container>
+          <Typography>dio cane</Typography>
+        </Container>
+        <Container>
+          <Button variant="contained">no so</Button>
+        </Container>
+      </ListItem>
     </Paper>
   );
 };

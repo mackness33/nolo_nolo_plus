@@ -99,12 +99,12 @@ router.post("/update", async (req, res, next) => {
 
 router.get("/getBookings", async (req, res, next) => {
   logger.info("IN user -- getBookings");
-
+  // if(req.session && req.session.mail){
   if (true) {
-    logger.info("SON QUA");
-    const user = await userService.findOne({ "person.mail": "primo@levi" });
+    logger.info(req.query.mail);
+
+    const user = await userService.findOne({ "person.mail": req.query.mail });
     const books = await bookingService.find({ user: user.id });
-    console.log(books);
     res.send(books);
   } else {
     res.send({ success: false });
