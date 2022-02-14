@@ -39,10 +39,13 @@ import ListItemText from "@mui/material/ListItemText";
 import Checkbox from "@mui/material/Checkbox";
 import CommentIcon from "@mui/icons-material/Comment";
 
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+
 import Tooltip from "@mui/material/Tooltip";
 
 import "animate.css";
-import { display } from "@mui/system";
+import { display, width } from "@mui/system";
 
 const userSchema = {
   name: "",
@@ -156,7 +159,7 @@ const Profile = () => {
       setProfileState(res.payload);
     } else {
       setGlobalUser(null);
-      navigate("/");
+      //navigate("/");
       return;
     }
     console.log(res);
@@ -404,22 +407,49 @@ const BookingContainer = () => {
     console.log(bookings);
   };
 
+  const [alignment, setAlignment] = React.useState("web");
+
+  const handleChange = (event, newAlignment) => {
+    setAlignment(newAlignment);
+  };
+
   return (
     <Paper
       sx={{
         mt: "1rem",
-        height: "50vh",
         display: "flex",
         justifyContent: "center",
+        flexDirection: "column",
         p: "2rem",
       }}
     >
-      <Card sx={{ height: "22rem" }}>
-        <CardContent>cazzo</CardContent>
-        <CardActions>
-          <Button onClick={tmp}>fanculo</Button>
-        </CardActions>
-      </Card>
+      <Typography variant='h5'>Noleggi</Typography>
+      <Divider flex />
+      <ToggleButtonGroup
+        sx={{ mt: "2rem", display: "flex", justifyContent: "center" }}
+        color='secondary'
+        value={alignment}
+        exclusive
+        onChange={handleChange}
+      >
+        <ToggleButton value='0'>passati</ToggleButton>
+        <ToggleButton value='1'>attivi</ToggleButton>
+        <ToggleButton value='2'>futuri</ToggleButton>
+      </ToggleButtonGroup>
+      <List dense sx={{ width: "100%" }}>
+        {[0, 1, 2, 3, 4, 5].map(() => {
+          return (
+            <Paper elevation={3} sx={{ bgcolor: "orangered" }}>
+              <ListItem
+                sx={{ height: "5rem", my: "1rem" }}
+                secondaryAction={<Button variant='outlined'>modifica</Button>}
+              >
+                <Typography>dio cane</Typography>
+              </ListItem>
+            </Paper>
+          );
+        })}
+      </List>
     </Paper>
   );
 };

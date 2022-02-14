@@ -204,12 +204,108 @@ main {
   margin-right: 1rem;
 }
 
-/* tablet/mobile responsive */
+/* main list decoration */
+
+.bookingContainer {
+  padding: 1rem;
+  border-radius: var(--main-radius);
+  margin: 0.4rem;
+  min-height: 70rem;
+  background-color: rgba(0, 0, 0, 0.39);
+  box-shadow: inset 0 0 10px #000000;
+}
+
+#bookingList {
+  list-style-type: none;
+  padding: 0 !important;
+}
+
+.bookingElement {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  background-color: rgba(
+    0,
+    128,
+    0,
+    0.514
+  ); /* HAS TO BE SET PER SINGLE ELEMENT */
+  border-radius: var(--main-radius);
+  justify-content: space-between;
+}
+
+.infoGroup {
+  width: 70%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.infoGroup > div {
+  margin-top: 0.3rem;
+  margin-bottom: 0.3rem;
+}
+
+.labelTag {
+  font-weight: 600;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: flex-start;
+  width: 12.5rem;
+}
+
+.buttonGroup > button {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-left: 0.3rem;
+}
+
+/* edit modal */
+
+#editForm > div {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.editDiscounts > ul {
+  list-style-type: none;
+  padding-right: 1rem;
+  padding-left: 1rem !important;
+}
+
+.editDiscounts > ul > li {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* return form */
+
+#returnForm > div {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+/* mobile responsive */
 
 @media only screen and (max-width: 768px) {
   .nav-pills {
     flex-direction: column;
     margin-bottom: 1.5rem !important;
+  }
+
+  #searchBookingForm {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #searchBookingForm > button {
+    margin-top: 0.5rem;
   }
 
   #filterBookingForm {
@@ -218,5 +314,16 @@ main {
 
   #filterBookingForm > div {
     margin-bottom: 0.5rem;
+  }
+
+  /* single bookign elements decoration */
+
+  .infoGroup {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
   }
 }

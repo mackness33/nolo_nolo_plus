@@ -163,30 +163,295 @@
 
         <div class="tab-pane fade" id="manageTab" role="tabpanel" aria-labelledby="managePill">
           <h5>Gestisci prenotazioni</h5>
+
+          <!-- top container, containing search and filter checkbox -->
           <div id="topContainer">
+
+            <!-- search form -->
+
             <form id="searchBookingForm">
               <input class="form-control" placeholder="Mail utente" type="text">
               <button class="btn btn-primary">Cerca prenotazioni</button>
             </form>
+
+            <!-- filter form -->
+
             <form id="filterBookingForm">
+
+              <!-- future bookings checkbox -->
+
               <div class="searchFilter">
                 <input class="form-check-input" type="checkbox" id="futureBookings">
                 <label class="form-check-label" for="futureBookings">Prenotazioni future</label>
               </div>
+
+              <!-- current booking checkbox -->
+
               <div class="searchFilter">
                 <input class="form-check-input" type="checkbox" id="currentBookings">
                 <label class="form-check-label" for="currentBookings">Prenotazioni correnti</label>
               </div>
+
+              <!-- past bookings checkbox -->
+
               <div class="searchFilter">
                 <input class="form-check-input" type="checkbox" id="pastBookings">
-                <label class="form-check-label" for="pastBookings">Prenotazioni passate</label>
+                <label class="form-c  eck-label" for="pastBookings">Prenotazioni passate</label>
               </div>
               <button class="btn btn-primary">Applica filtri</button>
             </form>
           </div>
+
+          <!-- booking itemns container -->
+
+          <div class="bookingContainer">
+
+
+            <!-- booking list -->
+
+            <ul id="bookingList">
+
+              <!-- single booking element -->
+
+              <!-- ITs COLOR CHANGES BASED ON THE STATUS OF THE BOOKING -->
+              <!-- EVERY ITEM SHOULD BE IDENTIFIED WITH THE BOOKING CODE, POSSIBLY WRITTEN IN A CLASS -->
+
+              <li class="bookingElement">
+                <div class="infoGroup">
+                  <div class="computerModel">
+                    <span class="labelTag">Computer: </span>
+                    <div>Dell XPS</div>
+                  </div>
+                  <div class="computerModel">
+                    <span class="labelTag">Utente: </span>
+                    <div>Bento Bunto</div>
+                  </div>
+                  <div class="startDate">
+                    <span class="labelTag">Inizio: </span>
+                    <div>19/02/2012</div>
+                  </div>
+                  <div class="endDate">
+                    <span class="labelTag">Fine: </span>
+                    <div>22/02/2012</div>
+                  </div>
+                  <div class="finalPrice">
+                    <span class="labelTag">Prezzo totale: </span>
+                    <div>25.50$</div>
+                  </div>
+                </div>
+                <div class="buttonGroup">
+                  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">Modifica</button>
+                  <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Cancella</button>
+                </div>
+              </li>
+
+              <!-- single booking element -->
+
+              <li class="bookingElement" style="background-color:rgba(255, 255, 0, 0.507);">
+                <div class="infoGroup">
+                  <div class="computerModel">
+                    <span class="labelTag">Computer: </span>
+                    <div>Dell XPS</div>
+                  </div>
+                  <div class="computerModel">
+                    <span class="labelTag">Utente: </span>
+                    <div>Bento Bunto</div>
+                  </div>
+                  <div class="startDate">
+                    <span class="labelTag">Inizio: </span>
+                    <div>19/02/2012</div>
+                  </div>
+                  <div class="endDate">
+                    <span class="labelTag">Fine: </span>
+                    <div>22/02/2012</div>
+                  </div>
+                  <div class="finalPrice">
+                    <span class="labelTag">Prezzo totale: </span>
+                    <div>25.50$</div>
+                  </div>
+                </div>
+                <div class="buttonGroup">
+                  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">Modifica</button>
+                  <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#returnModal">Consegna</button>
+                </div>
+              </li>
+
+              <!-- single booking element -->
+
+              <li class="bookingElement" style="background-color:rgba(255, 0, 0, 0.507);">
+                <div class="infoGroup">
+                  <div class="computerModel">
+                    <span class="labelTag">Computer: </span>
+                    <div>Dell XPS</div>
+                  </div>
+                  <div class="computerModel">
+                    <span class="labelTag">Utente: </span>
+                    <div>Bento Bunto</div>
+                  </div>
+                  <div class="startDate">
+                    <span class="labelTag">Inizio: </span>
+                    <div>19/02/2012</div>
+                  </div>
+                  <div class="endDate">
+                    <span class="labelTag">Fine: </span>
+                    <div>22/02/2012</div>
+                  </div>
+                  <div class="finalPrice">
+                    <span class="labelTag">Prezzo totale: </span>
+                    <div>25.50$</div>
+                  </div>
+                </div>
+
+              </li>
+            </ul>
+
+
+          </div>
         </div>
 
 
+        <!-- Edit booking Modal -->
+
+        <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="editTitle" tabindex="0">Modifica noleggio</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+              </div>
+              <div class="modal-body">
+                <form id='editForm'>
+
+                  <div>
+                    <span class="labelTag">Modello:</span>
+                    <input id="editComputer" type="text" value="Dell XPS">
+                  </div>
+                  <div>
+                    <span class="labelTag">E-mail utente:</span>
+                    <input id="editMail" type="text" value="bento@bunto" readonly>
+                  </div>
+                  <div>
+                    <span class="labelTag">Data inizio:</span>
+                    <input id="editMail" type="date">
+                  </div>
+                  <div>
+                    <span class="labelTag">Data fine:</span>
+                    <input id="editMail" type="date">
+                  </div>
+                  <div>
+                    <span class="labelTag">Prezzo finale:</span>
+                    <input id="editPrice" value="55.26" type="number" step="0.01">
+                  </div>
+                  <div>
+                    <span class="labelTag">Sconti:</span>
+                    <div class="editDiscounts">
+                      <ul>
+                        <li>
+                          <div>Sconto buona condotta</div>
+                          <div>9.84$</div>
+                        </li>
+                        <li>
+                          <div>Sconto dispositivo</div>
+                          <div>2.23$</div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div>
+                    <span class="labelTag">Punti consumati:</span>
+                    <span>36</span>
+                  </div>
+
+                  <div>
+                    <span class="labelTag">Ritirato:</span>
+                    <span>Si</span>
+                  </div>
+                  <div>
+                    <span class="labelTag">Restituito:</span>
+                    <span>Si</span>
+
+                  </div>
+                  <div>
+                    <span class="labelTag">Pagato:</span>
+                    <span>Si</span>
+                  </div>
+
+                  <div>
+                    <span class="labelTag">Ritardi:</span>
+                    <span>No</span>
+                  </div>
+
+                  <div>
+                    <span class="labelTag">Note per modifica corrente:</span>
+                    <textarea id="editNote" rows="4"></textarea>
+                  </div>
+
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" id="editBtn" form="editForm" class="btn btn-primary">Salva
+                  Modifiche</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- return Modal -->
+
+        <div class="modal fade" id="returnModal" tabindex="-1" aria-labelledby="returnTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="returnTitle" tabindex="0">Certifica riconsegna</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+              </div>
+              <div class="modal-body">
+                <form id="returnForm">
+                  <div>
+                    Come valuteresti la condizione del computer?
+                    <select id="finalCondition">
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8">8</option>
+                      <option value="9">9</option>
+                      <option value="10">10</option>
+                    </select>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="submit" id="returnSubmit" form="returnForm" class="btn btn-primary">Certifica
+                  riconsegna</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Delete Modal -->
+
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="deleteTitle" tabindex="0">Elimina noleggio</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+              </div>
+              <div class="modal-body">
+                <span tabindex="0">Sei sicuro di voler eliminare questo noleggio?</span>
+              </div>
+              <div class="modal-footer">
+                <button type="button" id="confirmBtn" class="btn btn-primary" data-bs-dismiss="modal">Conferma
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
 
       </div>

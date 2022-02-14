@@ -86,6 +86,11 @@ class bookingService extends baseService {
     }
     return avg;
   }
+
+  async getBookingsByUser(userId) {
+    const bookings = await super.find({ user: userId });
+    return bookings;
+  }
 }
 
 const service = new bookingService();
