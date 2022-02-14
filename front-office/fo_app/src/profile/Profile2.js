@@ -39,6 +39,12 @@ import ListItemText from "@mui/material/ListItemText";
 import Checkbox from "@mui/material/Checkbox";
 import CommentIcon from "@mui/icons-material/Comment";
 
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
@@ -224,7 +230,7 @@ const Profile = () => {
             src={proPic}
             sx={[
               { height: "20rem", width: "20rem" },
-              tablet && { height: "auto", width: "auto" },
+              tablet && { height: "5rem", width: "5rem" },
             ]}
           />
         </Box>
@@ -280,7 +286,7 @@ const Profile = () => {
                   <TextField
                     required
                     size='small'
-                    sx={{ my: "0.5rem", width: "275px" }}
+                    sx={{ my: "0.5rem", maxWidth: "275px" }}
                     {...props}
                   />
                 )}
@@ -412,6 +418,8 @@ const BookingContainer = () => {
   const [trigger, setTrigger] = React.useState(false);
   const tablet = useMediaQuery("(max-width: 1024px)");
 
+  const { globalUser, setGlobalUser } = React.useContext(NetworkContext);
+
   const [filter, setFilter] = React.useState(null);
 
   const fireTrigger = () => {
@@ -427,7 +435,16 @@ const BookingContainer = () => {
       { params: { mail: "primo@levi" } }
     );
     // console.log(res);
-    setBookings(res.data);
+    if (!res.data.success) {
+      setGlobalUser(null);
+      navigate("/");
+      return;
+    }
+    let tmp = res.data.payload;
+    tmp.sort(function (a, b) {
+      return new Date(b.begin) - new Date(a.begin);
+    });
+    setBookings(tmp);
   }, [trigger]);
 
   const tmp = () => {
@@ -491,7 +508,6 @@ const BookingContainer = () => {
               booking={el}
               filter={filter}
               fireTrigger={fireTrigger}
-              trigger={trigger}
             />
           );
         })}
@@ -519,9 +535,13 @@ function reducer(state, action) {
   }
 }
 
-const BookingItem = ({ booking, filter, fireTrigger, trigger }) => {
+const BookingItem = ({ booking, filter, fireTrigger }) => {
   const tablet = useMediaQuery("(max-width: 1024px)");
+  const navigate = useNavigate();
+  const { globalUser, setGlobalUser } = React.useContext(NetworkContext);
+  const [localTrigger, setLocalTrigger] = React.useState(true);
   const [showThis, setShowThis] = React.useState(true);
+  const [openReceipt, setOpenReceipt] = React.useState(false);
   const [bookDates, setBookDates] = React.useState();
   const [edit, setEdit] = React.useState(false);
   const [days, setDays] = React.useState(0);
@@ -579,6 +599,34 @@ const BookingItem = ({ booking, filter, fireTrigger, trigger }) => {
     return false;
   };
 
+  const sendEdit = async () => {
+    const res = await axios.post(
+      "http://localhost:8000/front/user/updateBooking",
+      { data: bookingState, id: booking._id }
+    );
+    if (res.data.success) {
+      fireTrigger();
+    } else {
+      setGlobalUser(null);
+      navigate("/");
+      return;
+    }
+  };
+
+  const deleteBooking = async () => {
+    const res = await axios.post(
+      "http://localhost:8000/front/user/deleteBooking",
+      { id: booking._id }
+    );
+    if (res.data.success) {
+      fireTrigger();
+    } else {
+      setGlobalUser(null);
+      navigate("/");
+      return;
+    }
+  };
+
   const formatDate = (date, h = 0) => {
     const d = new Date(date);
     d.setHours(h, 0, 0, 0);
@@ -627,7 +675,7 @@ const BookingItem = ({ booking, filter, fireTrigger, trigger }) => {
       (el) => el.computer._id == booking.computer._id && el._id !== booking._id
     );
     setBookDates(tmp);
-  }, [trigger]);
+  }, [booking]);
 
   React.useEffect(() => {
     if (bookDates && bookingState.begin && bookingState.end) {
@@ -812,14 +860,35 @@ const BookingItem = ({ booking, filter, fireTrigger, trigger }) => {
                         modifica
                       </Button>
                     ) : (
-                      <Button
-                        onClick={() => {
-                          setEdit(false);
-                        }}
-                        variant='contained'
+                      <Box
+                        sx={{ display: "flex", justifyContent: "space-around" }}
                       >
-                        salva
-                      </Button>
+                        <Button
+                          onClick={() => {
+                            setEdit(false);
+                            sendEdit();
+                          }}
+                          variant='contained'
+                        >
+                          salva
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            setEdit(false);
+                            bookingDispatch({
+                              type: "updateStart",
+                              payload: booking.begin,
+                            });
+                            bookingDispatch({
+                              type: "updateEnd",
+                              payload: booking.end,
+                            });
+                          }}
+                          variant='contained'
+                        >
+                          annulla
+                        </Button>
+                      </Box>
                     )}
                   </>
                 ) : (
@@ -827,7 +896,11 @@ const BookingItem = ({ booking, filter, fireTrigger, trigger }) => {
                 )}
 
                 {booking.status == 2 || booking.status == 1 ? (
-                  <Button variant='contained' color='error'>
+                  <Button
+                    variant='contained'
+                    onClick={deleteBooking}
+                    color='error'
+                  >
                     elimina
                   </Button>
                 ) : (
@@ -835,12 +908,213 @@ const BookingItem = ({ booking, filter, fireTrigger, trigger }) => {
                 )}
               </>
             ) : (
-              <Button variant='contained'>mostra ricevuta</Button>
+              <Button
+                onClick={() => {
+                  setOpenReceipt(true);
+                }}
+                variant='contained'
+              >
+                mostra ricevuta
+              </Button>
             )}
           </Container>
         </ListItem>
+        <Receipt
+          booking={booking}
+          openReceipt={openReceipt}
+          setOpenReceipt={setOpenReceipt}
+          getDays={getDays}
+          totalDiscounts={booking.discounts.reduce(
+            (a, b) => a + (b.amount || 0),
+            0
+          )}
+        />
       </Paper>
     )
+  );
+};
+
+const Receipt = ({
+  booking,
+  openReceipt,
+  setOpenReceipt,
+  getDays,
+  totalDiscounts,
+}) => {
+  return (
+    <Dialog
+      open={openReceipt}
+      onClose={() => {
+        setOpenReceipt(false);
+      }}
+      scroll='paper'
+      aria-labelledby='scroll-dialog-title'
+      aria-describedby='scroll-dialog-description'
+      fullWidth
+    >
+      <DialogTitle id='scroll-dialog-title'>Ricevuta</DialogTitle>
+      <DialogContent dividers={true}>
+        <DialogContentText id='scroll-dialog-description' tabIndex={-1}>
+          <Container>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mb: "0.5rem",
+              }}
+            >
+              <Typography sx={{ fontWeight: "bold" }}>Inizio</Typography>
+              <Typography sx={{ textTransform: "capitalize" }}>
+                {booking.begin.split("T")[0]}
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mb: "0.5rem",
+              }}
+            >
+              <Typography sx={{ fontWeight: "bold" }}>Fine</Typography>
+              <Typography sx={{ textTransform: "capitalize" }}>
+                {booking.end.split("T")[0]}
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                borderBottom: 1,
+                mb: "1rem",
+              }}
+            >
+              <Typography sx={{ fontWeight: "bold" }}>Computer</Typography>
+              <Typography sx={{ textTransform: "capitalize" }}>
+                {booking.computer.brand} {booking.computer.model}
+              </Typography>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mb: "0.5rem",
+              }}
+            >
+              <Typography sx={{ fontWeight: "bold" }}>
+                Prezzo giornaliero
+              </Typography>
+              <Typography sx={{ textTransform: "capitalize" }}>
+                {booking.computer.price}$
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mb: "0.5rem",
+              }}
+            >
+              <Typography sx={{ fontWeight: "bold" }}>Giorni</Typography>
+              <Typography sx={{ textTransform: "capitalize" }}>
+                {getDays(booking.begin, booking.end)}
+              </Typography>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                borderBottom: 1,
+                mb: "1rem",
+              }}
+            >
+              <Typography sx={{ fontWeight: "bold" }}>
+                Prezzo iniziale
+              </Typography>
+              <Typography sx={{ textTransform: "capitalize" }}>
+                {getDays(booking.begin, booking.end) * booking.computer.price}$
+              </Typography>
+            </Box>
+            {booking.discounts.map((disc) => {
+              return (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    mb: "0.5rem",
+                  }}
+                >
+                  <Typography
+                    sx={{ fontWeight: "bold", textTransform: "capitalize" }}
+                  >
+                    {disc.reason}
+                  </Typography>
+                  <Typography sx={{ textTransform: "capitalize" }}>
+                    -{disc.amount}$
+                  </Typography>
+                </Box>
+              );
+            })}
+            {getDays(booking.begin, booking.end) * booking.computer.price -
+              totalDiscounts !=
+            booking.final_price ? (
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  mb: "0.5rem",
+                }}
+              >
+                <Typography
+                  sx={{ fontWeight: "bold", textTransform: "capitalize" }}
+                >
+                  Altri Sconti
+                </Typography>
+                <Typography sx={{ textTransform: "capitalize" }}>
+                  -
+                  {getDays(booking.begin, booking.end) *
+                    booking.computer.price -
+                    booking.final_price -
+                    totalDiscounts}
+                  $
+                </Typography>
+              </Box>
+            ) : (
+              <></>
+            )}
+            <Box
+              sx={{
+                mt: "0.5rem",
+                display: "flex",
+                justifyContent: "space-between",
+                mb: "0.5rem",
+                borderBottom: 2,
+              }}
+            >
+              <Typography
+                sx={{ fontWeight: "bold", textTransform: "capitalize" }}
+              >
+                Prezzo finale
+              </Typography>
+              <Typography sx={{ textTransform: "capitalize" }}>
+                {booking.final_price}$
+              </Typography>
+            </Box>
+          </Container>
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          onClick={() => {
+            setOpenReceipt(false);
+          }}
+        >
+          Cancel
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

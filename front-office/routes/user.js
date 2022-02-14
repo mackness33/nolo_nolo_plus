@@ -99,15 +99,43 @@ router.post("/update", async (req, res, next) => {
 
 router.get("/getBookings", async (req, res, next) => {
   logger.info("IN user -- getBookings");
-  // if(req.session && req.session.mail){
-  if (true) {
+  if (req.session && req.session.mail) {
+    // if (true) {
     logger.info(req.query.mail);
 
     const user = await userService.findOne({
-      "person.mail": "f@s",
+      "person.mail": "primo@levi",
     });
     const books = await bookingService.getPopulatedBookingsByUser(user.id);
-    res.send(books);
+    res.send({ success: true, payload: books });
+  } else {
+    res.send({ success: false });
+  }
+});
+
+router.post("/updateBooking", async (req, res, next) => {
+  logger.info("IN user -- updateBooking");
+  if (req.session && req.session.mail) {
+    // if (true) {
+    const data = req.body.data;
+    await bookingService.updateOne({ _id: req.body.id }, data);
+    res.send({ success: true });
+  } else {
+    res.send({ success: false });
+  }
+});
+
+router.post("/deleteBooking", async (req, res, next) => {
+  logger.info("IN user -- deleteBooking");
+  if (req.session && req.session.mail) {
+    // if (true) {
+    const data = req.body.id;
+    logger.info(data);
+
+    await bookingService.deleteOne({ _id: req.body.id });
+    res.send({ success: true });
+    // await bookingService.updateOne({ _id: req.body.id }, data);
+    // res.send({ success: true });
   } else {
     res.send({ success: false });
   }

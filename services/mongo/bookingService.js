@@ -145,7 +145,7 @@ class bookingService extends baseService {
 
   async updateStatus(booking) {
     await booking.populate("computer");
-    logger.info("booking: " + booking);
+    // logger.info("booking: " + booking);
     let has_change = true;
 
     const filtered_booking = this._filterObject(booking, (key, value) => {
@@ -209,12 +209,12 @@ class bookingService extends baseService {
 
     logger.info("AFTER filtered_booking: " + JSON.stringify(filtered_booking));
 
-    for (const [key, value] of Object.entries(filtered_booking)) {
-      if (booking[key] !== value) {
-        logger.info("filterd_booking[" + key + "]: " + value);
-        logger.info("booking[" + key + "]: " + booking[key]);
-      }
-    }
+    // for (const [key, value] of Object.entries(filtered_booking)) {
+    //   if (booking[key] !== value) {
+    //     logger.info("filterd_booking[" + key + "]: " + value);
+    //     logger.info("booking[" + key + "]: " + booking[key]);
+    //   }
+    // }
 
     if (has_change) {
       // TODO: status need to be updated!
