@@ -422,11 +422,11 @@
                   </div>
                   <div>
                     <span class="labelTag">Data inizio:</span>
-                    <input id="editMail" type="date">
+                    <input id="editStartDate" type="date">
                   </div>
                   <div>
                     <span class="labelTag">Data fine:</span>
-                    <input id="editMail" type="date">
+                    <input id="editEndDate" type="date">
                   </div>
                   <div>
                     <span class="labelTag">Prezzo finale:</span>
@@ -434,8 +434,8 @@
                   </div>
                   <div>
                     <span class="labelTag">Sconti:</span>
-                    <div class="editDiscounts">
-                      <ul>
+                    <div>
+                      <ul class="editDiscounts">
                         <li>
                           <div>Sconto buona condotta</div>
                           <div>9.84$</div>
@@ -459,17 +459,17 @@
 
                   <div>
                     <span class="labelTag">Restituito:</span>
-                    <span>Si</span>
+                    <span id="editReturned">Si</span>
 
                   </div>
                   <div>
                     <span class="labelTag">Pagato:</span>
-                    <span>Si</span>
+                    <span id="editPayed">Si</span>
                   </div>
 
                   <div>
                     <span class="labelTag">Ritardi:</span>
-                    <span>No</span>
+                    <span id="editLate">No</span>
                   </div>
 
                   <div>
@@ -623,7 +623,7 @@
                 <span tabindex="0">Sei sicuro di voler eliminare questo noleggio?</span>
               </div>
               <div class="modal-footer">
-                <button type="button" id="confirmBtn" class="btn btn-primary" data-bs-dismiss="modal">Conferma
+                <button type="button" id="deleteBtn" class="btn btn-primary" data-bs-dismiss="modal">Conferma
                 </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
               </div>

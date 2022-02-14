@@ -272,13 +272,13 @@ main {
   margin-bottom: 1rem;
 }
 
-.editDiscounts > ul {
+.editDiscounts {
   list-style-type: none;
   padding-right: 1rem;
   padding-left: 1rem !important;
 }
 
-.editDiscounts > ul > li {
+.editDiscounts > li {
   display: flex;
   justify-content: space-between;
 }
