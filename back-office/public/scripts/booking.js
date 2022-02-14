@@ -197,10 +197,10 @@ async function bookingPreview(user, computer, begin, end) {
     .done((data) => {
       console.log(data);
       data.discounts.forEach((discount) => {
-        printDiscounts(discount.reason, discount.amount.toFixed(2));
+        printDiscounts(discount.reason, parseFloat(discount.amount).toFixed(2));
         discountList.push({
           reason: discount.reason,
-          amount: discount.amount.toFixed(2),
+          amount: parseFloat(discount.amount).toFixed(2),
         });
       });
       populatePointsSelect(data.points);
@@ -287,7 +287,6 @@ async function bookingPreview(user, computer, begin, end) {
   });
 }
 
-
 $("#searchBtn").on("click", async (event) => {
   event.preventDefault();
   console.log('at searchBtn');
@@ -340,8 +339,8 @@ $("#searchBtn").on("click", async (event) => {
   // }
 });
 
-function showBookings (bookings) {
-  for (const booking of bookings){
+function showBookings(bookings) {
+  for (const booking of bookings) {
     const list = document.getElementById("bookingList");
 
     const computer_model = adjustName(booking.computer.brand, booking.computer.model);
@@ -383,7 +382,7 @@ function showBookings (bookings) {
     console.log("a booking has been added");
   }
 
-  showAlert ("Lets go!", $("searchBtn"), true);
+  showAlert("Lets go!", $("searchBtn"), true);
 }
 
 function statusToColor (status) {

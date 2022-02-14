@@ -31,9 +31,8 @@ router.get("/getBookingsByItem", async (req, res, next) => {
 
   const bookingDates = await bookingService.find(
     { computer: req.query.id },
-    "begin end"
+    "begin end computer"
   );
-  console.log(bookingDates);
   res.send(bookingDates);
 });
 

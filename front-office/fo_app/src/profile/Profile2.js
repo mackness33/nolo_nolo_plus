@@ -45,7 +45,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Tooltip from "@mui/material/Tooltip";
 
 import "animate.css";
-import { display, width } from "@mui/system";
+import { display, maxWidth, width } from "@mui/system";
 
 const userSchema = {
   name: "",
@@ -208,7 +208,7 @@ const Profile = () => {
   };
 
   return (
-    <Container maxWidth="xl">
+    <Container maxWidth='xl'>
       <Paper
         sx={[
           { display: "flex", alignItems: "center", py: "2rem" },
@@ -235,7 +235,7 @@ const Profile = () => {
               tablet && { mt: "2rem" },
             ]}
           >
-            <Typography sx={{ mb: "1rem" }} variant="h5">
+            <Typography sx={{ mb: "1rem" }} variant='h5'>
               I tuoi dati:
             </Typography>
 
@@ -243,8 +243,8 @@ const Profile = () => {
               sx={{ my: "0.5rem" }}
               inputProps={{ style: { textTransform: "capitalize" } }}
               value={name}
-              size="small"
-              label="Nome"
+              size='small'
+              label='Nome'
               required
               disabled={!editable}
               onChange={(e) => {
@@ -257,8 +257,8 @@ const Profile = () => {
               sx={{ my: "0.5rem" }}
               inputProps={{ style: { textTransform: "capitalize" } }}
               value={surname}
-              size="small"
-              label="Cognome"
+              size='small'
+              label='Cognome'
               required
               disabled={!editable}
               onChange={(e) => {
@@ -270,12 +270,12 @@ const Profile = () => {
                 disabled={!editable}
                 clearable
                 value={birth}
-                label="Data di Nascita"
+                label='Data di Nascita'
                 maxDate={new Date()}
                 renderInput={(props) => (
                   <TextField
                     required
-                    size="small"
+                    size='small'
                     sx={{ my: "0.5rem", width: "275px" }}
                     {...props}
                   />
@@ -286,17 +286,17 @@ const Profile = () => {
               />
             </LocalizationProvider>
             <Tooltip
-              placement="right"
+              placement='right'
               title="Per questioni di sicurezza, se si modifica la mail si verra' scollegati."
             >
               <TextField
                 sx={{ my: "0.5rem" }}
                 value={mail}
-                size="small"
-                label="E-mail"
+                size='small'
+                label='E-mail'
                 required
                 disabled={!editable}
-                type="email"
+                type='email'
                 onChange={(e) => {
                   setMail(e.target.value);
                 }}
@@ -306,8 +306,8 @@ const Profile = () => {
               <TextField
                 sx={{ my: "0.5rem" }}
                 value={password}
-                size="small"
-                label="Password"
+                size='small'
+                label='Password'
                 required
                 disabled={!editable}
                 type={showPsw ? "text" : "password"}
@@ -326,18 +326,18 @@ const Profile = () => {
             <TextField
               sx={{ my: "0.5rem" }}
               value={points}
-              size="small"
-              label="Punti"
+              size='small'
+              label='Punti'
               disabled
-              type="text"
+              type='text'
             ></TextField>
             {!editable ? (
               <>
                 <Button
                   onClick={handleEditButton}
                   sx={{ width: "7rem" }}
-                  variant="outlined"
-                  size="small"
+                  variant='outlined'
+                  size='small'
                 >
                   modifica
                 </Button>
@@ -349,7 +349,7 @@ const Profile = () => {
                       fontSize: 20,
                       color: { color },
                     }}
-                    className="animate__animated animate__bounceIn"
+                    className='animate__animated animate__bounceIn'
                   >
                     {msg}
                   </Typography>
@@ -359,10 +359,10 @@ const Profile = () => {
               <>
                 <Box>
                   <Button
-                    type="submit"
+                    type='submit'
                     sx={{ width: "7rem", mr: "0.5rem" }}
-                    variant="contained"
-                    size="small"
+                    variant='contained'
+                    size='small'
                   >
                     salva
                   </Button>
@@ -370,24 +370,24 @@ const Profile = () => {
                   <Button
                     onClick={handleCancelEdit}
                     sx={{ width: "7rem" }}
-                    variant="outlined"
-                    size="small"
+                    variant='outlined'
+                    size='small'
                   >
                     annulla
                   </Button>
                 </Box>
                 <input
                   onChange={handleProPicChange}
-                  type="file"
+                  type='file'
                   hidden
-                  id="fileUpload"
+                  id='fileUpload'
                 />
-                <label htmlFor="fileUpload">
+                <label htmlFor='fileUpload'>
                   <Button
-                    component="span"
+                    component='span'
                     sx={{ width: "8rem", mt: "0.5rem" }}
-                    variant="contained"
-                    size="small"
+                    variant='contained'
+                    size='small'
                   >
                     cambia avatar
                   </Button>
@@ -405,6 +405,14 @@ const Profile = () => {
 const BookingContainer = () => {
   const navigate = useNavigate();
   const [bookings, setBookings] = React.useState();
+  const [trigger, setTrigger] = React.useState(false);
+  const tablet = useMediaQuery("(max-width: 1024px)");
+
+  const fireTrigger = () => {
+    console.log("sonqui");
+    console.log(trigger);
+    setTrigger(!trigger);
+  };
 
   React.useEffect(async () => {
     const user = await identity();
@@ -414,17 +422,13 @@ const BookingContainer = () => {
     );
     // console.log(res);
     setBookings(res.data);
-  }, []);
+  }, [trigger]);
 
   const tmp = () => {
     console.log(bookings);
   };
 
-  const [alignment, setAlignment] = React.useState("web");
-
-  const handleChange = (event, newAlignment) => {
-    setAlignment(newAlignment);
-  };
+  const [filter, setFilter] = React.useState();
 
   const compareDates = (date1, date2) => {
     const d1 = new Date(date1);
@@ -436,11 +440,7 @@ const BookingContainer = () => {
 
   return (
     <Paper
-      onClick={() => {
-        console.log(
-          compareDates("2021-10-09T00:00:00.000Z", "2021-10-11T00:00:00.000Z")
-        );
-      }}
+      onClick={() => {}}
       sx={{
         mt: "1rem",
         display: "flex",
@@ -449,39 +449,133 @@ const BookingContainer = () => {
         p: "2rem",
       }}
     >
-      <Typography variant="h5">Noleggi</Typography>
+      <Typography variant='h5'>Noleggi</Typography>
       <Divider flex />
       <ToggleButtonGroup
-        sx={{ mt: "2rem", display: "flex", justifyContent: "center" }}
-        color="secondary"
-        value={alignment}
+        sx={[
+          { mt: "2rem", display: "flex", justifyContent: "center" },
+          tablet && { width: "100%" },
+        ]}
+        color='secondary'
+        value={filter}
         exclusive
-        onChange={handleChange}
+        orientation={tablet ? "vertical" : "horizontal"}
+        onChange={(e, val) => {
+          setFilter(val);
+        }}
+        size='small'
+        fullWidth
       >
-        <ToggleButton value="0">passati</ToggleButton>
-        <ToggleButton value="1">attivi</ToggleButton>
-        <ToggleButton value="2">futuri</ToggleButton>
+        <ToggleButton value='0'>revocati</ToggleButton>
+        <ToggleButton value='1'>indisponibili</ToggleButton>
+        <ToggleButton value='2'>futuri</ToggleButton>
+        <ToggleButton value='3'>attivi</ToggleButton>
+        <ToggleButton value='4'>problemi</ToggleButton>
+        <ToggleButton value='5'>conclusi</ToggleButton>
       </ToggleButtonGroup>
       <List dense sx={{ width: "100%" }}>
         {bookings?.map((el) => {
-          return <BookingItem booking={el} />;
+          return (
+            <BookingItem
+              booking={el}
+              filter={filter}
+              fireTrigger={fireTrigger}
+              trigger={trigger}
+            />
+          );
         })}
       </List>
     </Paper>
   );
 };
 
-const BookingItem = ({ booking }) => {
+function init(booking) {
+  return booking;
+}
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "updateStart":
+      return { ...state, begin: action.payload };
+    case "updateEnd":
+      return { ...state, end: action.payload };
+    case "updatePoints":
+      return { ...state, computer: action.payload };
+    case "reset":
+      return init(action.payload);
+      throw new Error();
+  }
+}
+
+const BookingItem = ({ booking, filter, fireTrigger, trigger }) => {
   const tablet = useMediaQuery("(max-width: 1024px)");
-  React.useEffect(() => {
-    console.log(booking);
-  }, []);
+
+  const [bookDates, setBookDates] = React.useState();
+  const [edit, setEdit] = React.useState(false);
+  const [onlyReceipt, setOnlyReceipt] = React.useState(false);
+  const [bookingState, bookingDispatch] = React.useReducer(
+    reducer,
+    booking,
+    init
+  );
+
+  const setColor = () => {
+    switch (bookingState.status) {
+      case 0:
+        return "black";
+        break;
+      case 1:
+        return "grey";
+        break;
+      case 2:
+        return "green";
+        break;
+      case 3:
+        return "yellow";
+        break;
+      case 4:
+        return "red";
+        break;
+      case 5:
+        return "glue";
+        break;
+    }
+  };
+
+  /**
+   * initialize the state for the editable data and
+   * retreives all the boking for the current computer,
+   * saves them all except for the current booking
+   */
+
+  React.useEffect(async () => {
+    bookingDispatch({
+      type: "reset",
+      payload: {
+        id: booking._id,
+        begin: booking.begin,
+        end: booking.end,
+        points: booking.points,
+      },
+    });
+
+    const dates = await axios.get(
+      "http://localhost:8000/front/item/getBookingsByItem",
+      {
+        params: { id: booking.computer._id },
+      }
+    );
+    const tmp = dates.data.filter(
+      (el) => el.computer == booking.computer._id && el._id !== booking._id
+    );
+    setBookDates(tmp);
+  }, [trigger]);
 
   return (
-    <Paper elevation={3} sx={{ bgcolor: "green", color: "white" }}>
+    <Paper sx={{ bgcolor: "purple", color: "white" }}>
       <ListItem
         sx={[
-          { height: "5rem", my: "1rem" },
+          { minHeight: "10rem", my: "1rem", display: "flex" },
           tablet && {
             display: "flex",
             flexDirection: "column",
@@ -489,11 +583,58 @@ const BookingItem = ({ booking }) => {
           },
         ]}
       >
-        <Container>
-          <Typography>dio cane</Typography>
+        <Container sx={{ width: "75vw", p: 0 }}>
+          <Box>
+            <Box width='60%'>
+              <Typography
+                sx={{ fontWeight: "bold", textTransform: "capitalize" }}
+              >
+                Computer: {booking.computer.model}
+              </Typography>
+              <Typography>Prezzo finale: {booking.final_price}$</Typography>
+              {booking.discounts.map((el) => {
+                return (
+                  <Typography sx={{ textTransform: "capitalize" }}>
+                    {el.reason}: {el.amount}$
+                  </Typography>
+                );
+              })}
+            </Box>
+            <Box></Box>
+          </Box>
         </Container>
-        <Container>
-          <Button variant="contained">no so</Button>
+        <Container
+          sx={{
+            minHeight: "6rem",
+            width: "25vw",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-around",
+          }}
+        >
+          {!edit ? (
+            <Button
+              onClick={() => {
+                setEdit(true);
+              }}
+              variant='contained'
+            >
+              modifica
+            </Button>
+          ) : (
+            <Button
+              onClick={() => {
+                setEdit(false);
+              }}
+              variant='contained'
+            >
+              salva
+            </Button>
+          )}
+
+          <Button variant='contained' color='error'>
+            elimina
+          </Button>
         </Container>
       </ListItem>
     </Paper>
