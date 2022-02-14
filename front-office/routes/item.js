@@ -29,10 +29,7 @@ router.get("/getBookingsByItem", async (req, res, next) => {
 
   logger.info(JSON.stringify(req.query.id));
 
-  const bookingDates = await bookingService.find(
-    { computer: req.query.id },
-    "begin end computer"
-  );
+  const bookingDates = await bookingService.find({ computer: req.query.id });
   res.send(bookingDates);
 });
 

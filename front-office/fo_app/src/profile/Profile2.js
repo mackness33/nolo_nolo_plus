@@ -46,6 +46,7 @@ import Tooltip from "@mui/material/Tooltip";
 
 import "animate.css";
 import { display, maxWidth, width } from "@mui/system";
+import { set } from "mongoose";
 
 const userSchema = {
   name: "",
@@ -215,13 +216,16 @@ const Profile = () => {
           tablet && { flexDirection: "column" },
         ]}
       >
-        <Box sx={{ width: "40%", display: "flex", justifyContent: "center" }}>
+        <Box sx={[{ width: "40%", display: "flex", justifyContent: "center" }]}>
           <Avatar
             onClick={() => {
               console.log(globalUser);
             }}
             src={proPic}
-            sx={{ height: "20rem", width: "20rem" }}
+            sx={[
+              { height: "20rem", width: "20rem" },
+              tablet && { height: "auto", width: "auto" },
+            ]}
           />
         </Box>
         <form style={{ height: "100%" }} onSubmit={handleSaveEdit}>
@@ -408,6 +412,8 @@ const BookingContainer = () => {
   const [trigger, setTrigger] = React.useState(false);
   const tablet = useMediaQuery("(max-width: 1024px)");
 
+  const [filter, setFilter] = React.useState(null);
+
   const fireTrigger = () => {
     console.log("sonqui");
     console.log(trigger);
@@ -428,8 +434,6 @@ const BookingContainer = () => {
     console.log(bookings);
   };
 
-  const [filter, setFilter] = React.useState();
-
   const compareDates = (date1, date2) => {
     const d1 = new Date(date1);
     const d2 = new Date(date2);
@@ -449,7 +453,14 @@ const BookingContainer = () => {
         p: "2rem",
       }}
     >
-      <Typography variant='h5'>Noleggi</Typography>
+      <Typography
+        onClick={() => {
+          console.log(filter);
+        }}
+        variant='h5'
+      >
+        Noleggi
+      </Typography>
       <Divider flex />
       <ToggleButtonGroup
         sx={[
@@ -499,8 +510,8 @@ function reducer(state, action) {
       return { ...state, begin: action.payload };
     case "updateEnd":
       return { ...state, end: action.payload };
-    case "updatePoints":
-      return { ...state, computer: action.payload };
+    case "setPrice":
+      return { ...state, final_price: action.payload };
     case "reset":
       return init(action.payload);
     default:
@@ -510,7 +521,7 @@ function reducer(state, action) {
 
 const BookingItem = ({ booking, filter, fireTrigger, trigger }) => {
   const tablet = useMediaQuery("(max-width: 1024px)");
-
+  const [showThis, setShowThis] = React.useState(true);
   const [bookDates, setBookDates] = React.useState();
   const [edit, setEdit] = React.useState(false);
   const [days, setDays] = React.useState(0);
@@ -521,25 +532,33 @@ const BookingItem = ({ booking, filter, fireTrigger, trigger }) => {
     init
   );
 
+  React.useEffect(() => {
+    if (filter === null || filter == booking.status) {
+      setShowThis(true);
+    } else {
+      setShowThis(false);
+    }
+  }, [filter]);
+
   const setColor = () => {
     switch (booking.status) {
       case 0:
-        return "#00000080";
+        return "rgba(0, 0, 0, 1)";
         break;
       case 1:
-        return "#6969698f";
+        return "rgba(123, 123, 123, 1)";
         break;
       case 2:
-        return "rgba(0, 255, 64, 0.507)";
+        return "rgba(51, 161, 37, 1)";
         break;
       case 3:
-        return "#ffff0081";
+        return "rgba(161, 134, 37, 1)";
         break;
       case 4:
-        return "#ff000081";
+        return "rgba(161, 37, 37, 1)";
         break;
       case 5:
-        return "#0084ffaf";
+        return "rgba(62, 37, 161, 1)";
         break;
     }
   };
@@ -562,15 +581,13 @@ const BookingItem = ({ booking, filter, fireTrigger, trigger }) => {
 
   const formatDate = (date, h = 0) => {
     const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
+    d.setHours(h, 0, 0, 0);
     return d;
   };
 
   const getDays = (date1, date2) => {
     const d1 = formatDate(date1);
     const d2 = formatDate(date2);
-    console.log(d1);
-    console.log(d2);
 
     var difference = d2.getTime() - d1.getTime();
     var days = Math.ceil(difference / (1000 * 3600 * 24));
@@ -594,7 +611,6 @@ const BookingItem = ({ booking, filter, fireTrigger, trigger }) => {
     bookingDispatch({
       type: "reset",
       payload: {
-        id: booking._id,
         begin: booking.begin,
         end: booking.end,
         final_price: booking.final_price,
@@ -608,152 +624,223 @@ const BookingItem = ({ booking, filter, fireTrigger, trigger }) => {
       }
     );
     const tmp = dates.data.filter(
-      (el) => el.computer == booking.computer._id && el._id !== booking._id
+      (el) => el.computer._id == booking.computer._id && el._id !== booking._id
     );
     setBookDates(tmp);
   }, [trigger]);
 
   React.useEffect(() => {
-    if (bookDates) {
-      for (const [key, value] of Object.entries(bookDates)) {
-        console.log(key);
-        console.log(value);
+    if (bookDates && bookingState.begin && bookingState.end) {
+      console.log(bookDates);
+      for (let i = 0; i < bookDates.length; i++) {
+        if (
+          compareDates(bookingState.end, bookingState.begin) ||
+          (compareDates(bookingState.begin, bookDates[i].begin) &&
+            compareDates(bookDates[i].end, bookingState.end))
+        ) {
+          bookingDispatch({
+            type: "reset",
+            payload: {
+              begin: booking.begin,
+              end: booking.end,
+              final_price: booking.final_price,
+            },
+          });
+          alert("Date non disonibili!");
+          return;
+        }
       }
+      setDays(getDays(bookingState.begin, bookingState.end));
     }
   }, [bookingState.begin, bookingState.end]);
 
+  React.useEffect(() => {
+    if (days) {
+      let price = days * booking.computer.price;
+      for (let i = 0; i < booking.discounts.length; i++) {
+        price = price - booking.discounts[i].amount;
+      }
+      if (price <= booking.computer.price) {
+        price = days * booking.computer.price;
+      }
+
+      bookingDispatch({ type: "setPrice", payload: price.toFixed(2) });
+    }
+  }, [days]);
+
   return (
-    <Paper
-      sx={{ bgcolor: setColor, color: "white" }}
-      onClick={() => {
-        console.log(bookingState);
-      }}
-    >
-      <ListItem
-        sx={[
-          { minHeight: "10rem", my: "1rem", display: "flex" },
-          tablet && {
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          },
-        ]}
+    showThis && (
+      <Paper
+        sx={{ bgcolor: setColor, color: "white" }}
+        onClick={() => {
+          console.log(bookingState);
+        }}
       >
-        <Container sx={{ width: "75vw", p: 0 }}>
-          <Box sx={{ display: "flex" }}>
-            <Box width='40%'>
-              <Typography
-                sx={{ fontWeight: "bold", textTransform: "capitalize" }}
+        <ListItem
+          sx={[
+            { minHeight: "10rem", my: "1rem", display: "flex" },
+            tablet && {
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            },
+          ]}
+        >
+          <Container
+            sx={[{ width: "75vw", p: 0 }, tablet && { width: "auto" }]}
+          >
+            <Box
+              sx={[
+                { display: "flex" },
+                tablet && { flexDirection: "column", alignItems: "center" },
+              ]}
+            >
+              <Box
+                width='40%'
+                sx={[
+                  tablet && {
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    mb: "2rem",
+                  },
+                ]}
               >
-                Computer: {booking.computer.model}
-              </Typography>
-              <Typography>Prezzo finale: {booking.final_price}$</Typography>
-              {booking.discounts.map((el) => {
-                return (
-                  <Typography sx={{ textTransform: "capitalize" }}>
-                    {el.reason}: {el.amount}$
-                  </Typography>
-                );
-              })}
+                <Typography
+                  sx={{ fontWeight: "bold", textTransform: "capitalize" }}
+                >
+                  Computer: {booking.computer.model}
+                </Typography>
+                <Typography>
+                  Prezzo finale: {bookingState?.final_price}$
+                </Typography>
+                {booking.discounts.map((el) => {
+                  return (
+                    <Typography sx={{ textTransform: "capitalize" }}>
+                      {el.reason}: {el.amount}$
+                    </Typography>
+                  );
+                })}
+              </Box>
+              <Paper
+                elevation={6}
+                sx={[
+                  {
+                    display: "flex",
+                    flexDirection: "column",
+                    px: "0.5rem",
+                  },
+                ]}
+              >
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DatePicker
+                    disabled={!edit}
+                    clearable
+                    value={bookingState?.begin}
+                    label='Inizio'
+                    // minDate={new Date()}
+                    renderInput={(props) => (
+                      <TextField
+                        variant='filled'
+                        size='small'
+                        sx={{
+                          my: "0.5rem",
+                          color: "white",
+                        }}
+                        {...props}
+                      />
+                    )}
+                    onChange={(date) => {
+                      const d = formatDate(date, 1).toISOString().split("T")[0];
+                      bookingDispatch({ type: "updateStart", payload: d });
+                    }}
+                    shouldDisableDate={handleDisable}
+                  />
+                </LocalizationProvider>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                  <DatePicker
+                    disabled={!edit}
+                    clearable
+                    value={bookingState?.end}
+                    label='Fine'
+                    // minDate={new Date()}
+                    renderInput={(props) => (
+                      <TextField
+                        variant='filled'
+                        size='small'
+                        sx={{
+                          my: "0.5rem",
+                          color: "white",
+                        }}
+                        {...props}
+                      />
+                    )}
+                    onChange={(date) => {
+                      const d = formatDate(date, 1).toISOString().split("T")[0];
+                      bookingDispatch({ type: "updateEnd", payload: d });
+                    }}
+                    shouldDisableDate={handleDisable}
+                  />
+                </LocalizationProvider>
+              </Paper>
             </Box>
-            <Paper
-              elevation={6}
-              sx={{
+          </Container>
+          <Container
+            sx={[
+              {
+                minHeight: "6rem",
+                width: "25vw",
                 display: "flex",
                 flexDirection: "column",
-                px: "0.5rem",
-              }}
-            >
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
-                  disabled={edit}
-                  clearable
-                  value={bookingState?.begin}
-                  label='Inizio'
-                  // minDate={new Date()}
-                  renderInput={(props) => (
-                    <TextField
-                      variant='filled'
-                      size='small'
-                      sx={{
-                        my: "0.5rem",
-                        width: "275px",
-                        color: "white",
-                      }}
-                      {...props}
-                    />
-                  )}
-                  onChange={(date) => {
-                    const d = formatDate(date).toISOString().split("T")[0];
-                    bookingDispatch({ type: "updateStart", payload: d });
-                  }}
-                  shouldDisableDate={handleDisable}
-                />
-              </LocalizationProvider>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
-                  disabled={edit}
-                  clearable
-                  value={bookingState?.end}
-                  label='Fine'
-                  // minDate={new Date()}
-                  renderInput={(props) => (
-                    <TextField
-                      variant='filled'
-                      size='small'
-                      sx={{
-                        my: "0.5rem",
-                        width: "275px",
-                        color: "white",
-                      }}
-                      {...props}
-                    />
-                  )}
-                  onChange={(date) => {
-                    const d = formatDate(date).toISOString().split("T")[0];
-                    bookingDispatch({ type: "updateEnd", payload: d });
-                  }}
-                  shouldDisableDate={handleDisable}
-                />
-              </LocalizationProvider>
-            </Paper>
-          </Box>
-        </Container>
-        <Container
-          sx={{
-            minHeight: "6rem",
-            width: "25vw",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-around",
-          }}
-        >
-          {!edit ? (
-            <Button
-              onClick={() => {
-                setEdit(true);
-              }}
-              variant='contained'
-            >
-              modifica
-            </Button>
-          ) : (
-            <Button
-              onClick={() => {
-                setEdit(false);
-              }}
-              variant='contained'
-            >
-              salva
-            </Button>
-          )}
+                justifyContent: "space-around",
+              },
+              tablet && { width: "auto", mt: "1rem" },
+            ]}
+          >
+            {booking.status != 5 ? (
+              <>
+                {booking.status == 2 ? (
+                  <>
+                    {!edit ? (
+                      <Button
+                        onClick={() => {
+                          setEdit(true);
+                        }}
+                        variant='contained'
+                      >
+                        modifica
+                      </Button>
+                    ) : (
+                      <Button
+                        onClick={() => {
+                          setEdit(false);
+                        }}
+                        variant='contained'
+                      >
+                        salva
+                      </Button>
+                    )}
+                  </>
+                ) : (
+                  <></>
+                )}
 
-          <Button variant='contained' color='error'>
-            elimina
-          </Button>
-        </Container>
-      </ListItem>
-    </Paper>
+                {booking.status == 2 || booking.status == 1 ? (
+                  <Button variant='contained' color='error'>
+                    elimina
+                  </Button>
+                ) : (
+                  <></>
+                )}
+              </>
+            ) : (
+              <Button variant='contained'>mostra ricevuta</Button>
+            )}
+          </Container>
+        </ListItem>
+      </Paper>
+    )
   );
 };
 

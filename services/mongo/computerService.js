@@ -25,7 +25,7 @@ class computer_services extends baseService {
   async getDiscount(computerId) {
     const discountPercentage = await super.findOne(
       { _id: computerId },
-      "discount price"
+      "discount price available"
     );
     return discountPercentage;
   }

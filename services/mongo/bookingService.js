@@ -20,7 +20,7 @@ class bookingService extends baseService {
     const bookings = await super.find(params, attrs);
     // logger.info(JSON.stringify(bookings));
 
-    for (const booking of bookings){
+    for (const booking of bookings) {
       await this.updateStatus(booking);
     }
 
@@ -77,16 +77,12 @@ class bookingService extends baseService {
 
   async getUserScore(userId) {
     var avg = 5;
-    const scores = await this.find(
-      {
-        user: userId,
-        end: { $lt: new Date().toISOString() },
-        picked: true,
-        returned: true,
-        payed: true,
-      },
-      "final_condition late"
-    );
+    const scores = await this.find({
+      user: userId,
+      end: { $lt: new Date().toISOString() },
+      returned: true,
+      payed: true,
+    });
     if (scores.length >= 3) {
       var total = 0;
       var lateNum = 0;
@@ -108,13 +104,14 @@ class bookingService extends baseService {
   async getPopulatedBookings(params = null, attrs = null) {
     const bookings = await this.find(params, attrs);
 
-    for (const booking of bookings){
-      if (booking.user){
+    for (const booking of bookings) {
+      if (booking.user) {
         await booking.populate("user");
         await booking.populate("user.person");
-      }    logger.info (typeof filtered_booking);
+      }
+      logger.info(typeof filtered_booking);
 
-      if (booking.computer){
+      if (booking.computer) {
         await booking.populate("computer");
       }
     }
@@ -124,57 +121,57 @@ class bookingService extends baseService {
 
   async getPopulatedBookingsByUser(user_id, attrs = null) {
     logger.info("in getPopulateBookingsByUser");
-    return this.getPopulatedBookings({'user': user_id}, attrs);
+    return this.getPopulatedBookings({ user: user_id }, attrs);
   }
 
   async getPopulatedBookingsByComputer(computer_id, attrs = null) {
-    return this.getPopulatedBookings({'computer': computer_id}, attrs);
+    return this.getPopulatedBookings({ computer: computer_id }, attrs);
   }
 
   async getPopulatedBooking(booking_id, attrs = null) {
-    const bookings = await this.findOne({'_id': booking_id}, attrs);
+    const bookings = await this.findOne({ _id: booking_id }, attrs);
 
-    if (booking.user){
+    if (booking.user) {
       await booking.populate("user");
       await booking.populate("user.person");
     }
 
-    if (booking.computer){
+    if (booking.computer) {
       await booking.populate("computer");
     }
 
     return bookings;
   }
 
-  async updateStatus (booking) {
+  async updateStatus(booking) {
     await booking.populate("computer");
     logger.info("booking: " + booking);
     let has_change = true;
 
     const filtered_booking = this._filterObject(booking, (key, value) => {
-      const filter = ['_id', 'onHold', 'status', 'defaulted', 'late'];
+      const filter = ["_id", "onHold", "status", "defaulted", "late"];
       return filter.includes(key);
     });
 
     logger.info("PRE filtered_booking: " + JSON.stringify(filtered_booking));
 
-    if (!filtered_booking.defaulted){
+    if (!filtered_booking.defaulted) {
       const today = new Date().setHours(0, 0, 0, 0);
       const begin = new Date(booking.begin).setHours(0, 0, 0, 0);
       const end = new Date(booking.end).setHours(0, 0, 0, 0);
       const available = booking.computer.available;
 
-      logger.info ( "AVAILABLE: " + available);
+      logger.info("AVAILABLE: " + available);
 
       const future = today < begin;
       const current = today < end;
       const past = !future && !current;
-      logger.info ( "FUTURE: " + future);
-      logger.info ( "current: " + current);
+      logger.info("FUTURE: " + future);
+      logger.info("current: " + current);
 
-      if (future){
+      if (future) {
         // if available but onHold not updated
-        if (booking.computer.available){
+        if (booking.computer.available) {
           filtered_booking.status = 2;
           if (filtered_booking.onHold) {
             filtered_booking.onHold = false;
@@ -188,7 +185,7 @@ class bookingService extends baseService {
         }
       } else if (current) {
         // if should have been started but computer not available
-        if (booking.computer.available){
+        if (booking.computer.available) {
           filtered_booking.status = 3;
         } else {
           filtered_booking.defaulted = true;
@@ -199,11 +196,11 @@ class bookingService extends baseService {
         filtered_booking.late = true;
         filtered_booking.status = 4;
       } else {
-        has_change = false;
+        filtered_booking.status = 5;
       }
     } else {
       // if defaulted but field have not been updated
-      if (filtered_booking.status !== 0){
+      if (filtered_booking.status !== 0) {
         filtered_booking.status = 0;
       } else {
         has_change = false;
@@ -214,21 +211,21 @@ class bookingService extends baseService {
 
     for (const [key, value] of Object.entries(filtered_booking)) {
       if (booking[key] !== value) {
-        logger.info ("filterd_booking[" + key + "]: " + value);
-        logger.info ("booking[" + key + "]: " + booking[key]);
+        logger.info("filterd_booking[" + key + "]: " + value);
+        logger.info("booking[" + key + "]: " + booking[key]);
       }
     }
 
-    if (has_change){
+    if (has_change) {
       // TODO: status need to be updated!
-      this.updateOne({'_id': filtered_booking}, filtered_booking);
+      this.updateOne({ _id: filtered_booking }, filtered_booking);
       // logger.info ('CHANGES NEED TO BE MADE');
     }
   }
 
-  _filterObject(object, callback){
+  _filterObject(object, callback) {
     // Convert `obj` to a key/value array
-    const asArray = Object.entries(object['_doc']);
+    const asArray = Object.entries(object["_doc"]);
 
     const filtered = asArray.filter(([key, value]) => callback(key, value));
 

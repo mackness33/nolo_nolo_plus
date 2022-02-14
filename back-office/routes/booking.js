@@ -56,7 +56,7 @@ router.get("/getBookingsByItem", async (req, res, next) => {
 
   const bookingDates = await bookingService.find(
     { computer: req.query.id },
-    "begin end"
+    "begin end computer"
   );
   console.log(bookingDates);
   res.send(bookingDates);
@@ -64,8 +64,11 @@ router.get("/getBookingsByItem", async (req, res, next) => {
 
 router.get("/getBookings", async (req, res, next) => {
   const attributes = req.query.attributes ? req.query.attributes : null;
-  const bookings = await bookingService.getPopulatedBookings(req.query.user, attributes);
-  
+  const bookings = await bookingService.getPopulatedBookings(
+    req.query.user,
+    attributes
+  );
+
   res.send(bookings);
 });
 
@@ -74,7 +77,10 @@ router.get("/getBookingsByUser", async (req, res, next) => {
   logger.info("in booking");
 
   const attributes = req.query.attributes ? req.query.attributes : null;
-  const bookings = await bookingService.getPopulatedBookingsByUser(req.query.user, attributes);
+  const bookings = await bookingService.getPopulatedBookingsByUser(
+    req.query.user,
+    attributes
+  );
   // console.log(bookings);
   res.send(bookings);
 });
