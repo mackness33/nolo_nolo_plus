@@ -1,10 +1,8 @@
 var computerAutolist = [];
-var bookings_all = [];
-var bookings_shown = [];
 
 $(document).on("DOMContentLoaded", async function (event) {
   await autocompleteUser();
-  // await getAllBookings();
+  await getAllBookings();
 });
 
 async function autocompleteUser() {
@@ -318,26 +316,25 @@ $("#searchBtn").on("click", async (event) => {
       false
     );
   }
-
-  // if (user) {
-  //   $.ajax({
-  //     method: "GET",
-  //     url: "/nnplus/booking/getBookingsByUser",
-  //     data: { user: user._id },
-  //   }).done(async (data) => {
-  //     console.log(data);
-  //     showBookings(data);
-  //   });
-  // } else {
-  //   $.ajax({
-  //     method: "GET",
-  //     url: "/nnplus/booking/getBookings",
-  //   }).done(async (data) => {
-  //     console.log(data);
-  //     showBookings(data);
-  //   });
-  // }
 });
+
+async function getAllBookings() {
+  bookings = await $.ajax({
+    method: "GET",
+    url: "/nnplus/booking/getBookings",
+  });
+
+  if (bookings) {
+    showBookings(bookings);
+  } else {
+    console.log("no booking to see");
+    showAlert(
+      "Utente inesistente o computer non disponibile!",
+      $("#searchBookingForm"),
+      false
+    );
+  }
+}
 
 function showBookings(bookings) {
   for (const booking of bookings) {
@@ -351,11 +348,13 @@ function showBookings(bookings) {
       booking.user.person.name,
       booking.user.person.surname
     );
-    const color_status = statusToColor(booking.status);
+    const status_object = statusToObject(booking.status);
+    const begin_without_time = booking.begin.split("T")[0];
+    const end_without_time = booking.end.split("T")[0];
 
     const listItem = document.createElement("li");
     listItem.innerHTML = `
-    <li class="bookingElement" style="background-color:${color_status}";>
+    <li class="bookingElement" style="background-color:${status_object.color}";>
       <div class="infoGroup">
         <div class="computerModel">
           <span class="labelTag">Computer: </span>
@@ -367,21 +366,18 @@ function showBookings(bookings) {
         </div>
         <div class="startDate">
           <span class="labelTag">Inizio: </span>
-          <div>${booking.begin}</div>
+          <div>${begin_without_time}</div>
         </div>
         <div class="endDate">
           <span class="labelTag">Fine: </span>
-          <div>${booking.end}</div>
+          <div>${end_without_time}</div>
         </div>
         <div class="finalPrice">
           <span class="labelTag">Prezzo totale: </span>
           <div>${booking.final_price}</div>
         </div>
       </div>
-      <div class="buttonGroup">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">Modifica</button>
-        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Cancella</button>
-      </div>
+      ${status_object.buttons}
     </li>`;
 
     list.append(listItem);
@@ -391,30 +387,58 @@ function showBookings(bookings) {
   showAlert("Lets go!", $("searchBtn"), true);
 }
 
-function statusToColor(status) {
-  let color;
+function statusToObject(status) {
+  let statObj;
   switch (status) {
     case 1:
-      color = "rgb(138, 138, 138)";
-      break;
+      statObj = {
+        color: "rgba(105, 105, 105, 0.562)",
+        buttons: `<div class="buttonGroup">
+          <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Cancella</button>
+         </div>`,
+      };
+      break; // on hold
     case 2:
-      color = "rgb(75, 201, 54)";
-      break;
+      statObj = {
+        color: "rgba( 0, 128, 0, 0.514 )",
+        buttons: `<div class="buttonGroup">
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">Modifica</button>
+          <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Cancella</button>
+         </div>`,
+      };
+      break; // future
     case 3:
-      color = "rgb(215, 203, 33)";
-      break;
+      statObj = {
+        color: "rgba(255, 255, 0, 0.507)",
+        buttons: `<div class="buttonGroup">
+          <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#returnModal">Consegna</button>
+        </div>`,
+      };
+      break; // current
     case 4:
-      color = "rgb(203, 36, 36)";
-      break;
+      statObj = {
+        color: "rgba(255, 0, 0, 0.507)",
+        buttons: `<div class="buttonGroup">
+          <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#returnModal">Consegna</button>
+        </div>`,
+      };
+      break; // alarm
     case 5:
-      color = "rgb(32, 102, 208)";
-      break;
-    // default: color = rgb(1, 1, 1);
+      statObj = {
+        color: "rgba(0, 132, 255, 0.685)",
+        buttons: `<div class="buttonGroup">
+          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#receiptModal">Mostra
+        </div>`,
+      };
+      break; // done
     default:
-      color = "rgb(32, 102, 208)";
+      statObj = {
+        color: "rgba(0, 0, 0, 0.801)",
+        buttons: "",
+      }; // revoked
   }
 
-  return color;
+  return statObj;
 }
 
 function showAlert(text, parent, happy) {
