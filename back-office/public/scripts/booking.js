@@ -284,6 +284,82 @@ async function bookingPreview(user, computer, begin, end) {
   });
 }
 
+
+$("#searchBtn").on("click", async (event) => {
+  event.preventDefault();
+  console.log('at searchBtn');
+  const user = await $.ajax({
+    method: "GET",
+    url: "/nnplus/user/getOne",
+    data: { mail: $("#searchUser").val() },
+  });
+
+  console.log(user);
+  if (user) {
+    $.ajax({
+      method: "GET",
+      url: "/nnplus/booking/getBookingsByUser",
+      data: { user: user._id },
+    }).done(async (data) => {
+      console.log(data);
+      showBookings(data);
+    });
+  } else {
+    showAlert(
+      "Utente inesistente o computer non disponibile!",
+      $("#searchBookingForm"),
+      false
+    );
+    // $("#bookingPreview").prop("hidden", true);
+  }
+});
+
+function showBookings (bookings) {
+  for (const booking of bookings){
+    const list = document.getElementById("bookingList");
+
+    const computer_model = adjustName(booking.computer.brand, booking.computer.model);
+    const user_name = adjustName(booking.user.person.name, booking.user.person.surname);
+
+    const listItem = document.createElement("li");
+    listItem.innerHTML = `
+    <li class="bookingElement">
+      <div class="infoGroup">
+        <div class="computerModel">
+          <span class="labelTag">Computer: </span>
+          <div>${computer_model.full_name}</div>
+        </div>
+        <div class="computerModel">
+          <span class="labelTag">Utente: </span>
+          <div>${user_name.full_name}</div>
+        </div>
+        <div class="startDate">
+          <span class="labelTag">Inizio: </span>
+          <div>${booking.begin}</div>
+        </div>
+        <div class="endDate">
+          <span class="labelTag">Fine: </span>
+          <div>${booking.end}</div>
+        </div>
+        <div class="finalPrice">
+          <span class="labelTag">Prezzo totale: </span>
+          <div>${booking.final_price}</div>
+        </div>
+      </div>
+      <div class="buttonGroup">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">Modifica</button>
+        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Cancella</button>
+      </div>
+    </li>`;
+
+    list.append(listItem);
+    console.log("a booking has been added");
+  }
+
+  showAlert ("Lets go!", $("searchBtn"), true);
+}
+
+
 function showAlert(text, parent, happy) {
   $("#load").remove();
 
@@ -323,7 +399,9 @@ function adjustName(name, surname) {
 
   const newSurname = surname.charAt(0).toUpperCase() + surname.slice(1);
 
-  return { name: newName, surname: newSurname };
+  const fullName = `${newName} ${newSurname}`;
+
+  return { name: newName, surname: newSurname, full_name: fullName };
 }
 
 function daysNumber(start, end) {

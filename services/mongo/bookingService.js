@@ -91,6 +91,45 @@ class bookingService extends baseService {
     const bookings = await super.find({ user: userId });
     return bookings;
   }
+
+  async getPopulatedBookings(params = null, attrs = null) {
+    const bookings = await super.find(params, attrs);
+
+    for (const booking of bookings){
+      if (booking.user){
+        await booking.populate("user");
+        await booking.populate("user.person");
+      }
+      if (booking.computer){
+        await booking.populate("computer");
+      }
+    }
+
+    return bookings;
+  }
+
+  async getPopulatedBookingsByUser(user_id, attrs = null) {
+    return this.getPopulatedBookings({'user': user_id}, attrs);
+  }
+
+  async getPopulatedBookingsByComputer(computer_id, attrs = null) {
+    return this.getPopulatedBookings({'computer': computer_id}, attrs);
+  }
+
+  async getPopulatedBooking(booking_id, attrs = null) {
+    const bookings = await super.findOne({'_id': booking_id}, attrs);
+
+    if (booking.user){
+      await booking.populate("user");
+      await booking.populate("user.person");
+    }
+    
+    if (booking.computer){
+      await booking.populate("computer");
+    }
+
+    return bookings;
+  }
 }
 
 const service = new bookingService();

@@ -24,6 +24,7 @@ router.use(async (req, res, next) => {
 });
 
 router.get("/getOne", async (req, res, next) => {
+  logger.info("In getOne of user");
   var user = await userService.findOne({ "person.mail": req.query.mail });
   user = user ? userService.format(user, "person") : user;
 
@@ -38,7 +39,7 @@ router.get("/getOne", async (req, res, next) => {
       );
     }
   }
-
+  logger.info("user: " + JSON.stringify(user));
   res.send(user);
 });
 

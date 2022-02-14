@@ -52,6 +52,7 @@ router.get("/getDiscounts", async (req, res, next) => {
 
 router.get("/getBookingsByItem", async (req, res, next) => {
   logger.info(JSON.stringify(req.query.id));
+  logger.info("in booking");
 
   const bookingDates = await bookingService.find(
     { computer: req.query.id },
@@ -59,6 +60,16 @@ router.get("/getBookingsByItem", async (req, res, next) => {
   );
   console.log(bookingDates);
   res.send(bookingDates);
+});
+
+router.get("/getBookingsByUser", async (req, res, next) => {
+  logger.info(JSON.stringify(req.query.user));
+  logger.info("in booking");
+
+  const attributes = req.query.attributes ? req.query.attributes : null;
+  const bookings = await bookingService.getPopulatedBookingsByUser(req.query.user, attributes);
+  console.log(bookings);
+  res.send(bookings);
 });
 
 module.exports = router;
