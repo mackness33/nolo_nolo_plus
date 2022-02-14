@@ -283,12 +283,33 @@ main {
   justify-content: space-between;
 }
 
-/* return form */
+/* receipt modal */
+
+#receiptSection > div {
+  display: flex;
+  justify-content: space-between;
+}
+
+#receiptDates {
+  display: flex;
+  justify-content: space-around !important;
+}
+
+#receiptDates > div {
+  display: flex;
+  flex-direction: column;
+}
+
+/* return modal */
 
 #returnForm > div {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   margin-bottom: 1rem;
+}
+
+#returnForm > div > span {
+  margin-bottom: 0.3rem;
 }
 
 /* mobile responsive */
@@ -318,9 +339,22 @@ main {
 
   /* single bookign elements decoration */
 
+  .bookingElement {
+    flex-direction: column;
+  }
+
   .infoGroup {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+  }
+
+  .infoGroup > div {
+    display: flex;
+    justify-content: center;
+  }
+
+  .infoGroup > div > span {
+    margin-right: 0.3rem;
   }
 
   .buttonGroup {

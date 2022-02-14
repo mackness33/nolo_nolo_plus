@@ -224,7 +224,7 @@
                   </div>
                   <div class="computerModel">
                     <span class="labelTag">Utente: </span>
-                    <div>Bento Bunto</div>
+                    <div class="text-capitalize">bento bunto</div>
                   </div>
                   <div class="startDate">
                     <span class="labelTag">Inizio: </span>
@@ -255,7 +255,7 @@
                   </div>
                   <div class="computerModel">
                     <span class="labelTag">Utente: </span>
-                    <div>Bento Bunto</div>
+                    <div class="text-capitalize">bento bunto</div>
                   </div>
                   <div class="startDate">
                     <span class="labelTag">Inizio: </span>
@@ -271,7 +271,6 @@
                   </div>
                 </div>
                 <div class="buttonGroup">
-                  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">Modifica</button>
                   <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#returnModal">Consegna</button>
                 </div>
               </li>
@@ -279,6 +278,93 @@
               <!-- single booking element -->
 
               <li class="bookingElement" style="background-color:rgba(255, 0, 0, 0.507);">
+                <div class="infoGroup">
+                  <div class="computerModel">
+                    <span class="labelTag">Computer: </span>
+                    <div>Dell XPS</div>
+                  </div>
+                  <div class="computerModel">
+                    <span class="labelTag">Utente: </span>
+                    <div class="text-capitalize">bento bunto</div>
+                  </div>
+                  <div class="startDate">
+                    <span class="labelTag">Inizio: </span>
+                    <div>19/02/2012</div>
+                  </div>
+                  <div class="endDate">
+                    <span class="labelTag">Fine: </span>
+                    <div>22/02/2012</div>
+                  </div>
+                  <div class="finalPrice">
+                    <span class="labelTag">Prezzo totale: </span>
+                    <div>25.50$</div>
+                  </div>
+                </div>
+                <div class="buttonGroup">
+                  <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#returnModal">Consegna</button>
+                </div>
+              </li>
+
+              <!-- single booking element -->
+
+              <li class="bookingElement" style="background-color:rgba(105, 105, 105, 0.562);">
+                <div class="infoGroup">
+                  <div class="computerModel">
+                    <span class="labelTag">Computer: </span>
+                    <div>Dell XPS</div>
+                  </div>
+                  <div class="computerModel">
+                    <span class="labelTag">Utente: </span>
+                    <div class="text-capitalize">bento bunto</div>
+                  </div>
+                  <div class="startDate">
+                    <span class="labelTag">Inizio: </span>
+                    <div>19/02/2012</div>
+                  </div>
+                  <div class="endDate">
+                    <span class="labelTag">Fine: </span>
+                    <div>22/02/2012</div>
+                  </div>
+                  <div class="finalPrice">
+                    <span class="labelTag">Prezzo totale: </span>
+                    <div>25.50$</div>
+                  </div>
+                </div>
+                <div class="buttonGroup">
+                  <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Cancella</button>
+                </div>
+              </li>
+
+              <li class="bookingElement" style="background-color:rgba(0, 132, 255, 0.685);">
+                <div class="infoGroup">
+                  <div class="computerModel">
+                    <span class="labelTag">Computer: </span>
+                    <div>Dell XPS</div>
+                  </div>
+                  <div class="computerModel">
+                    <span class="labelTag">Utente: </span>
+                    <div class="text-capitalize">bento bunto</div>
+                  </div>
+                  <div class="startDate">
+                    <span class="labelTag">Inizio: </span>
+                    <div>19/02/2012</div>
+                  </div>
+                  <div class="endDate">
+                    <span class="labelTag">Fine: </span>
+                    <div>22/02/2012</div>
+                  </div>
+                  <div class="finalPrice">
+                    <span class="labelTag">Prezzo totale: </span>
+                    <div>25.50$</div>
+                  </div>
+                </div>
+                <div class="buttonGroup">
+                  <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#receiptModal">Mostra
+                    ricevuta</button>
+                </div>
+              </li>
+
+              <li class="bookingElement" style="background-color:rgba(0, 0, 0, 0.801);">
                 <div class="infoGroup">
                   <div class="computerModel">
                     <span class="labelTag">Computer: </span>
@@ -301,8 +387,11 @@
                     <div>25.50$</div>
                   </div>
                 </div>
+                <div class="buttonGroup">
 
+                </div>
               </li>
+
             </ul>
 
 
@@ -324,11 +413,12 @@
 
                   <div>
                     <span class="labelTag">Modello:</span>
-                    <input id="editComputer" type="text" value="Dell XPS">
+                    <span id="editComputer" class="capitalize">Dell XPS</span>
                   </div>
                   <div>
                     <span class="labelTag">E-mail utente:</span>
-                    <input id="editMail" type="text" value="bento@bunto" readonly>
+                    <span id="editMail">bento@bunto</span>
+
                   </div>
                   <div>
                     <span class="labelTag">Data inizio:</span>
@@ -360,13 +450,13 @@
 
                   <div>
                     <span class="labelTag">Punti consumati:</span>
-                    <span>36</span>
+                    <select id="editPoints">
+                      <option value="0">0</option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                    </select>
                   </div>
 
-                  <div>
-                    <span class="labelTag">Ritirato:</span>
-                    <span>Si</span>
-                  </div>
                   <div>
                     <span class="labelTag">Restituito:</span>
                     <span>Si</span>
@@ -398,6 +488,84 @@
           </div>
         </div>
 
+        <!-- Receipt Modal -->
+
+        <div class="modal fade" id="receiptModal" tabindex="-1" aria-labelledby="receiptTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="editTitle" tabindex="0">Ricevuta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+              </div>
+              <div class="modal-body">
+                <section id='receiptSection'>
+
+                  <div class="mb-3" id="receiptDates">
+                    <div class="border rounded p-1">
+                      <span class="fw-bold">Data inizio:</span>
+                      <span id="receiptStartDate">2021-10-15</span>
+                    </div>
+                    <div class="border rounded p-1">
+                      <span class="fw-bold">Data fine:</span>
+                      <span id="receiptStartDate">2021-10-20</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <span class="fw-bold">Modello:</span>
+                    <span id="receiptComputer">Dell XPS</span>
+                  </div>
+
+                  <div class="mb-3">
+                    <span class="fw-bold">Utente:</span>
+                    <span id="receiptUser">bento@bunto</span>
+                  </div>
+
+                  <div>
+                    <span>Numero di giorni:</span>
+                    <span id="receiptDays">5</span>
+                  </div>
+
+                  <div class="border-bottom">
+                    <span>Prezzo giornaliero</span>
+                    <span id="receiptDailyPrice">10$</span>
+                  </div>
+
+                  <div class="mb-3">
+                    <span class="fw-bold">Prezzo iniziale:</span>
+                    <span id="receiptStartPrice">50$</span>
+                  </div>
+
+                  <div id="receiptDiscountStart">
+                    <span>Sconto punti:</span>
+                    <span id="receiptPointValue">-3$</span>
+                  </div>
+
+                  <div>
+                    <span class="text-capitalize">sconto dispositivo:</span>
+                    <span>-6.50$</span>
+                  </div>
+                  <div class="border-bottom">
+                    <span class="text-capitalize">sconto buona condotta:</span>
+                    <span>-6.50$</span>
+                  </div>
+
+
+                  <div class="mb-3">
+                    <span class="fw-bold">Prezzo finale:</span>
+                    <span id="receiptFinalPrice">35$</span>
+                  </div>
+
+
+                </section>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- return Modal -->
 
         <div class="modal fade" id="returnModal" tabindex="-1" aria-labelledby="returnTitle" aria-hidden="true">
@@ -410,7 +578,17 @@
               <div class="modal-body">
                 <form id="returnForm">
                   <div>
-                    Come valuteresti la condizione del computer?
+                    <span>Certifichi la riconsegna?</span>
+                    <input type="checkbox" id="returnCheck">
+                  </div>
+                  <div>
+                    <span>Certifichi il pagamento?</span>
+                    <input type="checkbox" id="payCheck">
+                  </div>
+                  <div>
+                    <span>
+                      Come valuteresti la condizione del computer?
+                    </span>
                     <select id="finalCondition">
                       <option value="5">5</option>
                       <option value="6">6</option>
@@ -420,11 +598,11 @@
                       <option value="10">10</option>
                     </select>
                   </div>
+
                 </form>
               </div>
               <div class="modal-footer">
-                <button type="submit" id="returnSubmit" form="returnForm" class="btn btn-primary">Certifica
-                  riconsegna</button>
+                <button type="submit" id="returnSubmit" form="returnForm" class="btn btn-primary">Certifica</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
               </div>
             </div>
