@@ -104,7 +104,7 @@ router.get("/getBookings", async (req, res, next) => {
     logger.info(req.query.mail);
 
     const user = await userService.findOne({
-      "person.mail": "primo@levi",
+      "person.mail": "f@s",
     });
     const books = await bookingService.getPopulatedBookingsByUser(user.id);
     res.send({ success: true, payload: books });
