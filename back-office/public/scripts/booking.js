@@ -1,7 +1,10 @@
 var computerAutolist = [];
+var bookings_all = [];
+var bookings_shown = [];
 
 $(document).on("DOMContentLoaded", async function (event) {
   await autocompleteUser();
+  // await getAllBookings();
 });
 
 async function autocompleteUser() {
@@ -320,10 +323,11 @@ function showBookings (bookings) {
 
     const computer_model = adjustName(booking.computer.brand, booking.computer.model);
     const user_name = adjustName(booking.user.person.name, booking.user.person.surname);
+    const color_status = statusToColor(booking.status);
 
     const listItem = document.createElement("li");
     listItem.innerHTML = `
-    <li class="bookingElement">
+    <li class="bookingElement" style="background-color:${color_status}";>
       <div class="infoGroup">
         <div class="computerModel">
           <span class="labelTag">Computer: </span>
@@ -357,6 +361,21 @@ function showBookings (bookings) {
   }
 
   showAlert ("Lets go!", $("searchBtn"), true);
+}
+
+function statusToColor (status) {
+  let color;
+  switch(status) {
+    1 : color = rgb(138, 138, 138); break;
+    2 : color = rgb(75, 201, 54); break;
+    3 : color = rgb(215, 203, 33); break;
+    4 : color = rgb(203, 36, 36); break;
+    5 : color = rgb(32, 102, 208); break;
+    // default: color = rgb(1, 1, 1);
+    default: color = rgb(32, 102, 208);
+  }
+
+  return color;
 }
 
 
