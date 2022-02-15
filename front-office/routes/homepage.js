@@ -19,7 +19,7 @@ router.use(async (req, res, next) => {
 router.get("/getAll", async (req, res, next) => {
   logger.warn("IN homepage -- getAll");
 
-  const items = await computerService.find();
+  const items = await computerService.find({ available: true });
   res.send(items);
 });
 

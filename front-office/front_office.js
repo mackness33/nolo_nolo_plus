@@ -27,7 +27,7 @@ app.use("/auth", authRouter);
 app.use("/user", userRouter);
 
 app.get("*", (req, res, next) => {
-  console.log("dio");
+  logger.warn("IN CHATCH ALL FRONT");
   res.sendFile(path.join(__dirname, "./fo_app/build/index.html"));
 });
 

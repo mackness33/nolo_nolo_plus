@@ -133,8 +133,8 @@ const Pages = () => {
       }}
     >
       <Button
-        // component={Link}
-        // to='/'
+        component={Link}
+        to='/'
         size='large'
         key='home'
         onClick={Navbar.handleCloseNavMenu}
@@ -144,7 +144,7 @@ const Pages = () => {
       </Button>
       <Button
         component={Link}
-        to='/'
+        to='/catalogue'
         size='large'
         key='catalogo'
         onClick={Navbar.handleCloseNavMenu}

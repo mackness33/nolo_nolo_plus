@@ -8,6 +8,7 @@ const morgan = require("morgan");
 const session = require("express-session");
 
 // const homeRouter = require("./routes/home");
+const userRoute = require("./dashboard/routes/user");
 
 const app = express();
 
@@ -16,10 +17,12 @@ app.use(morgan("combined"));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "dashboard/src/assets")));
 
+app.use("/user", userRoute);
+
 // app.use("/", homeRouter);
-app.get("/", async (req, res, next) => {
+app.get("/prova", async (req, res, next) => {
   console.log("wow");
-  res.sendFile(path.join(__dirname, "dashboard/index.html"));
+  res.send({ dio: "cane" });
 });
 
 // catch 404 and forward to error handler

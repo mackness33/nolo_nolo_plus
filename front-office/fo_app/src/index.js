@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import App2 from "./App2";
 import Navbar from "./navbar.js";
+import Landing from "./landing";
 import Container from "@mui/material/Container";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
@@ -40,7 +41,8 @@ ReactDOM.render(
           }}
         >
           <Routes>
-            <Route path='/' element={<Home />} />
+            <Route path='/' element={<Landing />} />
+            <Route path='/catalogue' element={<Home />} />
             <Route path='/registerLogin' element={<RegisterLogin />} />
             <Route path='/profile' element={<Profile />} />
             <Route path='product/:id' element={<ProductPage />} />

@@ -9,6 +9,7 @@ const logger = require("./logger.js");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 
+const dashboard = require("./back-office/manager/dashboard");
 const back_office = require("./back-office/back_office");
 const front_office = require("./front-office/front_office");
 const authService = require("./services/auth");
@@ -33,6 +34,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(authService.get_session());
 app.use("/nnplus", back_office);
 app.use("/front", front_office);
+app.use("/dash", dashboard);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

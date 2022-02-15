@@ -66,6 +66,10 @@ router.post("/addOne", async (req, res, next) => {
     const booking = req.body;
     await bookingService.insertOne(booking);
     await userService.changePoints(booking.user, -booking.points);
+    await userService.changePoints(
+      booking.user,
+      Math.trunc(parseFloat(booking.final_price))
+    );
     res.send({ success: true });
   } catch (error) {
     res.send({ success: false, error: error });

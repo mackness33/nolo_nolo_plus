@@ -1,42 +1,47 @@
 <template>
-  <v-app>
-    <v-main>
-    <v-header>
-      <NavBar/>
-    </v-header>
-      <v-container>
-        <div class="container-fluid" id="main-container">
-
-        <HelloWorld/>
-        </div>
-      </v-container>
-    </v-main>
-  </v-app>
+  <div id="globalContainer">
+    <NavBar />
+    <CustomerContainer />
+  </div>
 </template>
 
 <script>
-import NavBar from './components/NavBar.vue'
-import HelloWorld from './components/HelloWorld.vue'
+import NavBar from "./components/NavBar.vue";
+import HelloWorld from "./components/HelloWorld.vue";
+import CustomerContainer from "./components/Customer.vue";
 
 export default {
-  name: 'App',
+  name: "App",
 
   components: {
     HelloWorld,
     NavBar,
+    CustomerContainer,
   },
 
-  data: () => ({
-    //
-  }),
-}
+  data: () => {
+    return {
+      isVisible: false,
+    };
+  },
+
+  methods: {
+    toggleBox() {
+      this.isVisible = !this.isVisible;
+    },
+  },
+
+  updated() {
+    console.log("updated");
+  },
+};
 </script>
 
 <style>
-@import '@/assets/nav.css';
-@import '@/assets/users.css';
+/* @import '@/assets/nav.css'; */
+/* @import '@/assets/users.css'; */
 
-.general {
+/* .general {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -52,7 +57,7 @@ export default {
   display: block;
 }
 
-a,
+
 .green {
   text-decoration: none;
   color: hsla(160, 100%, 37%, 1);
@@ -76,5 +81,12 @@ a,
     grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
   }
+} */
+</style>
+
+<style>
+#globalContainer {
+  background-color: dimgray;
+  height: 100vh;
 }
 </style>

@@ -1,10 +1,12 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import vuetify from './plugins/vuetify'
-import { loadFonts } from './plugins/webfontloader'
+import { createApp } from "vue";
+import App from "./App.vue";
+// import Chart from "./plugins/chartJS";
+import vuetify from "./plugins/vuetify";
+import { loadFonts } from "./plugins/webfontloader";
 
-loadFonts()
+import VueChartkick from "vue-chartkick";
+import "chartkick/chart.js";
 
-createApp(App)
-  .use(vuetify)
-  .mount('#app')
+loadFonts();
+
+createApp(App).use(vuetify).use(VueChartkick).mount("#app");

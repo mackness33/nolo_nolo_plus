@@ -255,6 +255,7 @@ export default function ComputerContent() {
     setShowMsg(true);
     setTimeout(() => {
       setShowMsg(false);
+      setShowCalc(false);
     }, 3000);
   };
 
@@ -332,6 +333,10 @@ export default function ComputerContent() {
     if (res.data.success) {
       showResponse(true);
       setTrigger2(!trigger2);
+    } else {
+      showResponse(false);
+      setTrigger2(!trigger2);
+      console.error("Logged but booking failed");
     }
 
     // const user = await identity();
@@ -630,6 +635,7 @@ export default function ComputerContent() {
             >
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <MobileDatePicker
+                  minDate={new Date()}
                   label='Inizio noleggio'
                   inputFormat='dd/MM/yyyy'
                   value={startDate}
@@ -651,6 +657,7 @@ export default function ComputerContent() {
 
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <MobileDatePicker
+                  minDate={new Date()}
                   label='Fine noleggio'
                   inputFormat='dd/MM/yyyy'
                   value={endDate}

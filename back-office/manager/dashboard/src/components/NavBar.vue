@@ -1,44 +1,80 @@
+
+
 <template>
-  <v-layout>
-    <v-app-bar
-      absolute
-      color="indigo darken-2"
-      dark
-      shrink-on-scroll
-      prominent
-      scroll-target="#scrolling-techniques"
-    >
-
-    <img src="@/assets/logo.png" class="logo">
-      <div class="d-flex justify-space-around align-center flex-column flex-md-row fill-height">
-        <NavButton text='Clienti'/>
-        <NavButton text='Inventario'/>
-        <NavButton text='Noleggi'/>
-        <NavButton text='Dashboard'/>
-        <NavButton text='Dipendenti'/>
-
+  <div id="navContainer">
+    <nav class="navbar navbar-dark bg-primary navbar-expand-lg rounded shadow">
+      <div class="container-fluid">
+        <img src="../assets/logo.png" id="logoId" alt="" />
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item" @click="makeActive">
+              <a
+                class="nav-link active"
+                id="customer"
+                aria-current="clienti"
+                href="#"
+                >Clienti</a
+              >
+            </li>
+            <li class="nav-item" @click="makeActive">
+              <a class="nav-link" href="#">Inventario</a>
+            </li>
+            <li class="nav-item" @click="makeActive">
+              <a class="nav-link" href="#">Noleggi</a>
+            </li>
+          </ul>
+        </div>
       </div>
-      <v-spacer></v-spacer>
-
-      <NavButton text='Log out' />
-
-    </v-app-bar>
-  </v-layout>
+    </nav>
+  </div>
 </template>
 
 
 <script>
-  import NavButton from './NavButton.vue'
+export default {
+  name: "NavBar",
 
-  export default {
-    name: 'NavBar',
+  components: {},
 
-    components: {
-      NavButton,
+  data: () => {
+    return {};
+  },
+
+  methods: {
+    makeActive(event) {
+      document.querySelectorAll("li > a").forEach((el) => {
+        el.classList.remove("active");
+      });
+      event.target.classList.add("active");
     },
+  },
 
-    data: () => ({
-      //
-    }),
-  }
+  props: [],
+};
 </script>
+
+<style scoped>
+#navContainer {
+  padding: 0.7rem;
+}
+
+#logoId {
+  width: 5rem;
+  margin-right: 3rem;
+}
+
+[v-cloal] {
+  display: none;
+}
+</style>

@@ -682,9 +682,8 @@ const BookingItem = ({ booking, filter, fireTrigger }) => {
       console.log(bookDates);
       for (let i = 0; i < bookDates.length; i++) {
         if (
-          compareDates(bookingState.end, bookingState.begin) ||
-          (compareDates(bookingState.begin, bookDates[i].begin) &&
-            compareDates(bookDates[i].end, bookingState.end))
+          compareDates(bookingState.begin, bookDates[i].begin) &&
+          compareDates(bookDates[i].end, bookingState.end)
         ) {
           bookingDispatch({
             type: "reset",
@@ -697,6 +696,9 @@ const BookingItem = ({ booking, filter, fireTrigger }) => {
           alert("Date non disonibili!");
           return;
         }
+      }
+      if (compareDates(bookingState.end, bookingState.begin)) {
+        bookingDispatch({ type: "updateStart", payload: bookingState.end });
       }
       setDays(getDays(bookingState.begin, bookingState.end));
     }
@@ -783,6 +785,7 @@ const BookingItem = ({ booking, filter, fireTrigger }) => {
               >
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
+                    minDate={new Date()}
                     disabled={!edit}
                     clearable
                     value={bookingState?.begin}
@@ -808,6 +811,7 @@ const BookingItem = ({ booking, filter, fireTrigger }) => {
                 </LocalizationProvider>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
+                    minDate={new Date()}
                     disabled={!edit}
                     clearable
                     value={bookingState?.end}
