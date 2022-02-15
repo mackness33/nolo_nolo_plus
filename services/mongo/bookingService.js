@@ -119,6 +119,33 @@ class bookingService extends baseService {
     return bookings;
   }
 
+  async getPopulatedBookingsByTypes(types, user = null, attrs = null) {
+    const or_values = [];
+    for (const type of types) {
+      or_values.push({ status: type });
+    }
+
+    let bookings;
+    if (user){
+      bookings = await this.find({'user': user_id}, attrs).or(or_values).and({ user: user });
+    } else {
+      bookings = await this.find({'user': user_id}, attrs).or(or_values);
+    }
+
+    for (const booking of bookings){
+      if (booking.user){
+        await booking.populate("user");
+        await booking.populate("user.person");
+      }    logger.info (typeof filtered_booking);
+
+      if (booking.computer){
+        await booking.populate("computer");
+      }
+    }
+
+    return bookings;
+  }
+
   async getPopulatedBookingsByUser(user_id, attrs = null) {
     logger.info("in getPopulateBookingsByUser");
     return this.getPopulatedBookings({ user: user_id }, attrs);

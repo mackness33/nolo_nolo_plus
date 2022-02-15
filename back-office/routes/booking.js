@@ -84,22 +84,54 @@ router.get("/getBooking", async (req, res, next) => {
 });
 
 router.get("/getBookingsByUser", async (req, res, next) => {
-  logger.info(JSON.stringify(req.query.user));
-  logger.info("in booking");
-
   const attributes = req.query.attributes ? req.query.attributes : null;
   const bookings = await bookingService.getPopulatedBookingsByUser(
     req.query.user,
     attributes
   );
-  // console.log(bookings);
+
   res.send(bookings);
 });
 
-router.post("/updateBooking", async (req, res, next) => {
-  logger.info("IN UPDATEBOOKING");
+router.get("/getBookingsByTypes", async (req, res, next) => {
+  const status = [];
+  if (req.query.types[0]) status.push(1, 2);
+  if (req.query.types[1]) status.push(0, 3);
+  if (req.query.types[2]) status.push(0, 4, 5);
+
   const attributes = req.query.attributes ? req.query.attributes : null;
+  // const bookings = await this.find(
+  //   {
+  //     begin: { $lte: end },
+  //     end: { $gte: begin },
+  //   },
+  //   "computer"
+  // );
+  let bookings;
+  if (status.length === 0) {
+    bookings = await bookingService.getPopulatedBookingsByTypes(
+      status,
+      req.query.user,
+      attributes
+    );
+  } else {
+    bookings = await bookingService.getPopulatedBooking(
+      req.query.id,
+      attributes
+    );
+  }
+
+  console.log(bookings);
+  res.send(bookings);
+});
+
+router.put("/updateBooking", async (req, res, next) => {
+  logger.info("IN UPDATEBOOKING");
+  const attributes = req.body.attributes ? req.body.attributes : null;
+  req.body.booking = req.body["booking[]"];
+  delete req.body.booking;
   logger.info("REQUEST BODY: " + JSON.stringify(req.body));
+  logger.info("BOOKING: " + JSON.stringify(booking));
   const booking = await bookingService.updateOne(
     { _id: req.body.id },
     req.body.booking

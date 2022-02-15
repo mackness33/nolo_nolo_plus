@@ -287,40 +287,11 @@ async function bookingPreview(user, computer, begin, end) {
 
 $("#searchBtn").on("click", async (event) => {
   event.preventDefault();
-  console.log("at searchBtn");
-  const req = {
-    method: "GET",
-    url: "/nnplus/booking/getBookings",
-  };
 
-  if ($("#searchUser").val()) {
-    console.log(user);
-    const user = await $.ajax({
-      method: "GET",
-      url: "/nnplus/user/getOne",
-      data: { mail: $("#searchUser").val() },
-    });
-
-    req["data"] = { user: user._id };
-  }
-
-  bookings = await $.ajax(req);
-
-  if (bookings) {
-    showBookings(bookings);
-  } else {
-    console.log("no booking to see");
-    showAlert(
-      "Utente inesistente o computer non disponibile!",
-      $("#searchBookingForm"),
-      false
-    );
-  }
+  await searchBookingsByUser($("#searchUser").val());
 });
 
 $("#editModal").on("show.bs.modal", async (event) => {
-  $("body").off("click", "#editBtn");
-
   function setModal(booking) {
     console.log(booking);
     const computer_model = adjustName(
@@ -375,7 +346,7 @@ $("#editModal").on("show.bs.modal", async (event) => {
   //     };
   //
   //     await $.ajax({
-  //       method: "POST",
+  //       method: "PUST",
   //       url: "/nnplus/booking/updateBooking",
   //       data: {
   //         id: booking_id,
@@ -395,15 +366,98 @@ $("#editModal").on("show.bs.modal", async (event) => {
 
 $("#editModal").on("hide.bs.modal", async function (event) {
   //triggers when modal is closed
-  $("body").off("click", "#submitEditBtn");
+  $("body").off("click", "#editBtn");
+  await searchBookingsByUser($("#searchUser").val());
 });
 
 $("#filterBookingForm").on("submit", async () => {
-  // const form = $("#filterBookingForm")[0]
-  // form.elements[0]
-  // form.elements[1]
-  // form.elements[2]
+  const form = $("#filterBookingForm")[0];
+  const dates = {
+    future: form.elements[0].value,
+    current: form.elements[1].value,
+    past: form.elements[2].value,
+  };
+
+  if ($("#searchUser").val()) {
+    const user = await $.ajax({
+      method: "GET",
+      url: "/nnplus/user/getOne",
+      data: { mail: $("#searchUser").val() },
+    });
+
+    if (user) {
+      const bookings = await $.ajax({
+        method: "GET",
+        url: "/nnplus/booking/getBookingsByTypes",
+        data: {
+          user: user._id,
+          dates: query,
+        },
+      });
+
+      if (bookings) {
+        showBookings(bookings);
+      } else {
+        console.log("no booking to see");
+        showAlert(
+          "Utente inesistente o computer non disponibile!",
+          $("#searchBookingForm"),
+          false
+        );
+      }
+    } else {
+      console.log("no booking to see");
+      showAlert(
+        "Utente inesistente o computer non disponibile!",
+        $("#searchBookingForm"),
+        false
+      );
+    }
+  } else {
+    await getAllBookings();
+  }
 });
+
+async function searchBookingsByUser(mail) {
+  if (mail) {
+    const user = await $.ajax({
+      method: "GET",
+      url: "/nnplus/user/getOne",
+      data: { mail: mail },
+    });
+
+    if (user) {
+      const bookings = await $.ajax({
+        method: "GET",
+        url: "/nnplus/booking/getBookingsByUser",
+        data: {
+          user: user._id,
+          attributes: query,
+        },
+      });
+
+      if (bookings) {
+        showBookings(bookings);
+      } else {
+        console.log("no booking to see");
+        showAlert(
+          "Utente inesistente o computer non disponibile!",
+          $("#searchBookingForm"),
+          false
+        );
+      }
+    } else {
+      console.log("no booking to see");
+      showAlert(
+        "Utente inesistente o computer non disponibile!",
+        $("#searchBookingForm"),
+        false
+      );
+    }
+  } else {
+    await getAllBookings(query);
+  }
+}
 
 function listOfPoints(points) {
   let points_list = "";
@@ -430,10 +484,11 @@ function listOfDiscounts(discounts) {
   return discount_list;
 }
 
-async function getAllBookings() {
+async function getAllBookings(query = null) {
   bookings = await $.ajax({
     method: "GET",
     url: "/nnplus/booking/getBookings",
+    data: { attributes: query },
   });
 
   if (bookings) {
@@ -451,14 +506,15 @@ async function getAllBookings() {
 function showBookings(bookings) {
   // console.log("bookings typeof: " + typeof bookings);
   // console.log(bookings);
+  const list = document.getElementById("bookingList");
+
+  list.innerHTML = "";
 
   bookings.sort(function (booking1, booking2) {
     return new Date(booking2.begin) - new Date(booking1.begin);
   });
 
   for (const booking of bookings) {
-    const list = document.getElementById("bookingList");
-
     const computer_model = adjustName(
       booking.computer.brand,
       booking.computer.model
@@ -500,7 +556,6 @@ function showBookings(bookings) {
       </li>`;
 
     list.append(listItem);
-    console.log("a booking has been added");
   }
 
   showAlert("Lets go!", $("searchBtn"), true);
