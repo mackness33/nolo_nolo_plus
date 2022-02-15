@@ -327,6 +327,8 @@ $("#editModal").on("show.bs.modal", async (event) => {
   }
 
   const booking_id = $(event.relatedTarget.parentElement).data("booking");
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
 
   const booking = await $.ajax({
     method: "GET",
@@ -335,38 +337,65 @@ $("#editModal").on("show.bs.modal", async (event) => {
   });
 
   setModal(booking);
+  // document.getElementById('editStartDate').setAttribute("min", (tomorrow).toISOString().split('T')[0]);
+  document
+    .getElementById("editEndDate")
+    .setAttribute(
+      "min",
+      new Date(document.getElementById("editStartDate").value)
+        .toISOString()
+        .split("T")[0]
+    );
 
-  // $("body").on('click', "#editBtn", async (event) => {
-  //   try {
-  //     const booking = {
-  //       start: document.getElementById('editStartDate').value,
-  //       end: document.getElementById('editStartDate').value,
-  //       final_price: document.getElementById('editStartDate').value,
-  //       note: document.getElementById('editNote').value,
-  //     };
-  //
-  //     await $.ajax({
-  //       method: "PUST",
-  //       url: "/nnplus/booking/updateBooking",
-  //       data: {
-  //         id: booking_id,
-  //         booking: JSON.parse(booking),
-  //       },
-  //     });
-  //
-  //     console.log(success);
-  //     showAlert("Noleggio modificato con successo!", $("#editForm")[0], true);
-  //   } catch (err) {
-  //     console.error(err, "Fucking error");
-  //
-  //     showAlert("Errore durante la modifica del noleggio!", $("#editForm")[0], false);
-  //   }
-  // });
+  $("body").on("submit", "#editModal", async (event) => {
+    event.preventDefault();
+    try {
+      const booking = {
+        begin: new Date(document.getElementById("editStartDate").value),
+        end: new Date(document.getElementById("editEndDate").value),
+        final_price: document.getElementById("editPrice").value,
+        note: document.getElementById("editNote").value,
+      };
+
+      const success = await $.ajax({
+        method: "PUT",
+        url: "/nnplus/booking/updateBooking",
+        data: {
+          id: booking_id,
+          booking: JSON.stringify(booking),
+        },
+      });
+
+      console.log(success);
+      showAlert("Noleggio modificato con successo!", $("#editForm")[0], true);
+    } catch (err) {
+      console.error(err, "Fucking error");
+
+      showAlert(
+        "Errore durante la modifica del noleggio!",
+        $("#editForm")[0],
+        false
+      );
+    }
+  });
+});
+
+$("#editStartDate").on("change", (event) => {
+  if ($("#editStartDate").val() > $("#editEndDate").val()) {
+    $("#editEndDate").val($("#editStartDate").val());
+  }
+
+  $("#editEndDate")[0].setAttribute(
+    "min",
+    new Date(document.getElementById("editStartDate").value)
+      .toISOString()
+      .split("T")[0]
+  );
 });
 
 $("#editModal").on("hide.bs.modal", async function (event) {
   //triggers when modal is closed
-  $("body").off("click", "#editBtn");
+  $("body").off("submit", "#editModal");
   await searchBookingsByUser($("#searchUser").val());
 });
 
@@ -419,6 +448,7 @@ $("#filterBookingForm").on("submit", async () => {
 });
 
 async function searchBookingsByUser(mail) {
+  console.log(mail);
   if (mail) {
     const user = await $.ajax({
       method: "GET",
@@ -432,7 +462,6 @@ async function searchBookingsByUser(mail) {
         url: "/nnplus/booking/getBookingsByUser",
         data: {
           user: user._id,
-          attributes: query,
         },
       });
 
@@ -455,7 +484,7 @@ async function searchBookingsByUser(mail) {
       );
     }
   } else {
-    await getAllBookings(query);
+    await getAllBookings();
   }
 }
 
@@ -511,7 +540,7 @@ function showBookings(bookings) {
   list.innerHTML = "";
 
   bookings.sort(function (booking1, booking2) {
-    return new Date(booking2.begin) - new Date(booking1.begin);
+    return new Date(booking2.end) - new Date(booking1.begin);
   });
 
   for (const booking of bookings) {
@@ -573,8 +602,9 @@ function statusToObject(status, id) {
         statObj["color"] = "rgba(105, 105, 105, 0.562)";
         statObj[
           "buttons"
-        ] = `${statObj.buttons}<button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Cancella</button>
-     </div>`;
+        ] = `${statObj.buttons}<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">Modifica</button>
+          <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Cancella</button>
+        </div>`;
       }
       break; // on hold
     case 2:
@@ -592,7 +622,8 @@ function statusToObject(status, id) {
         statObj["color"] = "rgba(255, 255, 0, 0.507)";
         statObj[
           "buttons"
-        ] = `${statObj.buttons}<button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#returnModal">Consegna</button>
+        ] = `${statObj.buttons}<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">Modifica</button>
+          <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#returnModal">Consegna</button>
         </div>`;
       }
       break; // current
@@ -601,7 +632,8 @@ function statusToObject(status, id) {
         statObj["color"] = "rgba(255, 0, 0, 0.507)";
         statObj[
           "buttons"
-        ] = `${statObj.buttons}<button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#returnModal">Consegna</button>
+        ] = `${statObj.buttons}<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">Modifica</button>
+          <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#returnModal">Consegna</button>
         </div>`;
       }
       break; // alarm

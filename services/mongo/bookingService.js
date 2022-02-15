@@ -16,15 +16,27 @@ class bookingService extends baseService {
   }
 
   async find(params, attrs = null) {
-    logger.info("in this find");
     const bookings = await super.find(params, attrs);
-    // logger.info(JSON.stringify(bookings));
 
     for (const booking of bookings) {
       await this.updateStatus(booking);
     }
 
     return bookings;
+  }
+
+  async findOne(params, attrs = null) {
+    const booking = await super.findOne(params, attrs);
+    await this.updateStatus(booking);
+
+    return booking;
+  }
+
+  async updateOne(filter, params) {
+    const ack = await super.updateOne(filter, params);
+    await this.findOne(filter);
+
+    return ack;
   }
 
   async insertOne(params) {
@@ -126,19 +138,22 @@ class bookingService extends baseService {
     }
 
     let bookings;
-    if (user){
-      bookings = await this.find({'user': user_id}, attrs).or(or_values).and({ user: user });
+    if (user) {
+      bookings = await this.find({ user: user_id }, attrs)
+        .or(or_values)
+        .and({ user: user });
     } else {
-      bookings = await this.find({'user': user_id}, attrs).or(or_values);
+      bookings = await this.find({ user: user_id }, attrs).or(or_values);
     }
 
-    for (const booking of bookings){
-      if (booking.user){
+    for (const booking of bookings) {
+      if (booking.user) {
         await booking.populate("user");
         await booking.populate("user.person");
-      }    logger.info (typeof filtered_booking);
+      }
+      logger.info(typeof filtered_booking);
 
-      if (booking.computer){
+      if (booking.computer) {
         await booking.populate("computer");
       }
     }
@@ -194,7 +209,7 @@ class bookingService extends baseService {
       logger.info("AVAILABLE: " + available);
 
       const future = today < begin;
-      const current = today < end;
+      const current = today <= end;
       const past = !future && !current;
       logger.info("FUTURE: " + future);
       logger.info("current: " + current);
@@ -248,16 +263,9 @@ class bookingService extends baseService {
 
     if (has_change) {
       // TODO: status need to be updated!
-      this.updateOne({ _id: filtered_booking }, filtered_booking);
+      await super.updateOne({ _id: filtered_booking }, filtered_booking);
       // logger.info ('CHANGES NEED TO BE MADE');
     }
-  }
-
-  async updateOne(filter, params) {
-    logger.info("filter: " + JSON.stringify(filter));
-    logger.info("params: " + JSON.stringify(params));
-    return super.updateOne(filter, params);
-    //return this._model.findOneAndUpdate(filter, params);
   }
 
   _filterObject(object, callback) {

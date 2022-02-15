@@ -126,18 +126,10 @@ router.get("/getBookingsByTypes", async (req, res, next) => {
 });
 
 router.put("/updateBooking", async (req, res, next) => {
-  logger.info("IN UPDATEBOOKING");
-  const attributes = req.body.attributes ? req.body.attributes : null;
-  req.body.booking = req.body["booking[]"];
-  delete req.body.booking;
-  logger.info("REQUEST BODY: " + JSON.stringify(req.body));
-  logger.info("BOOKING: " + JSON.stringify(booking));
-  const booking = await bookingService.updateOne(
-    { _id: req.body.id },
-    req.body.booking
-  );
+  const changes = JSON.parse(req.body.booking);
 
-  res.send(booking);
+  const ack = await bookingService.updateOne({ _id: req.body.id }, changes);
+  res.send(ack);
 });
 
 module.exports = router;
