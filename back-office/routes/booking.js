@@ -27,7 +27,8 @@ router.use(async (req, res, next) => {
 router.post("/addOne", async (req, res, next) => {
   logger.info(JSON.parse(req.body.data));
   const booking = JSON.parse(req.body.data);
-  await bookingService.insertOne(booking);
+  const ack_insert = await bookingService.insertOne(booking);
+  console.log(JSON.stringify(ack_insert));
   await userService.changePoints(booking.user, -booking.points);
   await userService.changePoints(
     booking.user,
@@ -70,6 +71,14 @@ router.get("/getBookings", async (req, res, next) => {
   const attributes = req.query.attributes ? req.query.attributes : null;
   const bookings = await bookingService.getPopulatedBookings(null, attributes);
 
+  logger.info(
+    bookings.map((booking) => {
+      return {
+        id: booking._id,
+        status: booking.status,
+      };
+    })
+  );
   res.send(bookings);
 });
 
@@ -100,13 +109,6 @@ router.get("/getBookingsByTypes", async (req, res, next) => {
   if (req.query.types[2]) status.push(0, 4, 5);
 
   const attributes = req.query.attributes ? req.query.attributes : null;
-  // const bookings = await this.find(
-  //   {
-  //     begin: { $lte: end },
-  //     end: { $gte: begin },
-  //   },
-  //   "computer"
-  // );
   let bookings;
   if (status.length === 0) {
     bookings = await bookingService.getPopulatedBookingsByTypes(
@@ -129,6 +131,12 @@ router.put("/updateBooking", async (req, res, next) => {
   const changes = JSON.parse(req.body.booking);
 
   const ack = await bookingService.updateOne({ _id: req.body.id }, changes);
+  res.send(ack);
+});
+
+router.delete("/deleteBooking", async (req, res, next) => {
+  const ack = await bookingService.deleteOne({ _id: req.body.id });
+  logger.info(ack);
   res.send(ack);
 });
 

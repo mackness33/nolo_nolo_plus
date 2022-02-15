@@ -22,14 +22,18 @@ class bookingService extends baseService {
       await this.updateStatus(booking);
     }
 
-    return bookings;
+    return super.find(params, attrs);
   }
 
   async findOne(params, attrs = null) {
     const booking = await super.findOne(params, attrs);
-    await this.updateStatus(booking);
+    if (booking) {
+      await this.updateStatus(booking);
+    } else {
+      logger.warn("No booking found");
+    }
 
-    return booking;
+    return super.findOne(params, attrs);
   }
 
   async updateOne(filter, params) {
@@ -41,6 +45,10 @@ class bookingService extends baseService {
 
   async insertOne(params) {
     await super.insertOne(params);
+    await this.findOne({
+      user: params["user"],
+      computer: params["computer"],
+    });
   }
 
   async getAvailByDates(begin, end) {
@@ -115,36 +123,6 @@ class bookingService extends baseService {
 
   async getPopulatedBookings(params = null, attrs = null) {
     const bookings = await this.find(params, attrs);
-
-    for (const booking of bookings) {
-      if (booking.user) {
-        await booking.populate("user");
-        await booking.populate("user.person");
-      }
-      logger.info(typeof filtered_booking);
-
-      if (booking.computer) {
-        await booking.populate("computer");
-      }
-    }
-
-    return bookings;
-  }
-
-  async getPopulatedBookingsByTypes(types, user = null, attrs = null) {
-    const or_values = [];
-    for (const type of types) {
-      or_values.push({ status: type });
-    }
-
-    let bookings;
-    if (user) {
-      bookings = await this.find({ user: user_id }, attrs)
-        .or(or_values)
-        .and({ user: user });
-    } else {
-      bookings = await this.find({ user: user_id }, attrs).or(or_values);
-    }
 
     for (const booking of bookings) {
       if (booking.user) {
@@ -238,6 +216,7 @@ class bookingService extends baseService {
         }
       } else if (!booking.returned || !booking.payed) {
         // if has not been returned or payed
+        logger.info();
         filtered_booking.late = true;
         filtered_booking.status = 4;
       } else {
@@ -253,13 +232,6 @@ class bookingService extends baseService {
     }
 
     logger.info("AFTER filtered_booking: " + JSON.stringify(filtered_booking));
-
-    // for (const [key, value] of Object.entries(filtered_booking)) {
-    //   if (booking[key] !== value) {
-    //     logger.info("filterd_booking[" + key + "]: " + value);
-    //     logger.info("booking[" + key + "]: " + booking[key]);
-    //   }
-    // }
 
     if (has_change) {
       // TODO: status need to be updated!

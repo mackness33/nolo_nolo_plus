@@ -24,6 +24,10 @@ async function autocompleteUser() {
   autocompleteDefault("#addUser", mails);
 }
 
+$("#managePill").on("click", async () => {
+  await getAllBookings();
+});
+
 $("#addStartDate").on("change", function () {
   compareDates("#addEndDate", "#addStartDate");
   getAvailableItems();
@@ -399,6 +403,39 @@ $("#editModal").on("hide.bs.modal", async function (event) {
   await searchBookingsByUser($("#searchUser").val());
 });
 
+$("#deleteModal").on("show.bs.modal", async (event) => {
+  const booking_id = $(event.relatedTarget.parentElement).data("booking");
+
+  $("body").on("click", "#deleteBtn", async (event) => {
+    event.preventDefault();
+    try {
+      console.log(event);
+      const success = await $.ajax({
+        method: "DELETE",
+        url: "/nnplus/booking/deleteBooking",
+        data: { id: booking_id },
+      });
+
+      console.log(success);
+      showAlert("Noleggio cancellato con successo!", $("#deleteForm")[0], true);
+      // $("#deleteBtn").trigger("hide.bs.modal");
+    } catch (err) {
+      console.error(err, "Fucking error");
+
+      showAlert(
+        "Errore durante la cancellazione del noleggio!",
+        $("#deleteForm")[0],
+        false
+      );
+    }
+  });
+});
+
+$("#deleteModal").on("hide.bs.modal", async function (event) {
+  $("body").off("click", "#deleteBtn");
+  await searchBookingsByUser($("#searchUser").val());
+});
+
 $("#filterBookingForm").on("submit", async () => {
   const form = $("#filterBookingForm")[0];
   const dates = {
@@ -484,6 +521,7 @@ async function searchBookingsByUser(mail) {
       );
     }
   } else {
+    console.log("show all of them!");
     await getAllBookings();
   }
 }
@@ -540,8 +578,17 @@ function showBookings(bookings) {
   list.innerHTML = "";
 
   bookings.sort(function (booking1, booking2) {
-    return new Date(booking2.end) - new Date(booking1.begin);
+    return new Date(booking2.begin) - new Date(booking1.begin);
   });
+
+  console.log(
+    bookings.map((booking) => {
+      return {
+        id: booking._id,
+        status: booking.status,
+      };
+    })
+  );
 
   for (const booking of bookings) {
     const computer_model = adjustName(
