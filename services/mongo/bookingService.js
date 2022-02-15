@@ -129,23 +129,26 @@ class bookingService extends baseService {
   }
 
   async getPopulatedBooking(booking_id, attrs = null) {
-    const bookings = await this.findOne({ _id: booking_id }, attrs);
+    const booking = await this.findOne({ _id: booking_id }, attrs);
 
-    if (booking.user) {
-      await booking.populate("user");
-      await booking.populate("user.person");
+    if (booking) {
+      if (booking.user) {
+        await booking.populate("user");
+        await booking.populate("user.person");
+      }
+
+      if (booking.computer) {
+        await booking.populate("computer");
+      }
+    } else {
+      logger.warn("Booking not found");
     }
 
-    if (booking.computer) {
-      await booking.populate("computer");
-    }
-
-    return bookings;
+    return booking;
   }
 
   async updateStatus(booking) {
     await booking.populate("computer");
-    // logger.info("booking: " + booking);
     let has_change = true;
 
     const filtered_booking = this._filterObject(booking, (key, value) => {
@@ -221,6 +224,13 @@ class bookingService extends baseService {
       this.updateOne({ _id: filtered_booking }, filtered_booking);
       // logger.info ('CHANGES NEED TO BE MADE');
     }
+  }
+
+  async updateOne(filter, params) {
+    logger.info("filter: " + JSON.stringify(filter));
+    logger.info("params: " + JSON.stringify(params));
+    return super.updateOne(filter, params);
+    //return this._model.findOneAndUpdate(filter, params);
   }
 
   _filterObject(object, callback) {

@@ -198,7 +198,7 @@
                 <input class="form-check-input" type="checkbox" id="pastBookings">
                 <label class="form-c  eck-label" for="pastBookings">Prenotazioni passate</label>
               </div>
-              <button class="btn btn-primary">Applica filtri</button>
+              <button type="submit" class="btn btn-primary">Applica filtri</button>
             </form>
           </div>
 
@@ -435,7 +435,7 @@
                   <div>
                     <span class="labelTag">Sconti:</span>
                     <div>
-                      <ul class="editDiscounts">
+                      <ul class="editDiscounts" id="editDiscounts">
                         <li>
                           <div>Sconto buona condotta</div>
                           <div>9.84$</div>
@@ -450,11 +450,7 @@
 
                   <div>
                     <span class="labelTag">Punti consumati:</span>
-                    <select id="editPoints">
-                      <option value="0">0</option>
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                    </select>
+                    <span id="editPoints">0</span>
                   </div>
 
                   <div>

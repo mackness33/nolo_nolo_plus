@@ -68,12 +68,19 @@ router.get("/getBookingsByItem", async (req, res, next) => {
 
 router.get("/getBookings", async (req, res, next) => {
   const attributes = req.query.attributes ? req.query.attributes : null;
-  const bookings = await bookingService.getPopulatedBookings(
-    req.query.user,
+  const bookings = await bookingService.getPopulatedBookings(null, attributes);
+
+  res.send(bookings);
+});
+
+router.get("/getBooking", async (req, res, next) => {
+  const attributes = req.query.attributes ? req.query.attributes : null;
+  const booking = await bookingService.getPopulatedBooking(
+    req.query.id,
     attributes
   );
 
-  res.send(bookings);
+  res.send(booking);
 });
 
 router.get("/getBookingsByUser", async (req, res, next) => {
@@ -87,6 +94,18 @@ router.get("/getBookingsByUser", async (req, res, next) => {
   );
   // console.log(bookings);
   res.send(bookings);
+});
+
+router.post("/updateBooking", async (req, res, next) => {
+  logger.info("IN UPDATEBOOKING");
+  const attributes = req.query.attributes ? req.query.attributes : null;
+  logger.info("REQUEST BODY: " + JSON.stringify(req.body));
+  const booking = await bookingService.updateOne(
+    { _id: req.body.id },
+    req.body.booking
+  );
+
+  res.send(booking);
 });
 
 module.exports = router;

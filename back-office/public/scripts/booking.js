@@ -318,6 +318,118 @@ $("#searchBtn").on("click", async (event) => {
   }
 });
 
+$("#editModal").on("show.bs.modal", async (event) => {
+  $("body").off("click", "#editBtn");
+
+  function setModal(booking) {
+    console.log(booking);
+    const computer_model = adjustName(
+      booking.computer.brand,
+      booking.computer.model
+    );
+    const user_name = adjustName(
+      booking.user.person.name,
+      booking.user.person.surname
+    );
+    const status_object = statusToObject(booking.status, booking._id);
+    const begin_without_time = booking.begin.split("T")[0];
+    const end_without_time = booking.end.split("T")[0];
+    const discounts = listOfDiscounts(booking.discounts);
+    const points = listOfPoints(booking.points);
+
+    document.getElementById("editComputer").innerHTML =
+      computer_model.full_name;
+    document.getElementById("editMail").innerHTML = booking.user.person.mail;
+    document.getElementById("editStartDate").value = begin_without_time;
+    document.getElementById("editEndDate").value = end_without_time;
+    document.getElementById("editPrice").value = booking.final_price;
+    document.getElementById("editDiscounts").innerHTML = discounts;
+    document.getElementById("editPoints").innerHTML = booking.points;
+    document.getElementById("editReturned").innerHTML = booking.returned
+      ? "Si"
+      : "No";
+    document.getElementById("editPayed").innerHTML = booking.payed
+      ? "Si"
+      : "No";
+    document.getElementById("editLate").innerHTML = booking.late ? "Si" : "No";
+    document.getElementById("editNote").value = booking.note;
+  }
+
+  const booking_id = $(event.relatedTarget.parentElement).data("booking");
+
+  const booking = await $.ajax({
+    method: "GET",
+    url: "/nnplus/booking/getBooking",
+    data: { id: booking_id },
+  });
+
+  setModal(booking);
+
+  // $("body").on('click', "#editBtn", async (event) => {
+  //   try {
+  //     const booking = {
+  //       start: document.getElementById('editStartDate').value,
+  //       end: document.getElementById('editStartDate').value,
+  //       final_price: document.getElementById('editStartDate').value,
+  //       note: document.getElementById('editNote').value,
+  //     };
+  //
+  //     await $.ajax({
+  //       method: "POST",
+  //       url: "/nnplus/booking/updateBooking",
+  //       data: {
+  //         id: booking_id,
+  //         booking: JSON.parse(booking),
+  //       },
+  //     });
+  //
+  //     console.log(success);
+  //     showAlert("Noleggio modificato con successo!", $("#editForm")[0], true);
+  //   } catch (err) {
+  //     console.error(err, "Fucking error");
+  //
+  //     showAlert("Errore durante la modifica del noleggio!", $("#editForm")[0], false);
+  //   }
+  // });
+});
+
+$("#editModal").on("hide.bs.modal", async function (event) {
+  //triggers when modal is closed
+  $("body").off("click", "#submitEditBtn");
+});
+
+$("#filterBookingForm").on("submit", async () => {
+  // const form = $("#filterBookingForm")[0]
+  // form.elements[0]
+  // form.elements[1]
+  // form.elements[2]
+});
+
+function listOfPoints(points) {
+  let points_list = "";
+
+  for (let point = 0; point < points; point++) {
+    points_list += `<option value="${point}">${point}</option>`;
+  }
+
+  return points_list;
+}
+
+function listOfDiscounts(discounts) {
+  let discount_list = "";
+
+  for (const discount of discounts) {
+    discount_list += `
+      <li>
+        <div>${discount.reason}</div>
+        <div>${discount.amount}$</div>
+      </li>
+    `;
+  }
+
+  return discount_list;
+}
+
 async function getAllBookings() {
   bookings = await $.ajax({
     method: "GET",
@@ -337,6 +449,13 @@ async function getAllBookings() {
 }
 
 function showBookings(bookings) {
+  // console.log("bookings typeof: " + typeof bookings);
+  // console.log(bookings);
+
+  bookings.sort(function (booking1, booking2) {
+    return new Date(booking2.begin) - new Date(booking1.begin);
+  });
+
   for (const booking of bookings) {
     const list = document.getElementById("bookingList");
 
@@ -348,37 +467,37 @@ function showBookings(bookings) {
       booking.user.person.name,
       booking.user.person.surname
     );
-    const status_object = statusToObject(booking.status);
+    const status_object = statusToObject(booking.status, booking._id);
     const begin_without_time = booking.begin.split("T")[0];
     const end_without_time = booking.end.split("T")[0];
 
     const listItem = document.createElement("li");
     listItem.innerHTML = `
-    <li class="bookingElement" style="background-color:${status_object.color}";>
-      <div class="infoGroup">
-        <div class="computerModel">
-          <span class="labelTag">Computer: </span>
-          <div>${computer_model.full_name}</div>
+      <li class="bookingElement" style="background-color:${status_object.color}">
+        <div class="infoGroup">
+          <div class="computerModel">
+            <span class="labelTag">Computer: </span>
+            <div>${computer_model.full_name}</div>
+          </div>
+          <div class="computerModel">
+            <span class="labelTag">Utente: </span>
+            <div>${user_name.full_name}</div>
+          </div>
+          <div class="startDate">
+            <span class="labelTag">Inizio: </span>
+            <div>${begin_without_time}</div>
+          </div>
+          <div class="endDate">
+            <span class="labelTag">Fine: </span>
+            <div>${end_without_time}</div>
+          </div>
+          <div class="finalPrice">
+            <span class="labelTag">Prezzo totale: </span>
+            <div>${booking.final_price}</div>
+          </div>
         </div>
-        <div class="computerModel">
-          <span class="labelTag">Utente: </span>
-          <div>${user_name.full_name}</div>
-        </div>
-        <div class="startDate">
-          <span class="labelTag">Inizio: </span>
-          <div>${begin_without_time}</div>
-        </div>
-        <div class="endDate">
-          <span class="labelTag">Fine: </span>
-          <div>${end_without_time}</div>
-        </div>
-        <div class="finalPrice">
-          <span class="labelTag">Prezzo totale: </span>
-          <div>${booking.final_price}</div>
-        </div>
-      </div>
-      ${status_object.buttons}
-    </li>`;
+        ${status_object.buttons}
+      </li>`;
 
     list.append(listItem);
     console.log("a booking has been added");
@@ -387,49 +506,58 @@ function showBookings(bookings) {
   showAlert("Lets go!", $("searchBtn"), true);
 }
 
-function statusToObject(status) {
-  let statObj;
+function statusToObject(status, id) {
+  let statObj = {
+    color: "",
+    buttons: `<div class="buttonGroup" data-booking="${id}">`,
+  };
+
   switch (status) {
     case 1:
-      statObj = {
-        color: "rgba(105, 105, 105, 0.562)",
-        buttons: `<div class="buttonGroup">
-          <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Cancella</button>
-         </div>`,
-      };
+      {
+        statObj["color"] = "rgba(105, 105, 105, 0.562)";
+        statObj[
+          "buttons"
+        ] = `${statObj.buttons}<button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Cancella</button>
+     </div>`;
+      }
       break; // on hold
     case 2:
-      statObj = {
-        color: "rgba( 0, 128, 0, 0.514 )",
-        buttons: `<div class="buttonGroup">
-          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">Modifica</button>
+      {
+        statObj["color"] = "rgba( 0, 128, 0, 0.514 )";
+        statObj[
+          "buttons"
+        ] = `${statObj.buttons}<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">Modifica</button>
           <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">Cancella</button>
-         </div>`,
-      };
+         </div>`;
+      }
       break; // future
     case 3:
-      statObj = {
-        color: "rgba(255, 255, 0, 0.507)",
-        buttons: `<div class="buttonGroup">
-          <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#returnModal">Consegna</button>
-        </div>`,
-      };
+      {
+        statObj["color"] = "rgba(255, 255, 0, 0.507)";
+        statObj[
+          "buttons"
+        ] = `${statObj.buttons}<button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#returnModal">Consegna</button>
+        </div>`;
+      }
       break; // current
     case 4:
-      statObj = {
-        color: "rgba(255, 0, 0, 0.507)",
-        buttons: `<div class="buttonGroup">
-          <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#returnModal">Consegna</button>
-        </div>`,
-      };
+      {
+        statObj["color"] = "rgba(255, 0, 0, 0.507)";
+        statObj[
+          "buttons"
+        ] = `${statObj.buttons}<button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#returnModal">Consegna</button>
+        </div>`;
+      }
       break; // alarm
     case 5:
-      statObj = {
-        color: "rgba(0, 132, 255, 0.685)",
-        buttons: `<div class="buttonGroup">
-          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#receiptModal">Mostra
-        </div>`,
-      };
+      {
+        statObj["color"] = "rgba(0, 132, 255, 0.685)";
+        statObj[
+          "buttons"
+        ] = `${statObj.buttons}<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#receiptModal">Mostra
+        </div>`;
+      }
       break; // done
     default:
       statObj = {
