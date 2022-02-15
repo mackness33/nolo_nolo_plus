@@ -406,7 +406,7 @@ $("#editModal").on("hide.bs.modal", async function (event) {
 $("#deleteModal").on("show.bs.modal", async (event) => {
   const booking_id = $(event.relatedTarget.parentElement).data("booking");
 
-  $("body").on("click", "#deleteBtn", async (event) => {
+  $("body").on("click", "#deleteModal", async (event) => {
     event.preventDefault();
     try {
       console.log(event);
@@ -433,6 +433,51 @@ $("#deleteModal").on("show.bs.modal", async (event) => {
 
 $("#deleteModal").on("hide.bs.modal", async function (event) {
   $("body").off("click", "#deleteBtn");
+  await searchBookingsByUser($("#searchUser").val());
+});
+
+$("#returnModal").on("show.bs.modal", async (event) => {
+  const booking_id = $(event.relatedTarget.parentElement).data("booking");
+
+  $("body").on("submit", "#returnForm", async (event) => {
+    event.preventDefault();
+    try {
+      const certificate = {
+        returned: $("#deliverCheck").val() === "on",
+        payed: $("#payCheck").val() === "on",
+        final_condition: $("#finalCondition").val(),
+      };
+
+      const success = await $.ajax({
+        method: "PUT",
+        url: "/nnplus/booking/certifiedBooking",
+        data: {
+          id: booking_id,
+          certificate: JSON.stringify(certificate),
+        },
+      });
+
+      console.log(success);
+      showAlert(
+        "Noleggio certificato con successo!",
+        $("#returnForm")[0],
+        true
+      );
+      // $("#deleteBtn").trigger("hide.bs.modal");
+    } catch (err) {
+      console.error(err, "Fucking error");
+
+      showAlert(
+        "Errore durante la certificazione del noleggio!",
+        $("#returnForm")[0],
+        false
+      );
+    }
+  });
+});
+
+$("#returnModal").on("hide.bs.modal", async function (event) {
+  $("body").off("submit", "#returnForm");
   await searchBookingsByUser($("#searchUser").val());
 });
 
@@ -581,15 +626,6 @@ function showBookings(bookings) {
     return new Date(booking2.begin) - new Date(booking1.begin);
   });
 
-  console.log(
-    bookings.map((booking) => {
-      return {
-        id: booking._id,
-        status: booking.status,
-      };
-    })
-  );
-
   for (const booking of bookings) {
     const computer_model = adjustName(
       booking.computer.brand,
@@ -633,8 +669,6 @@ function showBookings(bookings) {
 
     list.append(listItem);
   }
-
-  showAlert("Lets go!", $("searchBtn"), true);
 }
 
 function statusToObject(status, id) {

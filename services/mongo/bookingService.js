@@ -178,7 +178,11 @@ class bookingService extends baseService {
 
     logger.info("PRE filtered_booking: " + JSON.stringify(filtered_booking));
 
-    if (!filtered_booking.defaulted) {
+    if (
+      !filtered_booking.defaulted ||
+      filtered_booking.status === 5 ||
+      (booking.returned && booking.payed)
+    ) {
       const today = new Date().setHours(0, 0, 0, 0);
       const begin = new Date(booking.begin).setHours(0, 0, 0, 0);
       const end = new Date(booking.end).setHours(0, 0, 0, 0);
@@ -215,16 +219,15 @@ class bookingService extends baseService {
           filtered_booking.status = 0;
         }
       } else if (!booking.returned || !booking.payed) {
-        // if has not been returned or payed
-        logger.info();
         filtered_booking.late = true;
         filtered_booking.status = 4;
       } else {
         filtered_booking.status = 5;
+        logger.info(booking._id + " is done ");
       }
     } else {
       // if defaulted but field have not been updated
-      if (filtered_booking.status !== 0) {
+      if (filtered_booking.defaulted) {
         filtered_booking.status = 0;
       } else {
         has_change = false;
@@ -236,7 +239,6 @@ class bookingService extends baseService {
     if (has_change) {
       // TODO: status need to be updated!
       await super.updateOne({ _id: filtered_booking }, filtered_booking);
-      // logger.info ('CHANGES NEED TO BE MADE');
     }
   }
 

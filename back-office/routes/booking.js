@@ -71,14 +71,6 @@ router.get("/getBookings", async (req, res, next) => {
   const attributes = req.query.attributes ? req.query.attributes : null;
   const bookings = await bookingService.getPopulatedBookings(null, attributes);
 
-  logger.info(
-    bookings.map((booking) => {
-      return {
-        id: booking._id,
-        status: booking.status,
-      };
-    })
-  );
   res.send(bookings);
 });
 
@@ -125,6 +117,13 @@ router.get("/getBookingsByTypes", async (req, res, next) => {
 
   console.log(bookings);
   res.send(bookings);
+});
+
+router.put("/certifiedBooking", async (req, res, next) => {
+  const certificate = JSON.parse(req.body.certificate);
+
+  const ack = await bookingService.updateOne({ _id: req.body.id }, certificate);
+  res.send(ack);
 });
 
 router.put("/updateBooking", async (req, res, next) => {
