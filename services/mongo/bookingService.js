@@ -194,7 +194,7 @@ class bookingService extends baseService {
       const current = today <= end;
       const past = !future && !current;
       logger.info("FUTURE: " + future);
-      logger.info("current: " + current);
+      logger.info("CURRENT: " + current);
 
       if (future) {
         // if available but onHold not updated
@@ -210,7 +210,7 @@ class bookingService extends baseService {
             filtered_booking.onHold = true;
           }
         }
-      } else if (current) {
+      } else if (current && !booking.returned && !booking.payed) {
         // if should have been started but computer not available
         if (booking.computer.available) {
           filtered_booking.status = 3;

@@ -1,4 +1,5 @@
 var computerAutolist = [];
+var bookingShownList = [];
 
 $(document).on("DOMContentLoaded", async function (event) {
   await autocompleteUser();
@@ -372,6 +373,8 @@ $("#editModal").on("show.bs.modal", async (event) => {
 
       console.log(success);
       showAlert("Noleggio modificato con successo!", $("#editForm")[0], true);
+
+      await searchBookingsByUser($("#searchUser").val());
     } catch (err) {
       console.error(err, "Fucking error");
 
@@ -400,7 +403,6 @@ $("#editStartDate").on("change", (event) => {
 $("#editModal").on("hide.bs.modal", async function (event) {
   //triggers when modal is closed
   $("body").off("submit", "#editModal");
-  await searchBookingsByUser($("#searchUser").val());
 });
 
 $("#deleteModal").on("show.bs.modal", async (event) => {
@@ -418,7 +420,7 @@ $("#deleteModal").on("show.bs.modal", async (event) => {
 
       console.log(success);
       showAlert("Noleggio cancellato con successo!", $("#deleteForm")[0], true);
-      // $("#deleteBtn").trigger("hide.bs.modal");
+      await searchBookingsByUser($("#searchUser").val());
     } catch (err) {
       console.error(err, "Fucking error");
 
@@ -433,7 +435,6 @@ $("#deleteModal").on("show.bs.modal", async (event) => {
 
 $("#deleteModal").on("hide.bs.modal", async function (event) {
   $("body").off("click", "#deleteBtn");
-  await searchBookingsByUser($("#searchUser").val());
 });
 
 $("#returnModal").on("show.bs.modal", async (event) => {
@@ -443,11 +444,15 @@ $("#returnModal").on("show.bs.modal", async (event) => {
     event.preventDefault();
     try {
       const certificate = {
-        returned: $("#deliverCheck").val() === "on",
-        payed: $("#payCheck").val() === "on",
+        returned: document.getElementById("deliverCheck").checked,
+        payed: document.getElementById("payCheck").checked,
         final_condition: $("#finalCondition").val(),
       };
 
+      // console.log("returned: " + JSON.stringify($("#deliverCheck")));
+      // console.log("payed: " + JSON.stringify($("#payCheck")));
+      console.log("booking_id: " + booking_id);
+      console.log("payed: " + certificate.payed);
       const success = await $.ajax({
         method: "PUT",
         url: "/nnplus/booking/certifiedBooking",
@@ -463,7 +468,7 @@ $("#returnModal").on("show.bs.modal", async (event) => {
         $("#returnForm")[0],
         true
       );
-      // $("#deleteBtn").trigger("hide.bs.modal");
+      await searchBookingsByUser($("#searchUser").val());
     } catch (err) {
       console.error(err, "Fucking error");
 
@@ -478,55 +483,148 @@ $("#returnModal").on("show.bs.modal", async (event) => {
 
 $("#returnModal").on("hide.bs.modal", async function (event) {
   $("body").off("submit", "#returnForm");
-  await searchBookingsByUser($("#searchUser").val());
 });
 
-$("#filterBookingForm").on("submit", async () => {
+$("#receiptModal").on("show.bs.modal", async (event) => {
+  function setModal(booking) {
+    console.log(booking);
+    const computer_model = adjustName(
+      booking.computer.brand,
+      booking.computer.model
+    );
+    const user_name = adjustName(
+      booking.user.person.name,
+      booking.user.person.surname
+    );
+    const status_object = statusToObject(booking.status, booking._id);
+    const begin_without_time = booking.begin.split("T")[0];
+    const end_without_time = booking.end.split("T")[0];
+    const discounts = listOfDiscounts(booking.discounts);
+    const points = listOfPoints(booking.points);
+    const booking_days = dateDiffInDays(
+      new Date(booking.begin),
+      new Date(booking.end)
+    );
+
+    console.log("starting price: " + booking.starting_price);
+
+    document.getElementById("receiptStartDate").innerHTML = begin_without_time;
+    document.getElementById("receiptEndDate").innerHTML = end_without_time;
+    document.getElementById("receiptComputer").innerHTML =
+      computer_model.full_name;
+    document.getElementById("receiptUser").innerHTML = booking.user.person.mail;
+    document.getElementById("receiptDays").innerHTML = booking_days;
+    document.getElementById("receiptDailyPrice").innerHTML =
+      booking.starting_price / booking_days;
+    document.getElementById("receiptStartPrice").innerHTML =
+      booking.starting_price;
+    document.getElementById(
+      "receiptPointValue"
+    ).innerHTML = `${booking.points}$`;
+    document.getElementById("receiptDiscounts").innerHTML =
+      discountsVisualization(booking.discounts);
+    document.getElementById("receiptFinalPrice").innerHTML =
+      booking.final_price;
+  }
+
+  // second - first
+  function dateDiffInDays(first, second) {
+    const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+    // Discard the time and time-zone information.
+    const utc1 = Date.UTC(
+      first.getFullYear(),
+      first.getMonth(),
+      first.getDate()
+    );
+    const utc2 = Date.UTC(
+      second.getFullYear(),
+      second.getMonth(),
+      second.getDate()
+    );
+
+    return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+  }
+
+  function discountsVisualization(discounts) {
+    const list_of_discounts = document.createElement("div");
+
+    for (let i = 0; i < discounts.length - 1; i++) {
+      list_of_discounts.innerHTML += `
+        <div>
+          <span class="text-capitalize">Sconto ${discounts[i].reason}:</span>
+          <span>${discounts[i].amount}$</span>
+        </div>
+      `;
+    }
+
+    if (discounts.length !== 0) {
+      list_of_discounts.innerHTML += `
+        <div class="border-bottom">
+          <span class="text-capitalize">Sconto ${
+            discounts[discounts.length - 1].reason
+          }:</span>
+          <span>${discounts[discounts.length - 1].amount}$</span>
+        </div>
+      `;
+    }
+
+    return list_of_discounts.innerHTML;
+  }
+
+  const booking_id = $(event.relatedTarget.parentElement).data("booking");
+
+  const booking = await $.ajax({
+    method: "GET",
+    url: "/nnplus/booking/getBooking",
+    data: { id: booking_id },
+  });
+
+  setModal(booking);
+});
+
+$("#filterBookingForm").on("submit", async (event) => {
+  event.preventDefault();
   const form = $("#filterBookingForm")[0];
-  const dates = {
-    future: form.elements[0].value,
-    current: form.elements[1].value,
-    past: form.elements[2].value,
+  const today = new Date().setHours(0, 0, 0, 0);
+  const booking_to_view = [];
+  const types = {
+    future: form.elements[0].checked,
+    present: form.elements[1].checked,
+    past: form.elements[2].checked,
   };
 
-  if ($("#searchUser").val()) {
-    const user = await $.ajax({
-      method: "GET",
-      url: "/nnplus/user/getOne",
-      data: { mail: $("#searchUser").val() },
-    });
-
-    if (user) {
-      const bookings = await $.ajax({
-        method: "GET",
-        url: "/nnplus/booking/getBookingsByTypes",
-        data: {
-          user: user._id,
-          dates: query,
-        },
-      });
-
-      if (bookings) {
-        showBookings(bookings);
-      } else {
-        console.log("no booking to see");
-        showAlert(
-          "Utente inesistente o computer non disponibile!",
-          $("#searchBookingForm"),
-          false
-        );
-      }
-    } else {
-      console.log("no booking to see");
-      showAlert(
-        "Utente inesistente o computer non disponibile!",
-        $("#searchBookingForm"),
-        false
-      );
-    }
-  } else {
-    await getAllBookings();
+  if (!types.future && !types.present && !types.past) {
+    return;
   }
+
+  for (booking of bookingShownList) {
+    if (types.future && new Date(booking.begin) > today) {
+      booking_to_view.push(booking);
+    }
+
+    if (
+      types.present &&
+      booking.status !== 5 &&
+      new Date(booking.begin) < today &&
+      new Date(booking.end) > today &&
+      booking.status !== 0
+    ) {
+      booking_to_view.push(booking);
+    }
+
+    if (
+      types.past &&
+      (new Date(booking.end) < today ||
+        booking.status === 0 ||
+        booking.status === 5 ||
+        booking.status === 4)
+    ) {
+      booking_to_view.push(booking);
+    }
+  }
+
+  showBookings(booking_to_view);
 });
 
 async function searchBookingsByUser(mail) {
@@ -548,7 +646,8 @@ async function searchBookingsByUser(mail) {
       });
 
       if (bookings) {
-        showBookings(bookings);
+        bookingShownList = bookings;
+        showBookings(bookingShownList);
       } else {
         console.log("no booking to see");
         showAlert(
@@ -604,7 +703,8 @@ async function getAllBookings(query = null) {
   });
 
   if (bookings) {
-    showBookings(bookings);
+    bookingShownList = bookings;
+    showBookings(bookingShownList);
   } else {
     console.log("no booking to see");
     showAlert(
