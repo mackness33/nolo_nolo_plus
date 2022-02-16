@@ -31,10 +31,6 @@ router.get("/userAge", async (req, res, next) => {
   }
   logger.info(JSON.stringify(result));
 
-  const num = await userService.find({
-    birth: { $gte: "2020", $lte: "2023" },
-  });
-
   res.send(result);
 });
 

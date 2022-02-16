@@ -33,6 +33,18 @@
             <li class="nav-item" @click="makeActive">
               <a class="nav-link" href="#">Noleggi</a>
             </li>
+            <li class="nav-item" @click="makeActive">
+              <a
+                class="nav-link"
+                href="http://localhost:8000/nnplus/home/inventory"
+                >Gestionale</a
+              >
+            </li>
+            <li class="nav-item" @click="makeActive">
+              <a class="nav-link" href="http://localhost:8000/front/catalogue"
+                >Sito web</a
+              >
+            </li>
           </ul>
         </div>
       </div>

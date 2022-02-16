@@ -12,9 +12,10 @@
 
 <script>
 import axios from "axios";
-import Piechart from "./Piechart.vue";
-import Linechart from "./Linechart.vue";
-import Columnchart from "./Columnchart.vue";
+import Piechart from "./userPage/Piechart.vue";
+import Linechart from "./userPage/Linechart.vue";
+import Columnchart from "./userPage/Columnchart.vue";
+import Moneydata from "./userPage/Moneydata.vue";
 
 export default {
   name: "customerContainer",

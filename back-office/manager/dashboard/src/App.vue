@@ -87,6 +87,5 @@ export default {
 <style>
 #globalContainer {
   background-color: dimgray;
-  height: 100vh;
 }
 </style>
