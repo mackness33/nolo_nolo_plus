@@ -4,7 +4,11 @@
     <div class="dataContainer">
       <section>
         il numero totale di noleggi corrisponde a:
-        <span class="fw-bold">${{ totalBookings }}</span>
+        <span class="fw-bold">{{ totalBookings }}</span>
+      </section>
+      <section>
+        il numero attualmente attivi corrisponde a:
+        <span class="fw-bold">{{ activeBookings }}</span>
       </section>
       <section>
         Il numero di noleggi futuri corrisponde a:
@@ -15,7 +19,7 @@
         <span class="fw-bold">{{ pastBookings }}</span>
       </section>
       <section>
-        Il numero di noleggi restituiti con ritardo corrisponde a:
+        Il numero computer ritirati ma non restituiti corrisponde a:
         <span class="fw-bold">{{ lateBookings }}</span>
       </section>
     </div>
@@ -32,6 +36,7 @@ export default {
   data: () => {
     return {
       totalBookings: 0,
+      activeBookings: 0,
       futureBookings: 0,
       pastBookings: 0,
       lateBookings: 0,
@@ -43,12 +48,15 @@ export default {
   methods: {},
 
   async mounted() {
-    const res = await axios.get("http://localhost:8000/dash/booking/userStat");
+    const res = await axios.get(
+      "http://localhost:8000/dash/booking/bookingStat"
+    );
     console.log(res.data);
-    // this.totalBookings = res.data.totalBookings;
-    // this.futureBookings = res.data.futureBookings;
-    // this.pastBookings = res.data.pastBookings;
-    // this.lateBookings = res.data.lateBookings;
+    this.totalBookings = res.data.totalBookings;
+    this.activeBookings = res.data.activeBookings;
+    this.futureBookings = res.data.futureBookings;
+    this.pastBookings = res.data.pastBookings;
+    this.lateBookings = res.data.lateBookings;
   },
 
   props: ["data", "title"],

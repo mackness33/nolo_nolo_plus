@@ -7,12 +7,12 @@
     </div>
     <div class="graphContainer">
       <Columnchart
-        data="http://localhost:8000/dash/user/userAge"
-        title="Eta' degli utenti"
+        data="http://localhost:8000/dash/inv/computerMostUsed"
+        title="Numero di prenotazioni per ocmputer"
       />
       <Columnchart
-        data="http://localhost:8000/dash/user/userAgeSpend"
-        title="Spesa degli utenti per eta'"
+        data="http://localhost:8000/dash/inv/maxPricePerComputer"
+        title="Fatturato per computer"
       />
     </div>
   </div>

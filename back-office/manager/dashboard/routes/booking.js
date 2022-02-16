@@ -20,6 +20,27 @@ router.use(async (req, res, next) => {
   next();
 });
 
-router.get("/bookingStat", async (req, res, next) => {});
+router.get("/bookingStat", async (req, res, next) => {
+  const bModel = await bookingModel;
+
+  const buildRes = {};
+
+  let count = await bModel.find().count();
+  buildRes.totalBookings = count;
+
+  count = await bModel.find({ $or: [{ status: 1 }, { status: 2 }] }).count();
+  buildRes.futureBookings = count;
+
+  count = await bModel.find({ status: 3 }).count();
+  buildRes.activeBookings = count;
+
+  count = await bModel.find({ $or: [{ status: 0 }, { status: 5 }] }).count();
+  buildRes.pastBookings = count;
+
+  count = await bModel.find({ status: 4 }).count();
+  buildRes.lateBookings = count;
+
+  res.send(buildRes);
+});
 
 module.exports = router;
