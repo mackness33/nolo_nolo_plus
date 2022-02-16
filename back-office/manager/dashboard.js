@@ -9,6 +9,7 @@ const session = require("express-session");
 
 // const homeRouter = require("./routes/home");
 const userRoute = require("./dashboard/routes/user");
+const invRoute = require("./dashboard/routes/inventory");
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "dashboard/src/assets")));
 
 app.use("/user", userRoute);
+app.use("/inv", invRoute);
 
 // app.use("/", homeRouter);
 app.get("/prova", async (req, res, next) => {
