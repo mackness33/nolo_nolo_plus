@@ -98,21 +98,21 @@ router.get("/computerMostUsed", async (req, res, next) => {
   const result = [];
   const bModel = await bookingModel;
 
-  const computer_per_price = await bModel.aggregate([
+  const computer_per_count = await bModel.aggregate([
     {
       $group: {
         _id: "$computer",
-        total: { $sum: "$final_price" }
+        count: { $count: {} }
       }
     },
   ]);
 
   let populatedcomputer = null;
-  for (const computer of computer_per_price){
+  for (const computer of computer_per_count){
     logger.info(computer);
     populatedComputer = await computerService.findOne({_id: computer._id});
     logger.info(populatedComputer.brand);
-    result.push([`${populatedComputer.brand} ${populatedComputer.model}`, computer.total]);
+    result.push([`${populatedComputer.brand} ${populatedComputer.model}`, computer.count]);
   }
 
   logger.info(JSON.stringify(result));
