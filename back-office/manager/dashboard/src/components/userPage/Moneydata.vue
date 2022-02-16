@@ -44,7 +44,6 @@ export default {
 
   async mounted() {
     const res = await axios.get("http://localhost:8000/dash/user/userStat");
-    console.log(res.data);
     this.totalIncome = res.data.totalIncome;
     this.totalUsers = res.data.totalUsers;
     this.activeUsers = res.data.activeUsers;

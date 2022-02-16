@@ -248,14 +248,18 @@ async function bookingPreview(user, computer, begin, end) {
   });
 
   $("body").on("click", "#addDiscountBtn", () => {
-    discountList.push({
-      reason: $("#discountReason").val(),
-      amount: $("#discountAmount").val(),
-      employee: employeeId,
-    });
-    printDiscounts($("#discountReason").val(), $("#discountAmount").val());
-    $("#discountReason").val("");
-    $("#discountAmount").val(0);
+    if ($("#discountReason").val() !== "" && $("#discountAmount").val() !== 0) {
+      discountList.push({
+        reason: $("#discountReason").val(),
+        amount: $("#discountAmount").val(),
+        employee: employeeId,
+      });
+      printDiscounts($("#discountReason").val(), $("#discountAmount").val());
+      $("#discountReason").val("");
+      $("#discountAmount").val(0);
+    } else {
+      showAlert("Lo sconto deve essere definito!", $("#addForm")[0], false);
+    }
   });
 
   $("body").on("submit", "#addForm", async (event) => {
@@ -440,7 +444,7 @@ $("#deleteModal").on("hide.bs.modal", async function (event) {
 $("#returnModal").on("show.bs.modal", async (event) => {
   const booking_id = $(event.relatedTarget.parentElement).data("booking");
 
-  function getComputerFromBookingShown () {
+  function getComputerFromBookingShown() {
     for (let booking of bookingShownList) {
       if (booking._id === booking_id) {
         return booking.computer._id;
@@ -458,7 +462,10 @@ $("#returnModal").on("show.bs.modal", async (event) => {
         returned: document.getElementById("deliverCheck").checked,
         payed: document.getElementById("payCheck").checked,
         final_condition: $("#finalCondition").val(),
-        computer: ($("#finalCondition").val() <= 5) ? getComputerFromBookingShown () : null,
+        computer:
+          $("#finalCondition").val() <= 5
+            ? getComputerFromBookingShown()
+            : null,
       };
 
       // console.log("returned: " + JSON.stringify($("#deliverCheck")));
@@ -613,7 +620,11 @@ $("#filterBookingForm").on("submit", async (event) => {
   }
 
   for (booking of bookingShownList) {
-    if (types.future && new Date(booking.begin) > tomorrow && booking.status !== 0) {
+    if (
+      types.future &&
+      new Date(booking.begin) > tomorrow &&
+      booking.status !== 0
+    ) {
       booking_to_view.push(booking);
     }
 
@@ -624,7 +635,7 @@ $("#filterBookingForm").on("submit", async (event) => {
       new Date(booking.end) > today &&
       booking.status !== 0
     ) {
-      console.log()
+      console.log();
       booking_to_view.push(booking);
     }
 

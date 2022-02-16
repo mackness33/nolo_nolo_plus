@@ -1,7 +1,9 @@
 <template>
   <div v-cloak id="globalContainer">
-    <NavBar />
-    <CustomerContainer />
+    <NavBar v-model="currentlyShowing" />
+    <CustomerContainer v-if="showCustomer" />
+    <InventoryContainer v-if="showInv" />
+    <BookingContainer v-if="showBooking" />
   </div>
 </template>
 
@@ -9,6 +11,8 @@
 import NavBar from "./components/NavBar.vue";
 import HelloWorld from "./components/HelloWorld.vue";
 import CustomerContainer from "./components/Customer.vue";
+import InventoryContainer from "./components/Inventory.vue";
+import BookingContainer from "./components/Booking.vue";
 
 export default {
   name: "App",
@@ -17,11 +21,17 @@ export default {
     HelloWorld,
     NavBar,
     CustomerContainer,
+    InventoryContainer,
+    BookingContainer,
   },
 
   data: () => {
     return {
       isVisible: false,
+      currentlyShowing: 0,
+      showCustomer: true,
+      showInv: false,
+      showBooking: false,
     };
   },
 
@@ -33,6 +43,20 @@ export default {
 
   updated() {
     console.log("updated");
+
+    if (this.currentlyShowing == 0) {
+      this.showCustomer = true;
+      this.showInv = false;
+      this.showBooking = false;
+    } else if (this.currentlyShowing == 1) {
+      this.showCustomer = false;
+      this.showInv = true;
+      this.showBooking = false;
+    } else {
+      this.showCustomer = false;
+      this.showInv = false;
+      this.showBooking = true;
+    }
   },
 };
 </script>
