@@ -6,6 +6,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("./../../logger");
 const morgan = require("morgan");
 const session = require("express-session");
+const SessionService = require("../../services/auth");
 
 // const homeRouter = require("./routes/home");
 const userRoute = require("./dashboard/routes/user");
@@ -18,6 +19,17 @@ app.use(morgan("combined"));
 
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "dashboard/src/assets")));
+
+app.use((req, res, next) => {
+  SessionService.authorization(
+    req,
+    res,
+    next,
+    "/nnplus/logout",
+    "/nnplus/login",
+    3
+  );
+});
 
 app.use("/user", userRoute);
 app.use("/inv", invRoute);

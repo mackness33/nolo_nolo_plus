@@ -25,69 +25,34 @@ router.get("/invStat", async (req, res, next) => {
   logger.info("IN DASH user -- userStat");
 
   const resBuild = {};
-  const cModel = await computerModel;
-  const bModel = await bookingModel;
 
-  resBuild.maxComputer = await get_computer_more_productive();
-  // }
-  // resBuild.totalIncome = sumObj[0].total;
-  // let users = await userService.find();
-  // resBuild.totalUsers = users.length;
-  // users = await userService.find({ status: { $ne: 0 } });
-  // resBuild.activeUsers = users.length;
-  // resBuild.inactiveUsers = resBuild.totalUsers - users.length;
+  resBuild.maxComputer = await computerService.getStatsMost(
+    null,
+    {
+      _id: "$computer",
+      total: { $sum: "$final_price" }
+    },
+    'total'
+  );
+  resBuild.computerCurrentlyInUse = await computerService.getStats({ status: 3 }, { _id: "$computer" });
+  resBuild.computerCurrentlyUnavailable = await computerService.find({ available: false });
+  resBuild.computerCurrentlyUnavailableCount = resBuild.computerCurrentlyUnavailable.length;
+  resBuild.computersCount = await computerService.find({ available: false });
+  resBuild.computersCount = resBuild.computersCount.count;
 
   res.send(resBuild);
 });
 
-async function get_computer_more_productive () {
-  const bModel = await bookingModel;
-
-  const computer_per_price = await bModel.aggregate([
-    {
-      $group: {
-        _id: "$computer",
-        // computer: { $accumulator: "$final_price" },
-        total: { $sum: "$final_price" }
-      }
-    },
-  ]);
-
-  let max_computer = computer_per_price[0];
-
-  for (const computer of computer_per_price){
-    if (computer.total > max_computer.total){
-      max_computer = computer;
-    }
-  }
-
-  return await computerService.findOne({_id: max_computer._id});
-}
 
 router.get("/maxPricePerComputer", async (req, res, next) => {
   logger.info("IN DASH inventory -- maxPricePerComputer");
 
-  const result = [];
-  const bModel = await bookingModel;
+  const group = {
+    _id: "$computer",
+    total: { $sum: "$final_price" }
+  };
 
-  const computer_per_price = await bModel.aggregate([
-    {
-      $group: {
-        _id: "$computer",
-        total: { $sum: "$final_price" }
-      }
-    },
-  ]);
-
-  let populatedcomputer = null;
-  for (const computer of computer_per_price){
-    logger.info(computer);
-    populatedComputer = await computerService.findOne({_id: computer._id});
-    logger.info(populatedComputer.brand);
-    result.push([`${populatedComputer.brand} ${populatedComputer.model}`, computer.total]);
-  }
-
-  logger.info(JSON.stringify(result));
+  const result = await computerService.getCharts(null, group, "total");
 
   res.send(result);
 });
@@ -95,28 +60,24 @@ router.get("/maxPricePerComputer", async (req, res, next) => {
 router.get("/computerMostUsed", async (req, res, next) => {
   logger.info("IN DASH inventory -- computerMostUsed");
 
-  const result = [];
-  const bModel = await bookingModel;
+  const group = {
+    _id: "$computer",
+    count: { $count: {} }
+  };
 
-  const computer_per_count = await bModel.aggregate([
-    {
-      $group: {
-        _id: "$computer",
-        count: { $count: {} }
-      }
-    },
-  ]);
+  const result = await computerService.getCharts(null, group, "count");
+  res.send(result);
+});
 
-  let populatedcomputer = null;
-  for (const computer of computer_per_count){
-    logger.info(computer);
-    populatedComputer = await computerService.findOne({_id: computer._id});
-    logger.info(populatedComputer.brand);
-    result.push([`${populatedComputer.brand} ${populatedComputer.model}`, computer.count]);
-  }
+router.get("/computerPerUser", async (req, res, next) => {
+  logger.info("IN DASH inventory -- computerMostUsed");
 
-  logger.info(JSON.stringify(result));
+  const group = {
+    _id: "$computer",
+    total: { $sum: "$user" }
+  };
 
+  const result = await computerService.getStats(null, group, "total");
   res.send(result);
 });
 
