@@ -45,22 +45,24 @@ router.get("/userAgeSpend", async (req, res, next) => {
   const currentYear = new Date().getFullYear();
   const result = [];
   const bModel = await bookingModel;
+  const uModel = await userModel;
 
   for (let i = 70; i > 0; i = i - 10) {
     let tmp = currentYear - i;
-    let users = await userService.find({
+
+    let users = await uModel.find({
       birth: { $gte: JSON.stringify(tmp), $lte: JSON.stringify(tmp + 10) },
     });
     let acc = 0;
     for (const user of users) {
       let userBooks = await bModel.aggregate([
         { $match: { user: user.id } },
-        { $group: { _id: null, amount: { $sum: "final_price" } } },
+        { $group: { _id: null, amount: { $sum: "$final_price" } } },
       ]);
 
       logger.warn("HOLD");
       logger.warn(user.id);
-      logger.warn(JSON.stringify(userBooks));
+      logger.warn(JSON.stringify(userBooks.length));
 
       acc = acc + userBooks.amount;
     }

@@ -18,20 +18,21 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item" @click="makeActive">
+            <li class="nav-item">
               <a
                 class="nav-link active"
-                id="customer"
+                id="0"
                 aria-current="clienti"
                 href="#"
+                @click="makeActive"
                 >Clienti</a
               >
             </li>
             <li class="nav-item" @click="makeActive">
-              <a class="nav-link" href="#">Inventario</a>
+              <a class="nav-link" id="1" href="#">Inventario</a>
             </li>
             <li class="nav-item" @click="makeActive">
-              <a class="nav-link" href="#">Noleggi</a>
+              <a class="nav-link" id="2" href="#">Noleggi</a>
             </li>
             <li class="nav-item" @click="makeActive">
               <a
@@ -59,9 +60,11 @@ export default {
 
   components: {},
 
-  data: () => {
-    return {};
-  },
+  // data: () => {
+  //   return {
+  //     currentlyActive: 0,
+  //   };
+  // },
 
   methods: {
     makeActive(event) {
@@ -69,10 +72,20 @@ export default {
         el.classList.remove("active");
       });
       event.target.classList.add("active");
+      this.currentlyActive = event.target.id;
     },
   },
 
-  props: [],
+  props: ["modelValue"],
+
+  computed: {
+    currentlyActive: {
+      get() {},
+      set(value) {
+        this.$emit("update:modelValue", value);
+      },
+    },
+  },
 };
 </script>
 

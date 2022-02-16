@@ -383,15 +383,17 @@ $("#bookingModal").on("show.bs.modal", async function (event) {
       method: "GET",
       url: "/nnplus/user/getOne",
       data: { mail: $("#addUser").val() },
-    }).done((data) => {
-      if (data !== "NO_USER"){
-        user = data;
-      }
-    }).fail((err) => {
-      console.error(err);
-    });
+    })
+      .done((data) => {
+        if (data !== "NO_USER") {
+          user = data;
+        }
+      })
+      .fail((err) => {
+        console.error(err);
+      });
 
-    if (user && valid && beginChoice < endChoice) {
+    if (user && valid && beginChoice <= endChoice) {
       console.log($("#addStartDate").val() + "   " + $("#addEndDate").val());
 
       await $.ajax({
@@ -530,7 +532,7 @@ async function bookingPreview(user, computer, begin, end) {
     }
   };
 
-  if (user._id){
+  if (user._id) {
     await $.ajax({
       method: "GET",
       url: "/nnplus/booking/getDiscounts",
@@ -539,7 +541,10 @@ async function bookingPreview(user, computer, begin, end) {
       .done((data) => {
         console.log(data);
         data.discounts.forEach((discount) => {
-          printDiscounts(discount.reason, parseFloat(discount.amount).toFixed(2));
+          printDiscounts(
+            discount.reason,
+            parseFloat(discount.amount).toFixed(2)
+          );
           discountList.push({
             reason: discount.reason,
             amount: parseFloat(discount.amount).toFixed(2),
@@ -551,8 +556,8 @@ async function bookingPreview(user, computer, begin, end) {
         console.error(err);
       });
     await $.ajax({
-        method: "GET",
-        url: "/nnplus/empl/",
+      method: "GET",
+      url: "/nnplus/empl/",
     })
       .done((data) => {
         employeeId = data._id;
@@ -569,7 +574,10 @@ async function bookingPreview(user, computer, begin, end) {
       .done((data) => {
         console.log(data);
         data.discounts.forEach((discount) => {
-          printDiscounts(discount.reason, parseFloat(discount.amount).toFixed(2));
+          printDiscounts(
+            discount.reason,
+            parseFloat(discount.amount).toFixed(2)
+          );
           discountList.push({
             reason: discount.reason,
             amount: parseFloat(discount.amount).toFixed(2),
@@ -636,7 +644,7 @@ async function bookingPreview(user, computer, begin, end) {
     const correctEnd = new Date(end);
     correctEnd.setTime(correctEnd.getTime() + 1 * 60 * 60 * 1000);
 
-    if (!user._id){
+    if (!user._id) {
       console.log("user not present");
       return;
     }
@@ -825,7 +833,7 @@ async function autocompleteUser() {
     data: { attributes: "person.mail" },
   })
     .done((data) => {
-      if (data !== "NO_USER"){
+      if (data !== "NO_USER") {
         mails = data.map((user) => user.mail);
       }
     })
@@ -913,9 +921,11 @@ function showItems(items) {
   }
 
   items.forEach((item) => {
-    console.log (`${item.model} ${item.brand}: ${item.available}`);
-    const modal = (!item.available) ? "#availableModal" : "#bookingModal";
-    const text = (!item.available) ? "Rendi computer disponibile" : "Noleggia computer";
+    console.log(`${item.model} ${item.brand}: ${item.available}`);
+    const modal = !item.available ? "#availableModal" : "#bookingModal";
+    const text = !item.available
+      ? "Rendi computer disponibile"
+      : "Noleggia computer";
     const itemElement = document.createElement("div");
     itemElement.setAttribute(
       "class",
@@ -1006,8 +1016,8 @@ function showItems(items) {
           item._id
         }" data-bs-toggle="modal" data-bs-target="#addModal" data-origin="edit">Cambia informazioni</button>
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="${modal}" data-id="${
-          item._id
-        }">${text}</button>
+      item._id
+    }">${text}</button>
         <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${
           item._id
         }">Elimina</button>

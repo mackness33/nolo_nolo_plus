@@ -1,6 +1,6 @@
 <template>
   <div id="customerContainer" class="shadow rounded">
-    <h2 class="border-bottom border-2 pt-2">Dashboard utenti</h2>
+    <h2 class="border-bottom border-2 pt-2">Dashboard noleggi</h2>
     <div class="stats">
       <Moneydata title="Statistiche" />
       <Avgdata title="Medie" />
@@ -28,7 +28,7 @@ import Moneydata from "./userPage/Moneydata.vue";
 import AvgData from "./userPage/Avgdata.vue";
 
 export default {
-  name: "customerContainer",
+  name: "bookingContainer",
 
   data: () => {
     return {
