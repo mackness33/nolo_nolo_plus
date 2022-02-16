@@ -1,11 +1,10 @@
 <template>
   <div id="customerContainer" class="shadow rounded">
-    <h2 class="border-bottom border-2 mb-2">Dashboard utenti</h2>
+    <h2 class="border-bottom border-2 pt-2">Dashboard utenti</h2>
     <div class="graphContainer">
-      <Barchart :data="info" title="computer disponibili" />
-      <div>
-        <line-chart :data="{ '2017-05-13': 2, '2017-05-14': 5 }"></line-chart>
-      </div>
+      <Piechart :data="info" title="computer disponibili" />
+      <Linechart :data="info" title="linea non so" />
+      <Columnchart :data="info" title="Eta' degli utenti" />
     </div>
   </div>
 </template>
@@ -13,7 +12,9 @@
 
 <script>
 import axios from "axios";
-import Barchart from "./Barchart.vue";
+import Piechart from "./Piechart.vue";
+import Linechart from "./Linechart.vue";
+import Columnchart from "./Columnchart.vue";
 
 export default {
   name: "customerContainer",
@@ -26,7 +27,9 @@ export default {
   },
 
   components: {
-    Barchart,
+    Piechart,
+    Linechart,
+    Columnchart,
   },
 
   methods: {
@@ -39,7 +42,7 @@ export default {
 
   mounted() {
     axios
-      .get("http://localhost:8000/dash/user/userData")
+      .get("http://localhost:8000/dash/user/userAge")
       .then((res) => (this.info = res.data));
   },
 };

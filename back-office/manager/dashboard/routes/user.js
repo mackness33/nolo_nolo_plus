@@ -16,13 +16,26 @@ router.use(async (req, res, next) => {
   next();
 });
 
-router.get("/userData", async (req, res, next) => {
-  logger.info("IN DASH user -- userData");
+router.get("/userAge", async (req, res, next) => {
+  logger.info("IN DASH user -- userAge");
 
-  res.send([
-    ["disponibili", 44],
-    ["non disponibili", 65],
-  ]);
+  const currentYear = new Date().getFullYear();
+  const result = [];
+
+  for (let i = 70; i > 0; i = i - 10) {
+    let tmp = currentYear - i;
+    let count = await userService.find({
+      birth: { $gte: JSON.stringify(tmp), $lte: JSON.stringify(tmp + 10) },
+    });
+    result.push([`${tmp} - ${tmp + 10}`, count.length]);
+  }
+  logger.info(JSON.stringify(result));
+
+  const num = await userService.find({
+    birth: { $gte: "2020", $lte: "2023" },
+  });
+
+  res.send(result);
 });
 
 module.exports = router;

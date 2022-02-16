@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: "some",
+  name: "barchart",
 
   data: () => {
     return {};

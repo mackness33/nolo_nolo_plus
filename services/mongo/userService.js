@@ -3,6 +3,7 @@ const empHelper = require("./employeeService");
 const bookingService = require("./bookingService");
 const User = require("./schema/user");
 const logger = require("../../logger");
+const { use } = require("express/lib/router");
 
 class userService extends personService {
   constructor() {
@@ -12,7 +13,7 @@ class userService extends personService {
   async initialize() {
     await super.initialize(User);
     await empHelper.initialize();
-    //await bookingService.initialize();
+    await bookingService.initialize();
   }
 
   // FINDS
@@ -27,6 +28,12 @@ class userService extends personService {
   }
 
   async find(params, attributes = null) {
+    var usersTmp = await super.find(params, attributes);
+
+    for (const user of usersTmp) {
+      await this.evalStatus(user);
+    }
+
     var users = await super.find(params, attributes);
 
     for (const user of users) {
@@ -102,6 +109,35 @@ class userService extends personService {
     const user = await super.findOne({ _id: userId });
     user.points = user.points + amount;
     await user.save();
+  }
+
+  async evalStatus(user) {
+    const bookings = await bookingService.find({ user: user.id });
+    let id = user.id;
+    let initStatus = user.status;
+    let newStatus = 0;
+    let stat = [false, false, false, false, false, false];
+    for (const booking of bookings) {
+      let today = new Date().setHours(0, 0, 0, 0);
+      let end = new Date(booking.end).setHours(0, 0, 0, 0);
+      stat[0] = booking.status == 0 ? true : stat[0];
+      stat[1] = booking.status == 1 ? true : stat[1];
+      stat[2] = booking.status == 2 ? true : stat[2];
+      stat[3] = booking.status == 3 ? true : stat[3];
+      stat[4] = !booking.returned && today > end ? true : stat[4];
+      stat[5] = booking.status == 5 ? true : stat[5];
+    }
+
+    if (stat[4]) {
+      newStatus = 3;
+    } else if (stat[3]) {
+      newStatus = 2;
+    } else if (stat[2] || stat[1]) {
+      newStatus = 1;
+    } else {
+      newStatus = 0;
+    }
+    await this.updateOne({ _id: user.id }, { status: newStatus });
   }
 }
 
