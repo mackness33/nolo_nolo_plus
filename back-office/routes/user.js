@@ -7,6 +7,12 @@ const userService = require("../../services/mongo/userService");
 const baseService = require("../../services/mongo/base.js");
 const { contentType } = require("express/lib/response");
 
+router.use(async (req, res, next) => {
+  await userService.initialize();
+  next();
+});
+
+
 router.get("/getOne", async (req, res, next) => {
   if (!req.session.mail){
     res.send('NO_USER');
@@ -55,11 +61,6 @@ router.use((req, res, next) => {
     "/nnplus/login",
     2
   );
-});
-
-router.use(async (req, res, next) => {
-  await userService.initialize();
-  next();
 });
 
 router.get("/getMany", async (req, res, next) => {
