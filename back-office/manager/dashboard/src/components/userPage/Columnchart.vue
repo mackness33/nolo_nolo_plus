@@ -29,9 +29,15 @@ export default {
 
 <style scoped>
 .graph {
-  max-width: 25rem;
+  width: 35rem;
   margin: 2rem;
   padding: 1rem;
   background-color: whitesmoke;
+}
+
+@media only screen and (max-width: 1024) {
+  .graph {
+    width: 20rem;
+  }
 }
 </style>

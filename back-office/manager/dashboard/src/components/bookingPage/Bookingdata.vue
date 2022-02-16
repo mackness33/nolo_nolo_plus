@@ -7,7 +7,7 @@
         <span class="fw-bold">{{ totalBookings }}</span>
       </section>
       <section>
-        il numero attualmente attivi corrisponde a:
+        il numero di noleggi attivi corrisponde a:
         <span class="fw-bold">{{ activeBookings }}</span>
       </section>
       <section>
@@ -19,7 +19,7 @@
         <span class="fw-bold">{{ pastBookings }}</span>
       </section>
       <section>
-        Il numero computer ritirati ma non restituiti corrisponde a:
+        Il numero recentemente ritirati ma non ancora restituiti corrisponde a:
         <span class="fw-bold">{{ lateBookings }}</span>
       </section>
     </div>

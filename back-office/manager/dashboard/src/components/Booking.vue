@@ -6,13 +6,9 @@
       <bookingdata title="Statistiche" />
     </div>
     <div class="graphContainer">
-      <Columnchart
-        data="http://localhost:8000/dash/user/userAge"
-        title="Eta' degli utenti"
-      />
-      <Columnchart
-        data="http://localhost:8000/dash/user/userAgeSpend"
-        title="Spesa degli utenti per eta'"
+      <columnchart
+        data="http://localhost:8000/dash/booking/bookingStatus"
+        title="Situazione delle prenotazioni"
       />
     </div>
   </div>

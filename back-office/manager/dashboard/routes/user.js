@@ -56,7 +56,7 @@ router.get("/userAgeSpend", async (req, res, next) => {
     let acc = 0;
     for (const user of users) {
       let userBooks = await bModel.aggregate([
-        { $match: { user: user.id } },
+        { $match: { user: "$user.id" } },
         { $group: { _id: null, amount: { $sum: "$final_price" } } },
       ]);
 

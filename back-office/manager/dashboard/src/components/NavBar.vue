@@ -46,6 +46,11 @@
                 >Sito web</a
               >
             </li>
+            <li class="nav-item" @click="makeActive">
+              <a class="nav-link" href="http://localhost:8000/dash/logout"
+                >Logout</a
+              >
+            </li>
           </ul>
         </div>
       </div>

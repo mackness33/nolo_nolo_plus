@@ -63,7 +63,7 @@ const Landing = () => {
         alignItems: "center",
       }}
     >
-      <Paper elevation={5} sx={{ height: "45vh", width: "85vw", mt: "5rem" }}>
+      <Paper elevation={5} sx={{ height: "30%", width: "%", mt: "5rem" }}>
         <Box>
           <Typography variant='h2'>Benvenuto</Typography>
         </Box>

@@ -8,7 +8,7 @@
     <div class="graphContainer">
       <Columnchart
         data="http://localhost:8000/dash/inv/computerMostUsed"
-        title="Numero di prenotazioni per ocmputer"
+        title="Numero di prenotazioni per computer"
       />
       <Columnchart
         data="http://localhost:8000/dash/inv/maxPricePerComputer"

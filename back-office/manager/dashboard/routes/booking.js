@@ -43,4 +43,28 @@ router.get("/bookingStat", async (req, res, next) => {
   res.send(buildRes);
 });
 
+router.get("/bookingStatus", async (req, res, next) => {
+  const bModel = await bookingModel;
+
+  const buildRes = [];
+
+  let count = await bModel.find({status: 5}).count()
+
+  buildRes.push(['completati con successo', count]);
+
+  count = await bModel.find({status: 0}).count()
+
+  buildRes.push(['annullati per indisponibilita', count])
+
+  count = await bModel.find({payed: false}).count()
+
+  buildRes.push(['non ancora pagati', count])
+
+  count = await bModel.find({returned: false}).count()
+
+  buildRes.push(['non resituiti', count])
+
+  res.send(buildRes);
+});
+
 module.exports = router;
