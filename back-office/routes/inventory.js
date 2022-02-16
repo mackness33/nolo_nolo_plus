@@ -6,17 +6,6 @@ const empService = require("../../services/mongo/employeeService");
 const computerService = require("../../services/mongo/computerService");
 const componentService = require("../../services/mongo/componentService");
 
-// router.use((req, res, next) => {
-//   SessionService.authorization(
-//     req,
-//     res,
-//     next,
-//     "/nnplus/logout",
-//     "/nnplus/login",
-//     2
-//   );
-// });
-
 router.use(async (req, res, next) => {
   await componentService.initialize();
   await empService.initialize();
@@ -105,6 +94,24 @@ router.delete("/delete",
     );
   }, async (req, res, next) => {
     res.send(await computerService.deleteOne({ _id: req.body.id }));
+  }
+);
+
+router.put("/available",
+  (req, res, next) => {
+    SessionService.authorization(
+      req,
+      res,
+      next,
+      "/nnplus/logout",
+      "/nnplus/login",
+      2
+    );
+  }, async (req, res, next) => {
+    logger.info ("IN AVAILABLE: ");
+    const ack = await computerService.updateOne({ _id: req.body.id }, { available: true });
+    logger.info ("ack: " + JSON.stringify(ack));
+    res.send(ack);
   }
 );
 

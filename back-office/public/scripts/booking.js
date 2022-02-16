@@ -440,13 +440,25 @@ $("#deleteModal").on("hide.bs.modal", async function (event) {
 $("#returnModal").on("show.bs.modal", async (event) => {
   const booking_id = $(event.relatedTarget.parentElement).data("booking");
 
+  function getComputerFromBookingShown () {
+    for (let booking of bookingShownList) {
+      if (booking._id === booking_id) {
+        return booking.computer._id;
+      }
+    }
+
+    return null;
+  }
+
   $("body").on("submit", "#returnForm", async (event) => {
     event.preventDefault();
+
     try {
       const certificate = {
         returned: document.getElementById("deliverCheck").checked,
         payed: document.getElementById("payCheck").checked,
         final_condition: $("#finalCondition").val(),
+        computer: ($("#finalCondition").val() <= 5) ? getComputerFromBookingShown () : null,
       };
 
       // console.log("returned: " + JSON.stringify($("#deliverCheck")));
@@ -587,6 +599,8 @@ $("#filterBookingForm").on("submit", async (event) => {
   event.preventDefault();
   const form = $("#filterBookingForm")[0];
   const today = new Date().setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
   const booking_to_view = [];
   const types = {
     future: form.elements[0].checked,
@@ -599,7 +613,7 @@ $("#filterBookingForm").on("submit", async (event) => {
   }
 
   for (booking of bookingShownList) {
-    if (types.future && new Date(booking.begin) > today) {
+    if (types.future && new Date(booking.begin) > tomorrow && booking.status !== 0) {
       booking_to_view.push(booking);
     }
 
@@ -610,6 +624,7 @@ $("#filterBookingForm").on("submit", async (event) => {
       new Date(booking.end) > today &&
       booking.status !== 0
     ) {
+      console.log()
       booking_to_view.push(booking);
     }
 

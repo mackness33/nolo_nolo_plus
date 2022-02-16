@@ -37,6 +37,15 @@ class bookingService extends baseService {
   }
 
   async updateOne(filter, params) {
+    if (params.final_condition && params.final_condition <= 5){
+      await computerService.updateOne({_id: params.computer}, {available: false});
+      logger.info("params: " + JSON.stringify(params));
+    }
+
+    if (!params.computer){
+      delete params.computer;
+    }
+
     const ack = await super.updateOne(filter, params);
     await this.findOne(filter);
 
@@ -105,7 +114,7 @@ class bookingService extends baseService {
         amount: computerInfo.price * (computerInfo.discount / 100) * days,
       });
     }
-    
+
     console.log(discounts);
     return discounts;
   }
@@ -213,7 +222,7 @@ class bookingService extends baseService {
 
       if (future) {
         // if available but onHold not updated
-        if (booking.computer.available) {
+        if (available) {
           filtered_booking.status = 2;
           if (filtered_booking.onHold) {
             filtered_booking.onHold = false;
@@ -227,15 +236,21 @@ class bookingService extends baseService {
         }
       } else if (current && !booking.returned && !booking.payed) {
         // if should have been started but computer not available
-        if (booking.computer.available) {
+        if (available) {
           filtered_booking.status = 3;
         } else {
           filtered_booking.defaulted = true;
           filtered_booking.status = 0;
         }
       } else if (!booking.returned || !booking.payed) {
-        filtered_booking.late = true;
-        filtered_booking.status = 4;
+        logger.info("STAT LATE IS AVAILABLE: " + available);
+        if (!available){
+          filtered_booking.late = true;
+          filtered_booking.status = 0;
+        } else {
+          filtered_booking.late = true;
+          filtered_booking.status = 4;
+        }
       } else {
         filtered_booking.status = 5;
         logger.info(booking._id + " is done ");

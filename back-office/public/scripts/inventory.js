@@ -709,9 +709,9 @@ $("#bookingModal").on("hide.bs.modal", async function (event) {
 });
 
 $("#deleteModal").on("show.bs.modal", function (event) {
-  $("#confirmBtn").one("click", async (evt) => {
+  $("#confirmBtn").on("click", async (evt) => {
     const id = event.relatedTarget.dataset.id;
-    $.ajax({
+    await $.ajax({
       method: "DELETE",
       url: "/nnplus/inv/delete",
       data: { id },
@@ -719,6 +719,23 @@ $("#deleteModal").on("show.bs.modal", function (event) {
       console.log(data);
       await reloadItems();
       await populateFilters();
+    });
+  });
+});
+
+$("#availableModal").on("show.bs.modal", function (event) {
+  console.log("dAJE!");
+  $("#availableBtn").on("click", async (evt) => {
+    const id = event.relatedTarget.dataset.id;
+    console.log("mATE!");
+    await $.ajax({
+      method: "PUT",
+      url: "/nnplus/inv/available",
+      data: { id },
+    }).done(async (data) => {
+      console.log(data);
+      await reloadItems();
+      // await populateFilters();
     });
   });
 });
@@ -896,6 +913,9 @@ function showItems(items) {
   }
 
   items.forEach((item) => {
+    console.log (`${item.model} ${item.brand}: ${item.available}`);
+    const modal = (!item.available) ? "#availableModal" : "#bookingModal";
+    const text = (!item.available) ? "Rendi computer disponibile" : "Noleggia computer";
     const itemElement = document.createElement("div");
     itemElement.setAttribute(
       "class",
@@ -970,7 +990,6 @@ function showItems(items) {
             }$/giorno</span>
           </div>
         </li>
-        </li>
         <li>
           <div class="text-container">
             <b>Descrizione:</b>
@@ -981,15 +1000,14 @@ function showItems(items) {
           <b>Note:</b>
           <span class="note-card ">${item.note}</span>
         </div>
-        </li>
       </ul>
       <div class="card-buttons">
         <button class="btn btn-primary" data-id="${
           item._id
         }" data-bs-toggle="modal" data-bs-target="#addModal" data-origin="edit">Cambia informazioni</button>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bookingModal" data-id="${
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="${modal}" data-id="${
           item._id
-        }">Noleggia computer</button>
+        }">${text}</button>
         <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${
           item._id
         }">Elimina</button>
