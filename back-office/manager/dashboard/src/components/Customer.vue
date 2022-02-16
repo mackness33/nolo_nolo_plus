@@ -1,10 +1,16 @@
 <template>
   <div id="customerContainer" class="shadow rounded">
     <h2 class="border-bottom border-2 pt-2">Dashboard utenti</h2>
+    <Moneydata title="Statistiche" />
     <div class="graphContainer">
-      <Piechart :data="info" title="computer disponibili" />
-      <Linechart :data="info" title="linea non so" />
-      <Columnchart :data="info" title="Eta' degli utenti" />
+      <Columnchart
+        data="http://localhost:8000/dash/user/userAge"
+        title="Eta' degli utenti"
+      />
+      <Columnchart
+        data="http://localhost:8000/dash/user/userAgeSpend"
+        title="Spesa degli utenti per eta'"
+      />
     </div>
   </div>
 </template>
@@ -31,6 +37,7 @@ export default {
     Piechart,
     Linechart,
     Columnchart,
+    Moneydata,
   },
 
   methods: {

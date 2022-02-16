@@ -1,5 +1,5 @@
 <template>
-  <div id="globalContainer">
+  <div v-cloak id="globalContainer">
     <NavBar />
     <CustomerContainer />
   </div>

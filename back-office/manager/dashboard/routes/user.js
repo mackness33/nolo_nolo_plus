@@ -1,5 +1,9 @@
 const router = require("express").Router();
 const logger = require("../../../../logger");
+
+const bookingModel = require("../../../../services/mongo/schema/booking");
+const userModel = require("../../../../services/mongo/schema/user");
+
 const SessionService = require("../../../../services/auth");
 const userService = require("../../../../services/mongo/userService");
 const empService = require("../../../../services/mongo/employeeService");
@@ -16,20 +20,72 @@ router.use(async (req, res, next) => {
   next();
 });
 
+router.get("/userStat", async (req, res, next) => {
+  logger.info("IN DASH user -- userStat");
+
+  const resBuild = {};
+
+  const bModel = await bookingModel;
+  const sumObj = await bModel.aggregate([
+    { $group: { _id: null, total: { $sum: "$final_price" } } },
+  ]);
+  resBuild.totalIncome = sumObj[0].total;
+  let users = await userService.find();
+  resBuild.totalUsers = users.length;
+  users = await userService.find({ status: { $ne: 0 } });
+  resBuild.activeUsers = users.length;
+  resBuild.inactiveUsers = resBuild.totalUsers - users.length;
+
+  res.send(resBuild);
+});
+
+router.get("/userAgeSpend", async (req, res, next) => {
+  logger.info("IN DASH user -- userAgSpend");
+
+  const currentYear = new Date().getFullYear();
+  const result = [];
+  const bModel = await bookingModel;
+
+  for (let i = 70; i > 0; i = i - 10) {
+    let tmp = currentYear - i;
+    let users = await userService.find({
+      birth: { $gte: JSON.stringify(tmp), $lte: JSON.stringify(tmp + 10) },
+    });
+    let acc = 0;
+    for (const user of users) {
+      let userBooks = await bModel.aggregate([
+        { $match: { user: user.id } },
+        { $group: { _id: null, amount: { $sum: "final_price" } } },
+      ]);
+
+      logger.warn("HOLD");
+      logger.warn(user.id);
+      logger.warn(JSON.stringify(userBooks));
+
+      acc = acc + userBooks.amount;
+    }
+    result.push([`${i} - ${i - 10}`, acc]);
+  }
+  logger.info(JSON.stringify(result));
+
+  res.send(result);
+});
+
 router.get("/userAge", async (req, res, next) => {
   logger.info("IN DASH user -- userAge");
 
+  const moodel = await userModel;
   const currentYear = new Date().getFullYear();
   const result = [];
 
   for (let i = 70; i > 0; i = i - 10) {
     let tmp = currentYear - i;
-    let count = await userService.find({
+    let count = await moodel.find({
       birth: { $gte: JSON.stringify(tmp), $lte: JSON.stringify(tmp + 10) },
     });
-    result.push([`${tmp} - ${tmp + 10}`, count.length]);
+    result.push([`${i} - ${i - 10}`, count.length]);
   }
-  logger.info(JSON.stringify(result));
+  // logger.info(JSON.stringify(result));
 
   res.send(result);
 });

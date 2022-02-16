@@ -1,10 +1,8 @@
 <template>
   <div class="graph rounded shadow-lg">
     <h5 class="text-capitalize d-flex justify-content-center">{{ title }}</h5>
-    <column-chart
-      data="http://localhost:8000/dash/user/userAge"
-      :download="true"
-    ></column-chart>
+
+    <bar-chart :data="data" :download="true"></bar-chart>
   </div>
 </template>
 
@@ -31,15 +29,9 @@ export default {
 
 <style scoped>
 .graph {
-  width: 35rem;
+  max-width: 25rem;
   margin: 2rem;
   padding: 1rem;
   background-color: whitesmoke;
-}
-
-@media only screen and (max-width: 1024px) {
-  .graph {
-    width: auto;
-  }
 }
 </style>
