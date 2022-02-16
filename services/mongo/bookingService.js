@@ -200,7 +200,7 @@ class bookingService extends baseService {
       return filter.includes(key);
     });
 
-    logger.info("PRE filtered_booking: " + JSON.stringify(filtered_booking));
+    // logger.info("PRE filtered_booking: " + JSON.stringify(filtered_booking));
 
     if (
       !filtered_booking.defaulted ||
@@ -212,13 +212,13 @@ class bookingService extends baseService {
       const end = new Date(booking.end).setHours(0, 0, 0, 0);
       const available = booking.computer.available;
 
-      logger.info("AVAILABLE: " + available);
+      // logger.info("AVAILABLE: " + available);
 
       const future = today < begin;
       const current = today <= end;
       const past = !future && !current;
-      logger.info("FUTURE: " + future);
-      logger.info("CURRENT: " + current);
+      // logger.info("FUTURE: " + future);
+      // logger.info("CURRENT: " + current);
 
       if (future) {
         // if available but onHold not updated
@@ -243,7 +243,6 @@ class bookingService extends baseService {
           filtered_booking.status = 0;
         }
       } else if (!booking.returned || !booking.payed) {
-        logger.info("STAT LATE IS AVAILABLE: " + available);
         if (!available){
           filtered_booking.late = true;
           filtered_booking.status = 0;
@@ -264,10 +263,9 @@ class bookingService extends baseService {
       }
     }
 
-    logger.info("AFTER filtered_booking: " + JSON.stringify(filtered_booking));
+    // logger.info("AFTER filtered_booking: " + JSON.stringify(filtered_booking));
 
     if (has_change) {
-      // TODO: status need to be updated!
       await super.updateOne({ _id: filtered_booking }, filtered_booking);
     }
   }
