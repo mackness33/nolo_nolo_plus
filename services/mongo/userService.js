@@ -2,6 +2,7 @@ const personService = require("./personService");
 const empHelper = require("./employeeService");
 const bookingService = require("./bookingService");
 const User = require("./schema/user");
+const Booking = require("./schema/booking");
 const logger = require("../../logger");
 const { use } = require("express/lib/router");
 
@@ -139,7 +140,39 @@ class userService extends personService {
     }
     await this.updateOne({ _id: user.id }, { status: newStatus });
   }
+
+  async getCharts (match, group, variable){
+    const result = [];
+    const bModel = await Booking;
+    const params = [];
+
+    if (match){
+      params.push({
+        $match: match
+      })
+    }
+    if (group){
+      params.push({
+        $group: group
+      })
+    }
+
+    const user_per_count = await bModel.aggregate(params);
+
+    let populatedUser = null;
+    for (const user of user_per_count){
+      logger.info(user);
+      populatedUser = await this.findOne({_id: user._id});
+      logger.info(populatedUser.brand);
+      result.push([`${populatedUser.name} ${populatedUser.surname}`, user[variable]]);
+    }
+
+    logger.info(JSON.stringify(result));
+
+    return result;
+  }
 }
+
 
 const helper = new userService();
 module.exports = helper;

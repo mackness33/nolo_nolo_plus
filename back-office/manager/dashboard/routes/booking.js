@@ -43,28 +43,17 @@ router.get("/bookingStat", async (req, res, next) => {
   res.send(buildRes);
 });
 
-router.get("/bookingStatus", async (req, res, next) => {
+router.get("/bookingPerMonth", async (req, res, next) => {
   const bModel = await bookingModel;
 
-  const buildRes = [];
+  const group = {
+    _id: { $dateToString: { format: "%m", date: "$begin" } },
+    count: { $count: {} }
+  };
 
-  let count = await bModel.find({status: 5}).count()
+  const result = await bookingService.getCharts(null, group, "count");
 
-  buildRes.push(['completati con successo', count]);
-
-  count = await bModel.find({status: 0}).count()
-
-  buildRes.push(['annullati per indisponibilita', count])
-
-  count = await bModel.find({payed: false}).count()
-
-  buildRes.push(['non ancora pagati', count])
-
-  count = await bModel.find({returned: false}).count()
-
-  buildRes.push(['non resituiti', count])
-
-  res.send(buildRes);
+  res.send(result);
 });
 
 module.exports = router;

@@ -92,4 +92,17 @@ router.get("/userAge", async (req, res, next) => {
   res.send(result);
 });
 
+router.get("/bookingPerUser", async (req, res, next) => {
+  logger.info("IN DASH user -- userAge");
+
+  const group = {
+    _id: "$user",
+    total: { $count: {} }
+  };
+
+  const result = await userService.getCharts(null, group, "total");
+
+  res.send(result);
+});
+
 module.exports = router;

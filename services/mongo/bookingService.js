@@ -279,6 +279,34 @@ class bookingService extends baseService {
     // Convert the key/value array back to an object:
     return Object.fromEntries(filtered);
   }
+
+  async getCharts (match, group, variable){
+    const result = [];
+    const bModel = await Booking;
+    const params = [];
+
+    if (match){
+      params.push({
+        $match: match
+      })
+    }
+    if (group){
+      params.push({
+        $group: group
+      })
+    }
+
+    const booking_per_count = await bModel.aggregate(params);
+
+    for (const booking of booking_per_count){
+      logger.info(booking);
+      result.push([booking._id, booking[variable]]);
+    }
+
+    logger.info(JSON.stringify(result));
+
+    return result;
+  }
 }
 
 const service = new bookingService();
