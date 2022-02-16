@@ -33,7 +33,6 @@ export default {
   data: () => {
     return {
       info: null,
-      some: "Titulo belimpu",
     };
   },
 
