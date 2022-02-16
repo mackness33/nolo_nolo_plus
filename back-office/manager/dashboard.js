@@ -18,7 +18,8 @@ const app = express();
 app.use(morgan("combined"));
 
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "dashboard/src/assets")));
+// app.use(express.static(path.join(__dirname, "dashboard/src/assets")));
+app.use(express.static(path.join(__dirname, "./dashboard/dist/assets", "assets" )));
 
 app.use((req, res, next) => {
   SessionService.authorization(
@@ -31,9 +32,14 @@ app.use((req, res, next) => {
   );
 });
 
+
 app.use("/user", userRoute);
 app.use("/inv", invRoute);
 app.use("/booking", bookingRoute);
+
+app.get('/', async(req, res, next) =>{
+  res.sendFile(path.join(__dirname, "./dashboard/dist/index.html"))
+})
 
 // app.use("/", homeRouter);
 app.get("/prova", async (req, res, next) => {

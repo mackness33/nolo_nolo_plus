@@ -48,7 +48,7 @@ router.get("/bookingPerMonth", async (req, res, next) => {
 
   const group = {
     _id: { $dateToString: { format: "%m", date: "$begin" } },
-    count: { $count: {} }
+    count: { $sum: 1 }
   };
 
   const result = await bookingService.getCharts(null, group, "count");

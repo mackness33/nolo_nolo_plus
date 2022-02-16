@@ -97,7 +97,7 @@ router.get("/bookingPerUser", async (req, res, next) => {
 
   const group = {
     _id: "$user",
-    total: { $count: {} }
+    total: { $sum: {} }
   };
 
   const result = await userService.getCharts(null, group, "total");

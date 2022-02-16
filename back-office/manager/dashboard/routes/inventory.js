@@ -62,7 +62,7 @@ router.get("/computerMostUsed", async (req, res, next) => {
 
   const group = {
     _id: "$computer",
-    count: { $count: {} }
+    count: { $sum: 1 }
   };
 
   const result = await computerService.getCharts(null, group, "count");

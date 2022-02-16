@@ -36,6 +36,21 @@ app.use("/nnplus", back_office);
 app.use("/front", front_office);
 app.use("/dash", dashboard);
 
+app.use((req, res, next) => {
+  SessionService.authorization(
+    req,
+    res,
+    next,
+    "/nnplus/logout",
+    "/nnplus/login",
+    3
+  );
+});
+
+app.use('/assets', async(req, res, next) =>{
+  res.sendFile(path.join(__dirname, './dist/assets/', req.url))
+})
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   logger.warn("Error occured");
