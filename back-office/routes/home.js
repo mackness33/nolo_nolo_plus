@@ -33,17 +33,6 @@ router.get(
 router.get(
   "/inventory",
   (req, res, next) => {
-    logger.info("in pre-home GET");
-    SessionService.authorization(
-      req,
-      res,
-      next,
-      "/nnplus/logout",
-      "/nnplus/login",
-      2
-    );
-  },
-  (req, res, next) => {
     logger.info("in inventory GET");
     res.sendFile(path.join(__dirname, "../public/templates/inventory.html"));
   }

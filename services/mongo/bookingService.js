@@ -95,6 +95,21 @@ class bookingService extends baseService {
     return discounts;
   }
 
+  async getDefaultDiscountComputer(computerId, days) {
+    const discounts = [];
+    const computerInfo = await computerService.getDiscount(computerId);
+
+    if (computerInfo.discount) {
+      discounts.push({
+        reason: "sconto dispositivo",
+        amount: computerInfo.price * (computerInfo.discount / 100) * days,
+      });
+    }
+    
+    console.log(discounts);
+    return discounts;
+  }
+
   async getUserScore(userId) {
     var avg = 5;
     const scores = await this.find({

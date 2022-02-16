@@ -1,6 +1,6 @@
 var currentlyShowing = [];
 
-$(document).ajaxComplete(checkSession);
+// $(document).ajaxComplete(checkSession);
 
 $(document).on("DOMContentLoaded", async function (event) {
   await reloadItems();
@@ -130,7 +130,7 @@ $("#discountModal").on("show.bs.modal", async function (event) {
           $("#filterBtn").trigger("click");
         })
         .fail((err) => {
-          console.los(err);
+          console.log(err);
           success = success && false;
         });
     }
@@ -373,14 +373,24 @@ $("#bookingModal").on("show.bs.modal", async function (event) {
       }
     }
 
-    var user;
+    var user = {
+      name: "Santa",
+      surname: "Klaus",
+      mail: $("#addUser").val(),
+    };
+
     await $.ajax({
       method: "GET",
       url: "/nnplus/user/getOne",
       data: { mail: $("#addUser").val() },
     }).done((data) => {
-      user = data;
+      if (data !== "NO_USER"){
+        user = data;
+      }
+    }).fail((err) => {
+      console.error(err);
     });
+
     if (user && valid && beginChoice < endChoice) {
       console.log($("#addStartDate").val() + "   " + $("#addEndDate").val());
 
@@ -473,18 +483,7 @@ async function bookingPreview(user, computer, begin, end) {
   var discountList = [];
   const priceList = $("#bookingPreview > ul");
   var usedPoints = 0;
-  var employeeId;
-
-  $.ajax({
-    method: "GET",
-    url: "/nnplus/empl/",
-  })
-    .done((data) => {
-      employeeId = data._id;
-    })
-    .fail((err) => {
-      console.error(err);
-    });
+  var employeeId = "Giuseppino";
 
   const { name, surname } = adjustName(user.name, user.surname);
   $("#userInfo > span").html(`${name} ${surname}`);
@@ -531,25 +530,57 @@ async function bookingPreview(user, computer, begin, end) {
     }
   };
 
-  await $.ajax({
-    method: "GET",
-    url: "/nnplus/booking/getDiscounts",
-    data: { userId: user._id, computerId: computer._id, days: days },
-  })
-    .done((data) => {
-      console.log(data);
-      data.discounts.forEach((discount) => {
-        printDiscounts(discount.reason, parseFloat(discount.amount).toFixed(2));
-        discountList.push({
-          reason: discount.reason,
-          amount: parseFloat(discount.amount).toFixed(2),
-        });
-      });
-      populatePointsSelect(data.points);
+  if (user._id){
+    await $.ajax({
+      method: "GET",
+      url: "/nnplus/booking/getDiscounts",
+      data: { userId: user._id, computerId: computer._id, days: days },
     })
-    .fail((err) => {
-      console.error(err);
-    });
+      .done((data) => {
+        console.log(data);
+        data.discounts.forEach((discount) => {
+          printDiscounts(discount.reason, parseFloat(discount.amount).toFixed(2));
+          discountList.push({
+            reason: discount.reason,
+            amount: parseFloat(discount.amount).toFixed(2),
+          });
+        });
+        populatePointsSelect(data.points);
+      })
+      .fail((err) => {
+        console.error(err);
+      });
+    await $.ajax({
+        method: "GET",
+        url: "/nnplus/empl/",
+    })
+      .done((data) => {
+        employeeId = data._id;
+      })
+      .fail((err) => {
+        console.error(err);
+      });
+  } else {
+    await $.ajax({
+      method: "GET",
+      url: "/nnplus/booking/getDiscountsComputer",
+      data: { computerId: computer._id, days: days },
+    })
+      .done((data) => {
+        console.log(data);
+        data.discounts.forEach((discount) => {
+          printDiscounts(discount.reason, parseFloat(discount.amount).toFixed(2));
+          discountList.push({
+            reason: discount.reason,
+            amount: parseFloat(discount.amount).toFixed(2),
+          });
+        });
+        populatePointsSelect(data.points);
+      })
+      .fail((err) => {
+        console.error(err);
+      });
+  }
 
   $("body").on("click", "#pointsBtn", () => {
     usedPoints = $("#userPoints").val();
@@ -604,6 +635,11 @@ async function bookingPreview(user, computer, begin, end) {
     correctBegin.setTime(correctBegin.getTime() + 1 * 60 * 60 * 1000);
     const correctEnd = new Date(end);
     correctEnd.setTime(correctEnd.getTime() + 1 * 60 * 60 * 1000);
+
+    if (!user._id){
+      console.log("user not present");
+      return;
+    }
 
     const booking = {
       user: user._id,
@@ -772,8 +808,9 @@ async function autocompleteUser() {
     data: { attributes: "person.mail" },
   })
     .done((data) => {
-      mails = data.map((user) => user.mail);
-      userAutoList = mails;
+      if (data !== "NO_USER"){
+        mails = data.map((user) => user.mail);
+      }
     })
     .fail((err) => {
       console.error(err);
@@ -1044,9 +1081,9 @@ async function getModalData(item, id) {
   return filteredItem;
 }
 
-function checkSession(evt, xhr, options) {
-  console.log(xhr);
-  if (xhr.getResponseHeader("content-type").includes("html")) {
-    window.location.href = "/nnplus/login";
-  }
-}
+// function checkSession(evt, xhr, options) {
+//   console.log(xhr);
+//   if (xhr.getResponseHeader("content-type").includes("html")) {
+//     window.location.href = "/nnplus/login";
+//   }
+// }

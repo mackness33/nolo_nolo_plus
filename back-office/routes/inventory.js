@@ -6,16 +6,16 @@ const empService = require("../../services/mongo/employeeService");
 const computerService = require("../../services/mongo/computerService");
 const componentService = require("../../services/mongo/componentService");
 
-router.use((req, res, next) => {
-  SessionService.authorization(
-    req,
-    res,
-    next,
-    "/nnplus/logout",
-    "/nnplus/login",
-    2
-  );
-});
+// router.use((req, res, next) => {
+//   SessionService.authorization(
+//     req,
+//     res,
+//     next,
+//     "/nnplus/logout",
+//     "/nnplus/login",
+//     2
+//   );
+// });
 
 router.use(async (req, res, next) => {
   await componentService.initialize();
@@ -47,30 +47,65 @@ router.get("/filter", async (req, res, next) => {
   res.send(filteredItems);
 });
 
-router.post("/insert", async (req, res, next) => {
-  const emp = await empService.findOne({
-    "person.mail": req.session.mail,
-  });
-  req.body["emplCode"] = emp._id;
-  await componentService.addComponents(req.body);
-  await computerService.insertOne(req.body);
-  res.send({});
-});
+router.post("/insert",
+  (req, res, next) => {
+    SessionService.authorization(
+      req,
+      res,
+      next,
+      "/nnplus/logout",
+      "/nnplus/login",
+      2
+    );
+  }, async (req, res, next) => {
 
-router.put("/editOne", async (req, res, next) => {
-  const id = req.body.id;
-  delete req.body.id;
-  if (req.body["type[]"]) {
-    req.body.type = req.body["type[]"];
-    delete req.body["type[]"];
+    const emp = await empService.findOne({
+      "person.mail": req.session.mail,
+    });
+    req.body["emplCode"] = emp._id;
+    await componentService.addComponents(req.body);
+    await computerService.insertOne(req.body);
+    res.send({});
   }
-  await componentService.addComponents(req.body);
-  await computerService.updateOne({ _id: id }, req.body);
-  res.send({});
-});
+);
 
-router.delete("/delete", async (req, res, next) => {
-  res.send(await computerService.deleteOne({ _id: req.body.id }));
-});
+router.put("/editOne",
+  (req, res, next) => {
+    SessionService.authorization(
+      req,
+      res,
+      next,
+      "/nnplus/logout",
+      "/nnplus/login",
+      2
+    );
+  }, async (req, res, next) => {
+
+    const id = req.body.id;
+    delete req.body.id;
+    if (req.body["type[]"]) {
+      req.body.type = req.body["type[]"];
+      delete req.body["type[]"];
+    }
+    await componentService.addComponents(req.body);
+    await computerService.updateOne({ _id: id }, req.body);
+    res.send({});
+  }
+);
+
+router.delete("/delete",
+  (req, res, next) => {
+    SessionService.authorization(
+      req,
+      res,
+      next,
+      "/nnplus/logout",
+      "/nnplus/login",
+      2
+    );
+  }, async (req, res, next) => {
+    res.send(await computerService.deleteOne({ _id: req.body.id }));
+  }
+);
 
 module.exports = router;

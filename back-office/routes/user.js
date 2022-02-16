@@ -7,23 +7,12 @@ const userService = require("../../services/mongo/userService");
 const baseService = require("../../services/mongo/base.js");
 const { contentType } = require("express/lib/response");
 
-router.use((req, res, next) => {
-  SessionService.authorization(
-    req,
-    res,
-    next,
-    "/nnplus/logout",
-    "/nnplus/login",
-    2
-  );
-});
-
-router.use(async (req, res, next) => {
-  await userService.initialize();
-  next();
-});
-
 router.get("/getOne", async (req, res, next) => {
+  if (!req.session.mail){
+    res.send('NO_USER');
+    return;
+  }
+
   logger.info("In getOne of user");
   var user = await userService.findOne({ "person.mail": req.query.mail });
   user = user ? userService.format(user, "person") : user;
@@ -41,6 +30,36 @@ router.get("/getOne", async (req, res, next) => {
   }
   logger.info("user: " + JSON.stringify(user));
   res.send(user);
+});
+
+
+router.get("/all", async (req, res, next) => {
+  if (!req.session.mail){
+    res.send('NO_USER');
+    return;
+  }
+
+  const users = await userService.find(req.query.params, req.query.attributes);
+  for (let i = 0; i < users.length; i++) {
+    users[i] = userService.format(users[i], "person");
+  }
+  res.send(users);
+});
+
+router.use((req, res, next) => {
+  SessionService.authorization(
+    req,
+    res,
+    next,
+    "/nnplus/logout",
+    "/nnplus/login",
+    2
+  );
+});
+
+router.use(async (req, res, next) => {
+  await userService.initialize();
+  next();
 });
 
 router.get("/getMany", async (req, res, next) => {
@@ -62,13 +81,6 @@ router.post("/setOne", async (req, res, next) => {
   res.send({});
 });
 
-router.get("/all", async (req, res, next) => {
-  const users = await userService.find(req.query.params, req.query.attributes);
-  for (let i = 0; i < users.length; i++) {
-    users[i] = userService.format(users[i], "person");
-  }
-  res.send(users);
-});
 
 router.post("/add", async (req, res, next) => {
   const user = {

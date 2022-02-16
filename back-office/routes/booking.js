@@ -7,6 +7,33 @@ const computerService = require("../../services/mongo/computerService");
 const componentService = require("../../services/mongo/componentService");
 const bookingService = require("../../services/mongo/bookingService");
 
+router.use(async (req, res, next) => {
+  await bookingService.initialize();
+  await userService.initialize();
+  next();
+});
+
+router.get("/getDiscountsComputer", async (req, res, next) => {
+  const discounts = await bookingService.getDefaultDiscountComputer(
+    req.query.computerId,
+    req.query.days
+  );
+  res.send({ discounts, points: 0 });
+});
+
+
+router.get("/getBookingsByItem", async (req, res, next) => {
+  logger.info(JSON.stringify(req.query.id));
+  logger.info("in booking");
+
+  const bookingDates = await bookingService.find(
+    { computer: req.query.id },
+    "begin end computer"
+  );
+  console.log(bookingDates);
+  res.send(bookingDates);
+});
+
 router.use((req, res, next) => {
   SessionService.authorization(
     req,
@@ -18,10 +45,14 @@ router.use((req, res, next) => {
   );
 });
 
-router.use(async (req, res, next) => {
-  await bookingService.initialize();
-  await userService.initialize();
-  next();
+router.get("/getDiscounts", async (req, res, next) => {
+  const discounts = await bookingService.getDefaultDiscount(
+    req.query.userId,
+    req.query.computerId,
+    req.query.days
+  );
+  const points = await userService.findOne({ _id: req.query.userId }, "points");
+  res.send({ discounts, points: points.points });
 });
 
 router.post("/addOne", async (req, res, next) => {
@@ -43,28 +74,6 @@ router.get("/byDates", async (req, res, next) => {
     req.query.end
   );
   res.send(items);
-});
-
-router.get("/getDiscounts", async (req, res, next) => {
-  const discounts = await bookingService.getDefaultDiscount(
-    req.query.userId,
-    req.query.computerId,
-    req.query.days
-  );
-  const points = await userService.findOne({ _id: req.query.userId }, "points");
-  res.send({ discounts, points: points.points });
-});
-
-router.get("/getBookingsByItem", async (req, res, next) => {
-  logger.info(JSON.stringify(req.query.id));
-  logger.info("in booking");
-
-  const bookingDates = await bookingService.find(
-    { computer: req.query.id },
-    "begin end computer"
-  );
-  console.log(bookingDates);
-  res.send(bookingDates);
 });
 
 router.get("/getBookings", async (req, res, next) => {
