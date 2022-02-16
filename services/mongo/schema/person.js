@@ -20,6 +20,7 @@ const person_schema = mongoose.Schema({
   },
   role: {
     type: Number,
+    default: 2,
     required: true,
   },
   picture: {
