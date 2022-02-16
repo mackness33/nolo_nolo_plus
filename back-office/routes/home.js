@@ -20,7 +20,7 @@ router.get(
       next,
       "/nnplus/logout",
       "/nnplus/login",
-      2
+      1
     );
   },
   function (req, res, next) {
@@ -48,7 +48,7 @@ router.get(
       next,
       "/nnplus/logout",
       "/nnplus/login",
-      2
+      1
     );
   },
   (req, res, next) => {

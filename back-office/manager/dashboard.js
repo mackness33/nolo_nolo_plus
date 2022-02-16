@@ -28,8 +28,10 @@ app.use((req, res, next) => {
     next,
     "/nnplus/logout",
     "/nnplus/login",
-    3
+    0
   );
+
+  logger.warn("Session! " + JSON.stringify(req.session));
 });
 
 

@@ -44,7 +44,7 @@ router.post("/insert",
       next,
       "/nnplus/logout",
       "/nnplus/login",
-      2
+      1
     );
   }, async (req, res, next) => {
 
@@ -66,7 +66,7 @@ router.put("/editOne",
       next,
       "/nnplus/logout",
       "/nnplus/login",
-      2
+      1
     );
   }, async (req, res, next) => {
 
@@ -90,7 +90,7 @@ router.delete("/delete",
       next,
       "/nnplus/logout",
       "/nnplus/login",
-      2
+      1
     );
   }, async (req, res, next) => {
     res.send(await computerService.deleteOne({ _id: req.body.id }));
@@ -105,7 +105,7 @@ router.put("/available",
       next,
       "/nnplus/logout",
       "/nnplus/login",
-      2
+      1
     );
   }, async (req, res, next) => {
     logger.info ("IN AVAILABLE: ");

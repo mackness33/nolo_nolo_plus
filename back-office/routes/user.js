@@ -59,7 +59,7 @@ router.use((req, res, next) => {
     next,
     "/nnplus/logout",
     "/nnplus/login",
-    2
+    1
   );
 });
 
