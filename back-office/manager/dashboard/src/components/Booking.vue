@@ -2,8 +2,8 @@
   <div id="customerContainer" class="shadow rounded">
     <h2 class="border-bottom border-2 pt-2">Dashboard noleggi</h2>
     <div class="stats">
-      <Moneydata title="Statistiche" />
-      <Avgdata title="Medie" />
+      <!-- <Moneydata title="Statistiche" /> -->
+      <bookingdata title="Statistiche" />
     </div>
     <div class="graphContainer">
       <Columnchart
@@ -25,7 +25,7 @@ import Piechart from "./userPage/Piechart.vue";
 import Linechart from "./userPage/Linechart.vue";
 import Columnchart from "./userPage/Columnchart.vue";
 import Moneydata from "./userPage/Moneydata.vue";
-import AvgData from "./userPage/Avgdata.vue";
+import Bookingdata from "./bookingPage/Bookingdata.vue";
 
 export default {
   name: "bookingContainer",
@@ -42,7 +42,7 @@ export default {
     Linechart,
     Columnchart,
     Moneydata,
-    AvgData,
+    Bookingdata,
   },
 
   methods: {
