@@ -300,6 +300,16 @@ main {
   flex-direction: column;
 }
 
+#receiptDiscounts {
+  display: flex;
+  flex-direction: column;
+}
+
+#receiptDiscounts > div {
+  display: flex;
+  justify-content: space-between;
+}
+
 /* return modal */
 
 #returnForm > div {
