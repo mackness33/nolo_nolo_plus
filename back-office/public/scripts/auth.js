@@ -40,8 +40,15 @@ $("#myForm").submit(function (event) {
   // Callback handler that will be called on success
   request.done(function (response, textStatus, jqXHR) {
     // Log a message to the console
-    if (response.success)
+    if (response.success){
       window.location.href = response.url;
+    }
+    else{
+      $('#errorMsg').css('display', 'block')
+      setTimeout(()=>{
+      $('#errorMsg').css('display', 'none')
+      }, 3000)
+    }
 
     // TODO: add a text if user not found
     console.log("response: " + JSON.stringify(response));
