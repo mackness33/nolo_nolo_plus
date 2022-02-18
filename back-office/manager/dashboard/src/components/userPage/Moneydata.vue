@@ -2,6 +2,20 @@
   <div class="graph rounded shadow-lg">
     <h5 class="text-capitalize d-flex justify-content-center">{{ title }}</h5>
     <div class="dataContainer">
+      <v-btn-toggle id="buttonGroup" v-model="icon" borderless>
+        <v-btn value="center">
+          <span>Totali</span>
+        </v-btn>
+
+        <v-btn value="right">
+          <span>Medie</span>
+        </v-btn>
+
+        <v-btn value="justify">
+          <span>Finali</span>
+        </v-btn>
+      </v-btn-toggle>
+      <div>{{ icon }}</div>
       <section>
         Il fatturato totale attuale corrisponde a:
         <span class="fw-bold">${{ totalIncome }}</span>
@@ -35,6 +49,7 @@ export default {
       totalUsers: 0,
       activeUsers: 0,
       inactiveUsers: 0,
+      icon: "",
     };
   },
 
@@ -48,6 +63,10 @@ export default {
     this.totalUsers = res.data.totalUsers;
     this.activeUsers = res.data.activeUsers;
     this.inactiveUsers = res.data.inactiveUsers;
+  },
+
+  update() {
+    console.log(this.icon);
   },
 
   props: ["data", "title"],
@@ -65,5 +84,13 @@ export default {
   display: flex;
   align-items: center;
   flex-direction: column;
+}
+
+#buttonGroup {
+  margin-bottom: 1rem;
+}
+
+#buttonGroup > button {
+  justify-content: space-between;
 }
 </style>

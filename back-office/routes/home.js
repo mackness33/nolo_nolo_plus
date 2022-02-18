@@ -5,9 +5,9 @@ const util = require("util");
 const emplModel = require("../../services/mongo/schema/employee");
 const SessionService = require("../../services/auth");
 
-router.use(async (req, res, next) => {
-  SessionService.check_model(req, res, emplModel, next);
-});
+// router.use(async (req, res, next) => {
+//   SessionService.check_model(req, res, emplModel, next);
+// });
 
 /* GET users listing. */
 router.get(
@@ -30,13 +30,10 @@ router.get(
   }
 );
 
-router.get(
-  "/inventory",
-  (req, res, next) => {
-    logger.info("in inventory GET");
-    res.sendFile(path.join(__dirname, "../public/templates/inventory.html"));
-  }
-);
+router.get("/inventory", (req, res, next) => {
+  logger.info("in inventory GET");
+  res.sendFile(path.join(__dirname, "../public/templates/inventory.html"));
+});
 
 router.get(
   "/booking",

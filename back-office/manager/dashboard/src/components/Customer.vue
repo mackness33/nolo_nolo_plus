@@ -52,15 +52,9 @@ export default {
   },
 
   props: [],
-
-  mounted() {
-    axios
-      .get("http://localhost:8000/dash/user/userAge")
-      .then((res) => (this.info = res.data));
-  },
 };
 </script>
-
+}; console.log(res.data)
 <style scoped>
 #customerContainer {
   margin: 1rem;

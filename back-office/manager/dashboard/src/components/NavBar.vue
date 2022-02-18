@@ -19,20 +19,23 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <a
+              <router-link
                 class="nav-link active"
                 id="0"
                 aria-current="clienti"
-                href="#"
-                @click="makeActive"
-                >Clienti</a
+                to="/"
+                >Clienti</router-link
               >
             </li>
             <li class="nav-item" @click="makeActive">
-              <a class="nav-link" id="1" href="#">Inventario</a>
+              <router-link class="nav-link" id="1" to="/inventory"
+                >Inventario</router-link
+              >
             </li>
             <li class="nav-item" @click="makeActive">
-              <a class="nav-link" id="2" href="#">Noleggi</a>
+              <router-link class="nav-link" id="2" to="/booking"
+                >Noleggi</router-link
+              >
             </li>
             <li class="nav-item" @click="makeActive">
               <a

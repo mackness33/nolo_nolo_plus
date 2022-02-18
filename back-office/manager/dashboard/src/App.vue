@@ -1,18 +1,21 @@
 <template>
   <div v-cloak id="globalContainer">
     <NavBar v-model="currentlyShowing" />
-    <CustomerContainer v-if="showCustomer" />
+    <router-view />
+    <!-- <CustomerContainer v-if="showCustomer" />
     <InventoryContainer v-if="showInv" />
-    <BookingContainer v-if="showBooking" />
+    <BookingContainer v-if="showBooking" /> -->
   </div>
 </template>
 
 <script>
+import axios from "axios";
 import NavBar from "./components/NavBar.vue";
 import HelloWorld from "./components/HelloWorld.vue";
 import CustomerContainer from "./components/Customer.vue";
 import InventoryContainer from "./components/Inventory.vue";
 import BookingContainer from "./components/Booking.vue";
+import Login from "./components/Login.vue";
 
 export default {
   name: "App",
@@ -23,6 +26,7 @@ export default {
     CustomerContainer,
     InventoryContainer,
     BookingContainer,
+    Login,
   },
 
   data: () => {
@@ -39,6 +43,20 @@ export default {
     toggleBox() {
       this.isVisible = !this.isVisible;
     },
+  },
+
+  async created() {
+    try {
+      const res = await axios.get("http://localhost:8000/dash/auth");
+      if (res.request.responseURL.includes("login")) {
+      }
+      console.log("successo");
+      console.log(res);
+    } catch (err) {
+      console.log("falli");
+      console.log(err);
+      // this.$router.push("/login");
+    }
   },
 
   updated() {

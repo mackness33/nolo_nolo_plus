@@ -16,9 +16,9 @@ router.use(async (req, res, next) => {
   next();
 });
 
-router.use(async (req, res, next) => {
-  SessionService.check_model(req, res, userModel, next);
-});
+// router.use(async (req, res, next) => {
+//   SessionService.check_model(req, res, userModel, next);
+// });
 
 router.get("/whoAmI", async (req, res, next) => {
   logger.info("IN user -- whoAmI");
