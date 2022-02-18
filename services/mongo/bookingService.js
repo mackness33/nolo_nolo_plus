@@ -19,7 +19,7 @@ class bookingService extends baseService {
     const bookings = await super.find(params, attrs);
 
     for (let i = 0; i < bookings.length; i++) {
-      bookings[i] = await this.updateStatus2(bookings[i]);
+      bookings[i] = await this.updateStatus(bookings[i]);
     }
 
     return bookings;
@@ -28,7 +28,7 @@ class bookingService extends baseService {
   async findOne(params, attrs = null) {
     const booking = await super.findOne(params, attrs);
     if (booking) {
-      await this.updateStatus2(booking);
+      await this.updateStatus(booking);
     } else {
       logger.warn("No booking found");
     }
@@ -192,85 +192,6 @@ class bookingService extends baseService {
   }
 
   async updateStatus(booking) {
-    await booking.populate('computer');
-    let has_change = true;
-
-    const filtered_booking = this._filterObject(booking, (key, value) => {
-      const filter = ["_id", "onHold", "status", "revoked", "late"];
-      return filter.includes(key);
-    });
-
-    // logger.info("PRE filtered_booking: " + JSON.stringify(filtered_booking));
-
-    if (
-      !filtered_booking.revoked ||
-      filtered_booking.status === 5 ||
-      (booking.returned && booking.payed)
-    ) {
-      const today = new Date().setHours(0, 0, 0, 0);
-      const begin = new Date(booking.begin).setHours(0, 0, 0, 0);
-      const end = new Date(booking.end).setHours(0, 0, 0, 0);
-      const available = booking.computer.available;
-
-      // logger.info("AVAILABLE: " + available);
-
-      const future = today < begin;
-      const current = today <= end;
-      const past = !future && !current;
-      // logger.info("FUTURE: " + future);
-      // logger.info("CURRENT: " + current);
-
-      if (future) {
-        // if available but onHold not updated
-        if (available) {
-          filtered_booking.status = 2;
-          if (filtered_booking.onHold) {
-            filtered_booking.onHold = false;
-          }
-        } else {
-          filtered_booking.status = 1;
-          // if not available but onHold not updated
-          if (!filtered_booking.onHold) {
-            filtered_booking.onHold = true;
-          }
-        }
-      } else if (current && !booking.returned && !booking.payed) {
-        // if should have been started but computer not available
-        if (available) {
-          filtered_booking.status = 3;
-        } else {
-          filtered_booking.revoked = true;
-          filtered_booking.status = 0;
-        }
-      } else if (!booking.returned || !booking.payed) {
-        if (!available){
-          filtered_booking.late = true;
-          filtered_booking.status = 0;
-        } else {
-          filtered_booking.late = true;
-          filtered_booking.status = 4;
-        }
-      } else {
-        filtered_booking.status = 5;
-        logger.info(booking._id + " is done ");
-      }
-    } else {
-      // if revoked but field have not been updated
-      if (filtered_booking.revoked) {
-        filtered_booking.status = 0;
-      } else {
-        has_change = false;
-      }
-    }
-
-    // logger.info("AFTER filtered_booking: " + JSON.stringify(filtered_booking));
-
-    if (has_change) {
-      await super.updateOne({ _id: filtered_booking }, filtered_booking);
-    }
-  }
-
-  async updateStatus2(booking) {
     if (booking.status === 5 || booking.status === 0) {
       return booking;
     }
@@ -292,7 +213,6 @@ class bookingService extends baseService {
 
     const future = today < begin;
     const current = today <= end;
-    const past = today > end;
 
     if (!booking.computer.available) {
       booking.late = false;
@@ -312,7 +232,7 @@ class bookingService extends baseService {
       } else {
         if (current && !booking.returned && !booking.payed) {                         // if current
           booking.status = 3;
-        } else if (!booking.returned || !booking.payed || past) {      // if late
+        } else if (!booking.returned || !booking.payed) {      // if late
           booking.late = true;
           booking.status = 4;
        } else {                                       // is done
