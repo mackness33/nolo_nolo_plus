@@ -18,17 +18,17 @@ class bookingService extends baseService {
   async find(params, attrs = null) {
     const bookings = await super.find(params, attrs);
 
-    for (const booking of bookings) {
-      await this.updateStatus(booking);
+    for (let i = 0; i < bookings.length; i++) {
+      bookings[i] = await this.updateStatus2(bookings[i]);
     }
 
-    return super.find(params, attrs);
+    return bookings;
   }
 
   async findOne(params, attrs = null) {
     const booking = await super.findOne(params, attrs);
     if (booking) {
-      await this.updateStatus(booking);
+      await this.updateStatus2(booking);
     } else {
       logger.warn("No booking found");
     }
@@ -47,8 +47,8 @@ class bookingService extends baseService {
     }
 
     const ack = await super.updateOne(filter, params);
-    await this.findOne(filter);
 
+    await this.findOne(filter);
     return ack;
   }
 
@@ -192,18 +192,18 @@ class bookingService extends baseService {
   }
 
   async updateStatus(booking) {
-    await booking.populate("computer");
+    await booking.populate('computer');
     let has_change = true;
 
     const filtered_booking = this._filterObject(booking, (key, value) => {
-      const filter = ["_id", "onHold", "status", "defaulted", "late"];
+      const filter = ["_id", "onHold", "status", "revoked", "late"];
       return filter.includes(key);
     });
 
     // logger.info("PRE filtered_booking: " + JSON.stringify(filtered_booking));
 
     if (
-      !filtered_booking.defaulted ||
+      !filtered_booking.revoked ||
       filtered_booking.status === 5 ||
       (booking.returned && booking.payed)
     ) {
@@ -239,7 +239,7 @@ class bookingService extends baseService {
         if (available) {
           filtered_booking.status = 3;
         } else {
-          filtered_booking.defaulted = true;
+          filtered_booking.revoked = true;
           filtered_booking.status = 0;
         }
       } else if (!booking.returned || !booking.payed) {
@@ -255,8 +255,8 @@ class bookingService extends baseService {
         logger.info(booking._id + " is done ");
       }
     } else {
-      // if defaulted but field have not been updated
-      if (filtered_booking.defaulted) {
+      // if revoked but field have not been updated
+      if (filtered_booking.revoked) {
         filtered_booking.status = 0;
       } else {
         has_change = false;
@@ -268,6 +268,70 @@ class bookingService extends baseService {
     if (has_change) {
       await super.updateOne({ _id: filtered_booking }, filtered_booking);
     }
+  }
+
+  async updateStatus2(booking) {
+    if (booking.status === 5 || booking.status === 0) {
+      return booking;
+    }
+
+    await booking.populate({ path: 'computer', select: 'available'});
+    // let filtered_booking = this._filterObject(booking, (key, value) => {
+    //   // const filter = ["onHold", "status", "revoked", "late"];
+    //   const filter = ["onHold", "status", "revoked", "late", "returned", "payed"];
+    //   return filter.includes(key);
+    // });
+
+    // logger.info("Computer available: " + JSON.stringify(booking.computer.available));
+
+    // logger.info("PRE filtered_booking: " + JSON.stringify(filtered_booking));
+
+    const today = new Date().setHours(0, 0, 0, 0);
+    const begin = new Date(booking.begin).setHours(0, 0, 0, 0);
+    const end = new Date(booking.end).setHours(0, 0, 0, 0);
+
+    const future = today < begin;
+    const current = today <= end;
+    const past = today > end;
+
+    if (!booking.computer.available) {
+      booking.late = false;
+      if (!future) {                                  // if revoked
+        booking.revoked = true;
+        booking.status = 0;
+      } else {                                        // if onHold
+        booking.onHold = true;
+        booking.status = 1;
+      }
+    } else {
+      booking.onHold = false;
+      booking.revoked = false;
+
+      if (future) {                                 // if future
+        booking.status = 2;
+      } else {
+        if (current && !booking.returned && !booking.payed) {                         // if current
+          booking.status = 3;
+        } else if (!booking.returned || !booking.payed || past) {      // if late
+          booking.late = true;
+          booking.status = 4;
+       } else {                                       // is done
+         booking.status = 5;
+       }
+      }
+    }
+
+    // logger.info("AFTER filtered_booking: " + JSON.stringify(filtered_booking));
+
+    const filtered_booking = this._filterObject(booking, (key, value) => {
+      const filter = ["onHold", "status", "revoked", "late"];
+      // const filter = ["onHold", "status", "revoked", "late", "returned", "payed"];
+      return filter.includes(key);
+    });
+
+    await super.updateOne({ _id: booking._id }, filtered_booking);
+
+    return booking;
   }
 
   _filterObject(object, callback) {

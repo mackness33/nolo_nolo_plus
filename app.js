@@ -37,7 +37,7 @@ app.use("/front", front_office);
 app.use("/dash", dashboard);
 
 app.use((req, res, next) => {
-  SessionService.authorization(
+  authService.authorization(
     req,
     res,
     next,

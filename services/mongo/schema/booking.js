@@ -75,7 +75,7 @@ const booking_schema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  defaulted: {
+  revoked: {
     type: Boolean,
     default: false,
   },
