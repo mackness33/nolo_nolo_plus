@@ -48,9 +48,9 @@ class auth_service {
   /* CHECKS */
 
   // returns a boolean. If session.mail !== undefined -> true | otherwise -> false
-  check_if_user_logged_in(session) {
+  check_if_user_logged_in(session, role = 2) {
     logger.info("session: " + JSON.stringify(session));
-    return !!session && !!session.mail;
+    return !!session && !!session.mail && session.role <= role;
   }
 
   // function to check if the user has the right authorization to enter the url
@@ -78,9 +78,9 @@ class auth_service {
   // base function where as paramenters has the session that we're current in
   // successful as a function to do if the user is logged in
   // otherwise unsuccessful they can be empty if not needed
-  is_logged(session, successful, unsuccessful) {
-    logger.info("user_logged: " + this.check_if_user_logged_in(session));
-    if (this.check_if_user_logged_in(session)) {
+  is_logged(session, successful, unsuccessful, role) {
+    logger.info("user_logged: " + this.check_if_user_logged_in(session, role));
+    if (this.check_if_user_logged_in(session, role)) {
       if (successful) successful();
     } else {
       if (unsuccessful) unsuccessful();
@@ -88,7 +88,7 @@ class auth_service {
   }
 
   // check wheter the user is already logged in
-  already_logged(req, res, next, home_url) {
+  already_logged(req, res, next, home_url, role) {
     this.is_logged(
       req.session,
       () => {
@@ -98,14 +98,15 @@ class auth_service {
       () => {
         logger.info("here is the prob bro");
         next();
-      }
+      },
+      role
     );
 
     // next();
   }
 
   // check wheter the user isn't already logged in
-  not_already_logged(req, res, next, login_url) {
+  not_already_logged(req, res, next, login_url, role) {
     this.is_logged(
       req.session,
       () => {
@@ -114,7 +115,8 @@ class auth_service {
       () => {
         logger.warn("User not logged in");
         res.redirect(302, login_url);
-      }
+      },
+      role
     );
 
     // next();

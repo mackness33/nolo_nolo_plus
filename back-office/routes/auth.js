@@ -21,7 +21,7 @@ router.get(
   "/login",
   (req, res, next) => {
     logger.info("in pre-login GET");
-    SessionService.already_logged(req, res, next, "/nnplus/home");
+    SessionService.already_logged(req, res, next, "/nnplus/home", 1);
   },
   (req, res, next) => {
     logger.info("in login GET");
@@ -34,7 +34,7 @@ router.post(
   "/login",
   (req, res, next) => {
     logger.info("in pre-login POST");
-    SessionService.already_logged(req, res, next, "/nnplus/home");
+    SessionService.already_logged(req, res, next, "/nnplus/home", 1);
   },
   (req, res, next) => {
     logger.info("in login POST");
@@ -89,7 +89,7 @@ router.get(
   "/logout",
   (req, res, next) => {
     logger.info("in pre-logout GET");
-    SessionService.not_already_logged(req, res, next, "/nnplus/login");
+    SessionService.not_already_logged(req, res, next, "/nnplus/login", 1);
   },
   (req, res, next) => {
     logger.info("in logout GET");

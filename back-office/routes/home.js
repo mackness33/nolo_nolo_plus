@@ -49,7 +49,7 @@ router.get(
     );
   },
   (req, res, next) => {
-    logger.info("in inventory GET");
+    logger.info("in booking GET");
     res.sendFile(path.join(__dirname, "../public/templates/booking.html"));
   }
 );
