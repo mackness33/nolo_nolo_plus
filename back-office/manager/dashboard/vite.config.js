@@ -1,8 +1,9 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import vuetify from '@vuetify/vite-plugin'
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
+import vuetify from "@vuetify/vite-plugin";
 
-import path from 'path'
+import glob from "glob";
+import path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -13,12 +14,20 @@ export default defineConfig({
       autoImport: true,
     }),
   ],
-  define: { 'process.env': {} },
+  define: { "process.env": {} },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      "@": path.resolve(__dirname, "src"),
     },
   },
+  // root: path.join(__dirname, "src"),
+  build: {
+    outDir: path.join(__dirname, "dist"),
+  },
+  base: "/dash/",
+  // rollupOptions: {
+  //   input: glob.sync(path.resolve(__dirname, "src", "*.html")),
+  // },
   /* remove the need to specify .vue files https://vitejs.dev/config/#resolve-extensions
   resolve: {
     extensions: [
@@ -32,4 +41,4 @@ export default defineConfig({
     ]
   },
   */
-})
+});
