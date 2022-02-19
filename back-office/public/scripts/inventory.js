@@ -224,7 +224,9 @@ async function addModal() {
       description: form.elements[9].value,
       condition: form.elements[10].value,
       note: form.elements[11].value,
+
     };
+
     console.log(compInstance);
     await $.ajax({
       type: "POST",
@@ -385,7 +387,7 @@ $("#bookingModal").on("show.bs.modal", async function (event) {
       data: { mail: $("#addUser").val() },
     })
       .done((data) => {
-        if (data !== "NO_USER") {
+        if (data){
           user = data;
         }
       })
@@ -830,7 +832,7 @@ async function autocompleteUser() {
     data: { attributes: "person.mail" },
   })
     .done((data) => {
-      if (data !== "NO_USER") {
+      if (data) {
         mails = data.map((user) => user.mail);
       }
     })

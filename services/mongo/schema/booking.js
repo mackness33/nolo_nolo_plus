@@ -88,6 +88,10 @@ const booking_schema = new mongoose.Schema({
     default: 5,
     required: true,
   },
+  employee: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Employee",
+  },
 });
 
 booking_schema.methods.checkConditon = function (final_condition) {

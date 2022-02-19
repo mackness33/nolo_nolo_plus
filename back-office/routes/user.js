@@ -15,7 +15,7 @@ router.use(async (req, res, next) => {
 
 router.get("/getOne", async (req, res, next) => {
   if (!req.session.mail){
-    res.send('NO_USER');
+    res.send(null);
     return;
   }
 
@@ -34,14 +34,13 @@ router.get("/getOne", async (req, res, next) => {
       );
     }
   }
-  logger.info("user: " + JSON.stringify(user));
   res.send(user);
 });
 
 
 router.get("/all", async (req, res, next) => {
   if (!req.session.mail){
-    res.send('NO_USER');
+    res.send(null);
     return;
   }
 

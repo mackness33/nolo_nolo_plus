@@ -2,7 +2,7 @@ const router = require("express").Router();
 const logger = require("../../logger.js");
 const SessionService = require("../../services/auth");
 const userService = require("../../services/mongo/userService");
-const empService = require("../../services/mongo/employeeService");
+const employeeService = require("../../services/mongo/employeeService");
 const computerService = require("../../services/mongo/computerService");
 const componentService = require("../../services/mongo/componentService");
 const bookingService = require("../../services/mongo/bookingService");
@@ -10,6 +10,7 @@ const bookingService = require("../../services/mongo/bookingService");
 router.use(async (req, res, next) => {
   await bookingService.initialize();
   await userService.initialize();
+  await employeeService.initialize();
   next();
 });
 
@@ -56,15 +57,17 @@ router.get("/getDiscounts", async (req, res, next) => {
 });
 
 router.post("/addOne", async (req, res, next) => {
-  logger.info(JSON.parse(req.body.data));
   const booking = JSON.parse(req.body.data);
+  const employee = await employeeService.findOne({'person.mail': req.session.mail});
+  booking.employee = (employee) ? employee._id : null;
+
   const ack_insert = await bookingService.insertOne(booking);
-  console.log(JSON.stringify(ack_insert));
   await userService.changePoints(booking.user, -booking.points);
   await userService.changePoints(
     booking.user,
     Math.trunc(parseFloat(booking.final_price))
   );
+
   res.send({ done: true });
 });
 
