@@ -81,7 +81,7 @@ const booking_schema = new mongoose.Schema({
   },
   status: {
     type: Number,
-    default: false,
+    default: 4,
   },
   final_condition: {
     type: Number,

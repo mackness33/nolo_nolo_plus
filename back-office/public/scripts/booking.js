@@ -537,9 +537,7 @@ $("#receiptModal").on("show.bs.modal", async (event) => {
       booking.starting_price / booking_days;
     document.getElementById("receiptStartPrice").innerHTML =
       booking.starting_price;
-    document.getElementById(
-      "receiptPointValue"
-    ).innerHTML = `${booking.points}$`;
+
     document.getElementById("receiptDiscounts").innerHTML =
       discountsVisualization(booking.discounts);
     document.getElementById("receiptFinalPrice").innerHTML =
