@@ -10,7 +10,7 @@ class auth_service {
   get_session(options, store) {
     let session_options = {
       secret: process.env.SS_SECRET,
-      cookie: { maxAge: 1000 * 60 * 15 },
+      cookie: { maxAge: 1000 * 60 * 120 },
       store: mongo_service.get_store(), // get the store from the Mongo Service
       rolling: true,
       saveUninitialized: false,

@@ -258,7 +258,12 @@ async function bookingPreview(user, computer, begin, end) {
       $("#discountReason").val("");
       $("#discountAmount").val(0);
     } else {
-      showAlert("Lo sconto deve essere definito!", $("#addForm")[0], false);
+      showAlert(
+        "Lo sconto deve essere definito!",
+        $("#addForm")[0],
+        false,
+        true
+      );
     }
   });
 
@@ -284,7 +289,12 @@ async function bookingPreview(user, computer, begin, end) {
     })
       .done((data) => {
         console.log(data);
-        showAlert("Noleggio creato con successo!", $("#addForm")[0], true);
+        showAlert(
+          "Noleggio creato con successo!",
+          $("#addForm")[0],
+          true,
+          true
+        );
         $("#bookingPreview").prop("hidden", true);
         $("#addForm")[0].reset();
       })
@@ -376,7 +386,11 @@ $("#editModal").on("show.bs.modal", async (event) => {
       });
 
       console.log(success);
-      showAlert("Noleggio modificato con successo!", $("#editForm")[0], true);
+      showAlert(
+        "Noleggio modificato con successo!",
+        $("#editBtn").parent()[0],
+        true
+      );
 
       await searchBookingsByUser($("#searchUser").val());
     } catch (err) {
@@ -384,7 +398,7 @@ $("#editModal").on("show.bs.modal", async (event) => {
 
       showAlert(
         "Errore durante la modifica del noleggio!",
-        $("#editForm")[0],
+        $("#editBtn").parent()[0],
         false
       );
     }
@@ -423,14 +437,18 @@ $("#deleteModal").on("show.bs.modal", async (event) => {
       });
 
       console.log(success);
-      showAlert("Noleggio cancellato con successo!", $("#deleteForm")[0], true);
+      showAlert(
+        "Noleggio cancellato con successo!",
+        $("#deleteBtn").parent()[0],
+        true
+      );
       await searchBookingsByUser($("#searchUser").val());
     } catch (err) {
       console.error(err, "Fucking error");
 
       showAlert(
         "Errore durante la cancellazione del noleggio!",
-        $("#deleteForm")[0],
+        $("#deleteBtn").parent()[0],
         false
       );
     }
@@ -484,7 +502,7 @@ $("#returnModal").on("show.bs.modal", async (event) => {
       console.log(success);
       showAlert(
         "Noleggio certificato con successo!",
-        $("#returnForm")[0],
+        $("#returnSubmit").parent()[0],
         true
       );
       await searchBookingsByUser($("#searchUser").val());
@@ -493,7 +511,7 @@ $("#returnModal").on("show.bs.modal", async (event) => {
 
       showAlert(
         "Errore durante la certificazione del noleggio!",
-        $("#returnForm")[0],
+        $("#returnSubmit").parent()[0],
         false
       );
     }
@@ -861,9 +879,10 @@ function statusToObject(status, id) {
   return statObj;
 }
 
-function showAlert(text, parent, happy) {
+function showAlert(text, parent, happy, before = true) {
   $("#load").remove();
 
+  console.log("goind");
   if (!text) {
     const alert = document.createElement("span");
     alert.setAttribute("role", "alert");
@@ -875,7 +894,11 @@ function showAlert(text, parent, happy) {
       "animate__infinite"
     );
     alert.style.color = "blue";
-    parent.prepend(alert);
+    if (before) {
+      parent.prepend(alert);
+    } else {
+      parent.append(alert);
+    }
     return;
   }
   if (!document.getElementById("alert")) {
@@ -885,7 +908,11 @@ function showAlert(text, parent, happy) {
     alert.setAttribute("id", "alert");
     alert.classList.add("animate__animated", "animate__bounceIn");
     happy ? (alert.style.color = "green") : (alert.style.color = "red");
-    parent.prepend(alert);
+    if (before) {
+      parent.prepend(alert);
+    } else {
+      parent.append(alert);
+    }
     setTimeout(() => {
       alert.remove();
     }, 3000);
