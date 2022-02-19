@@ -349,14 +349,10 @@ $("#editModal").on("show.bs.modal", async (event) => {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
 
-  const booking = await $.ajax({
-    method: "GET",
-    url: "/nnplus/booking/getBooking",
-    data: { id: booking_id },
-  });
+  const booking = getBookingFromShown(booking_id);
 
   setModal(booking);
-  // document.getElementById('editStartDate').setAttribute("min", (tomorrow).toISOString().split('T')[0]);
+
   document
     .getElementById("editEndDate")
     .setAttribute(
@@ -462,34 +458,28 @@ $("#deleteModal").on("hide.bs.modal", async function (event) {
 $("#returnModal").on("show.bs.modal", async (event) => {
   const booking_id = $(event.relatedTarget.parentElement).data("booking");
 
-  function getComputerFromBookingShown() {
-    for (let booking of bookingShownList) {
-      if (booking._id === booking_id) {
-        return booking.computer._id;
-      }
-    }
-
-    return null;
+  function setModal(booking) {
+    document.getElementById("returnReturned").checked = booking.returned;
+    document.getElementById("returnPayed").checked = booking.payed;
+    document.getElementById("returnFinalCondition").value = booking.final_condition;
+    document.getElementById("returnNote").value = booking.note;
   }
 
   $("body").on("submit", "#returnForm", async (event) => {
     event.preventDefault();
 
-    try {
-      const certificate = {
-        returned: document.getElementById("deliverCheck").checked,
-        payed: document.getElementById("payCheck").checked,
-        final_condition: $("#finalCondition").val(),
-        computer:
-          $("#finalCondition").val() <= 5
-            ? getComputerFromBookingShown()
-            : null,
-      };
+    const certificate = {
+      returned: document.getElementById("returnReturned").checked,
+      payed: document.getElementById("returnPayed").checked,
+      final_condition: $("#returnFinalCondition").val(),
+      note: document.getElementById("returnNote").value,
+      computer:
+        $("#returnFinalCondition").val() <= 5
+        ? getComputerFromBookingShown(booking_id)
+        : null,
+    };
 
-      // console.log("returned: " + JSON.stringify($("#deliverCheck")));
-      // console.log("payed: " + JSON.stringify($("#payCheck")));
-      console.log("booking_id: " + booking_id);
-      console.log("payed: " + certificate.payed);
+    try {
       const success = await $.ajax({
         method: "PUT",
         url: "/nnplus/booking/certifiedBooking",
@@ -507,7 +497,7 @@ $("#returnModal").on("show.bs.modal", async (event) => {
       );
       await searchBookingsByUser($("#searchUser").val());
     } catch (err) {
-      console.error(err, "Fucking error");
+      console.error(err);
 
       showAlert(
         "Errore durante la certificazione del noleggio!",
@@ -516,6 +506,9 @@ $("#returnModal").on("show.bs.modal", async (event) => {
       );
     }
   });
+
+  const booking = getBookingFromShown(booking_id);
+  setModal(booking);
 });
 
 $("#returnModal").on("hide.bs.modal", async function (event) {
@@ -609,11 +602,7 @@ $("#receiptModal").on("show.bs.modal", async (event) => {
 
   const booking_id = $(event.relatedTarget.parentElement).data("booking");
 
-  const booking = await $.ajax({
-    method: "GET",
-    url: "/nnplus/booking/getBooking",
-    data: { id: booking_id },
-  });
+  const booking = getBookingFromShown(booking_id);
 
   setModal(booking);
 });
@@ -668,6 +657,26 @@ $("#filterBookingForm").on("submit", async (event) => {
 
   showBookings(booking_to_view);
 });
+
+function getBookingFromShown(booking_id) {
+  for (let booking of bookingShownList) {
+    if (booking._id === booking_id) {
+      return booking;
+    }
+  }
+
+  return null;
+}
+
+function getComputerFromBookingShown(booking_id) {
+  for (let booking of bookingShownList) {
+    if (booking._id === booking_id) {
+      return booking.computer._id;
+    }
+  }
+
+  return null;
+}
 
 async function searchBookingsByUser(mail) {
   console.log(mail);
