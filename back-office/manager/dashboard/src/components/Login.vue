@@ -12,6 +12,13 @@
 
       <button class="btn btn-primary">Accedi</button>
     </form>
+    <div
+      v-if="showError"
+      class="animate__animated animate__bounceIn"
+      id="errMsg"
+    >
+      Login fallito
+    </div>
   </div>
 </template>
 
@@ -26,8 +33,11 @@ export default {
     return {
       info: null,
       some: "Titulo belimpu",
+      showError: false,
     };
   },
+
+  props: [],
 
   components: {},
 
@@ -37,11 +47,29 @@ export default {
     },
     async handleLogin(e) {
       e.preventDefault();
-      console.log(e.target.elements[0].value);
+      try {
+        const res = await axios.post("http://localhost:8000/dash/login", {
+          mail: e.target.elements[0].value,
+          password: e.target.elements[1].value,
+        });
+        console.log("RIUSCITO");
+        console.log(res);
+        this.showError = false;
+        this.$store.commit("login");
+        this.$router.replace("/");
+      } catch (err) {
+        this.showError = true;
+        setTimeout(() => {
+          this.showError = false;
+        }, 3000);
+        console.log(err);
+      }
     },
   },
 
-  props: [],
+  mounted() {
+    this.$store.commit("logout");
+  },
 };
 </script>
 }; console.log(res.data)
@@ -67,5 +95,11 @@ export default {
 
 #loginForm > * {
   margin-bottom: 0.5rem;
+}
+
+#errMsg {
+  color: red;
+  font-weight: 600;
+  font-size: 2rem;
 }
 </style>

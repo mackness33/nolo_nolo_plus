@@ -49,10 +49,13 @@
                 >Sito web</a
               >
             </li>
-            <li class="nav-item" @click="makeActive">
-              <a class="nav-link" href="http://localhost:8000/dash/logout"
-                >Logout</a
-              >
+
+            <li
+              v-show="this.$store.state.logged"
+              class="nav-item"
+              @click="logout"
+            >
+              <button class="nav-link">Logout</button>
             </li>
           </ul>
         </div>
@@ -63,6 +66,8 @@
 
 
 <script>
+import axios from "axios";
+
 export default {
   name: "NavBar",
 
@@ -70,7 +75,6 @@ export default {
 
   // data: () => {
   //   return {
-  //     currentlyActive: 0,
   //   };
   // },
 
@@ -81,6 +85,14 @@ export default {
       });
       event.target.classList.add("active");
       this.currentlyActive = event.target.id;
+    },
+    async logout() {
+      try {
+        const res = await axios.get("http://localhost:8000/dash/logout");
+      } catch (err) {
+        this.$store.commit("logout");
+        this.$router.replace("/login");
+      }
     },
   },
 

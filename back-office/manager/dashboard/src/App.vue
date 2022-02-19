@@ -1,6 +1,6 @@
 <template>
   <div v-cloak id="globalContainer">
-    <NavBar v-model="currentlyShowing" />
+    <NavBar v-model="currentlyShowing" :logged="logged" />
     <router-view />
     <!-- <CustomerContainer v-if="showCustomer" />
     <InventoryContainer v-if="showInv" />
@@ -36,6 +36,7 @@ export default {
       showCustomer: true,
       showInv: false,
       showBooking: false,
+      logged: false,
     };
   },
 
@@ -43,20 +44,6 @@ export default {
     toggleBox() {
       this.isVisible = !this.isVisible;
     },
-  },
-
-  async created() {
-    try {
-      const res = await axios.get("http://localhost:8000/dash/auth");
-      if (res.request.responseURL.includes("login")) {
-      }
-      console.log("successo");
-      console.log(res);
-    } catch (err) {
-      console.log("falli");
-      console.log(err);
-      // this.$router.push("/login");
-    }
   },
 
   updated() {

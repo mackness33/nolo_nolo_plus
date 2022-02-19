@@ -7,6 +7,10 @@ const logger = require("./../../logger");
 const morgan = require("morgan");
 const session = require("express-session");
 const SessionService = require("../../services/auth");
+const emplModel = require("../../services/mongo/schema/employee");
+
+const baseClass = require("../../services/mongo/base");
+var baseService = new baseClass();
 
 // const homeRouter = require("./routes/home");
 const userRoute = require("./dashboard/routes/user");
@@ -22,40 +26,56 @@ app.use(cookieParser());
 // app.use(express.static(path.join(__dirname, "dashboard/src/assets")));
 app.use(express.static(path.join(__dirname, "dashboard", "dist")));
 
-// app.get(
-//   "/",
-//   async (req, res, next) => {
-//     logger.info("HERE I COME");
-//     SessionService.authorization(
-//       req,
-//       res,
-//       next,
-//       "/nnplus/logout",
-//       "/nnplus/login",
-//       0
-//     );
-//   },
-//   async (req, res, next) => {
-//     res.sendFile(path.join(__dirname, "./dashboard/dist/index.html"));
-//   }
-// );
+app.use(async (req, res, next) => {
+  await baseService.initialize(emplModel);
+  next();
+});
 
-app.use("/auth", authRoute);
+app.post("/login", async (req, res, next) => {
+  logger.info("in DASH LOGIN POST");
+  try {
+    let user = await SessionService.authentication(
+      req.body.mail,
+      req.body.password,
+      emplModel
+    );
+    if (user.person.role > 0) {
+      throw new Error("user unauthorized");
+    }
+    user = await baseService.format(user, "person");
+    SessionService.generate(req.session, user);
+    res.send({ success: true });
+  } catch (err) {
+    res.status(401);
+    res.send({ success: false, error: err });
+  }
+});
+
+app.use(async (req, res, next) => {
+  if (SessionService.check_if_user_logged_in(req.session, 0)) {
+    next();
+  } else {
+    res.status(401);
+    res.send({ success: false });
+  }
+});
+
+app.get("/protect", async (req, res, next) => {
+  res.send({ success: true });
+});
+
+app.get("/logout", async (req, res, next) => {
+  try {
+    SessionService.destroy(req.session, res);
+    res.status(401);
+    res.send({ success: true });
+  } catch (err) {
+    res.send({ success: false, error: err });
+  }
+});
+
 app.use("/user", userRoute);
 app.use("/inv", invRoute);
 app.use("/booking", bookingRoute);
-
-// app.use("/", homeRouter);
-app.get("/prova", async (req, res, next) => {
-  console.log("wow");
-  res.send({ dio: "cane" });
-});
-
-// // catch 404 and forward to error handler
-// app.use("/", function (req, res, next) {
-//   // logger.info('Form: ' + util.inspect(req, { depth: null }));
-//   logger.warn("resource " + JSON.stringify(req.url) + " not found");
-//   next();
-// });
 
 module.exports = app;

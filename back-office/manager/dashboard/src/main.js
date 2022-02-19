@@ -1,6 +1,8 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-// import Chart from "./plugins/chartJS";
+
+import { createStore } from "vuex";
+
 import vuetify from "./plugins/vuetify";
 import { loadFonts } from "./plugins/webfontloader";
 
@@ -11,4 +13,25 @@ import router from "./router/index";
 
 loadFonts();
 
-createApp(App).use(vuetify).use(router).use(VueChartkick).mount("#app");
+const store = createStore({
+  state() {
+    return {
+      logged: true,
+    };
+  },
+  mutations: {
+    logout(state) {
+      state.logged = false;
+    },
+    login(state) {
+      state.logged = true;
+    },
+  },
+});
+
+createApp(App)
+  .use(vuetify)
+  .use(router)
+  .use(store)
+  .use(VueChartkick)
+  .mount("#app");
