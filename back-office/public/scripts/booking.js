@@ -237,7 +237,7 @@ async function bookingPreview(user, computer, begin, end) {
         updateFinal(amount);
         discountList.push({ reason: "punti fedelta", amount: amount });
       }
-    } else {
+    } else if (used[0]) {
       updateFinal(-used.attr("data-amount"));
       used.remove();
       discountList = discountList.filter(
@@ -461,7 +461,8 @@ $("#returnModal").on("show.bs.modal", async (event) => {
   function setModal(booking) {
     document.getElementById("returnReturned").checked = booking.returned;
     document.getElementById("returnPayed").checked = booking.payed;
-    document.getElementById("returnFinalCondition").value = booking.final_condition;
+    document.getElementById("returnFinalCondition").value =
+      booking.final_condition;
     document.getElementById("returnNote").value = booking.note;
   }
 
@@ -475,8 +476,8 @@ $("#returnModal").on("show.bs.modal", async (event) => {
       note: document.getElementById("returnNote").value,
       computer:
         $("#returnFinalCondition").val() <= 5
-        ? getComputerFromBookingShown(booking_id)
-        : null,
+          ? getComputerFromBookingShown(booking_id)
+          : null,
     };
 
     try {
