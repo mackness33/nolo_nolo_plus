@@ -732,10 +732,8 @@ $("#deleteModal").on("show.bs.modal", function (event) {
 });
 
 $("#availableModal").on("show.bs.modal", function (event) {
-  console.log("dAJE!");
   $("#availableBtn").on("click", async (evt) => {
     const id = event.relatedTarget.dataset.id;
-    console.log("mATE!");
     await $.ajax({
       method: "PUT",
       url: "/nnplus/inv/available",
@@ -743,7 +741,6 @@ $("#availableModal").on("show.bs.modal", function (event) {
     }).done(async (data) => {
       console.log(data);
       await reloadItems();
-      // await populateFilters();
     });
   });
 });

@@ -19,7 +19,8 @@ router.get("/allComponents", async (req, res, next) => {
 });
 
 router.get("/getAll", async (req, res, next) => {
-  const items = await computerService.find();
+  const available = (req.session.mail) ? {} : { available: true };
+  const items = await computerService.find(available);
   res.send(items);
 });
 
