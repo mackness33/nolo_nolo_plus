@@ -53,6 +53,8 @@ import Tooltip from "@mui/material/Tooltip";
 import landing1 from "./images/landing1.jpg";
 import landing2 from "./images/landing2.jpeg";
 import landing3 from "./images/landing3.jpg";
+import landing4 from "./images/landing4.jpg";
+import logo from "./images/logo.png";
 
 import { GrPersonalComputer } from "react-icons/gr";
 
@@ -78,10 +80,74 @@ const Landing = () => {
         alignItems: "center",
       }}
     >
+      <Typography sx={{ mb: "2rem" }} gutterBottom variant='h5' component='div'>
+        Benvenuto su
+      </Typography>
+      <img src={logo} alt='logo' />
+      <Typography sx={{ fontStyle: "italic" }}>Nolo Nolo +™</Typography>
+
       <Grow timeout={500} in={true}>
         <Card
           sx={[
-            { display: "flex", width: "100%", mt: "2rem" },
+            {
+              minHeight: "20rem",
+              display: "flex",
+              width: "100%",
+              flexDirection: "row-reverse",
+              mt: "2rem",
+            },
+            tablet && { flexDirection: "column" },
+          ]}
+        >
+          <CardMedia
+            component='img'
+            image={landing4}
+            alt='Uomo in ufficio che sorride'
+            sx={[
+              { objectFit: "cover", maxWidth: "40%" },
+              tablet && {
+                display: "flex",
+                justifyContent: "center",
+                maxWidth: "none",
+                maxHeight: "25rem",
+              },
+            ]}
+          />
+          <CardContent
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography gutterBottom variant='h5' component='div'>
+              Tutta la tecnologia che ti serve!
+            </Typography>
+            <Typography variant='body2' color='text.secondary'>
+              Su Nolo Nolo +™ puoi trovare tutti di i computer che tu o i tuoi
+              collaboratori avete bisogno. Da portatili thin-and-light fino a
+              Desktop per Content Creation, nel nostro catalogo puoi trovare
+              qualunque varieta' di computer capace di adattarsi alle tue
+              esigenze.
+            </Typography>
+            <Box sx={{ mt: "2rem" }}>
+              <Button component={Link} to='/catalogue'>
+                Vai al catalogo
+              </Button>
+            </Box>
+          </CardContent>
+        </Card>
+      </Grow>
+
+      <Divider flexItem sx={{ my: "2.5rem" }}>
+        <GrPersonalComputer />
+      </Divider>
+
+      <Grow timeout={500} in={true}>
+        <Card
+          sx={[
+            { display: "flex", width: "100%", minHeight: "20rem" },
             tablet && { flexDirection: "column" },
           ]}
         >
@@ -111,13 +177,14 @@ const Landing = () => {
             }}
           >
             <Typography gutterBottom variant='h5' component='div'>
-              Piu' spendi, piu' risparmi!
+              Piu' prenoti, piu' risparmi!
             </Typography>
             <Typography variant='body2' color='text.secondary'>
               Con il nostro servizio più prenoti e più risparmi! Ad ogni
               prenotazione ti verrà accreditato 1 punto. Potrai spenderli per
               ottenere fantastici sconti! Ogni 10 punti puoi ottenere 1€ di
-              sconto sulla tua prossima prenotazione.
+              sconto sulla tua prossima prenotazione. Registrati subito per
+              accedere alle nostre fantastiche promozioni!
             </Typography>
             <Box sx={{ mt: "2rem" }}>
               {logged ? (
@@ -142,6 +209,7 @@ const Landing = () => {
         <Card
           sx={[
             {
+              minHeight: "20rem",
               display: "flex",
               width: "100%",
               flexDirection: "row-reverse",
@@ -180,11 +248,6 @@ const Landing = () => {
               condizioni iniziali avrai diritto ad una vasta varietà di altri
               sconti!
             </Typography>
-            <Box sx={{ mt: "2rem" }}>
-              <Button component={Link} to='/catalogue'>
-                Vai al catalogo
-              </Button>
-            </Box>
           </CardContent>
         </Card>
       </Grow>
@@ -196,7 +259,7 @@ const Landing = () => {
       <Grow timeout={500} in={true}>
         <Card
           sx={[
-            { display: "flex", width: "100%", mb: "1rem" },
+            { minHeight: "20rem", display: "flex", width: "100%", mb: "1rem" },
             tablet && { flexDirection: "column" },
           ]}
         >

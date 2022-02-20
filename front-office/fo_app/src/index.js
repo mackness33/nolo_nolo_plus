@@ -13,6 +13,8 @@ import ProductPage from "./productPage/ProductPage";
 import RegisterLogin from "./registerLogin/RegisterLogin";
 import { NetworkContext } from "./NetworkContext";
 
+import "@fontsource/roboto/500.css";
+
 const Wrapper = ({ children }) => {
   const [globalUser, setGlobalUser] = useState();
   const location = useLocation();
