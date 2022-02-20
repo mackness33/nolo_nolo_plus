@@ -29,7 +29,7 @@ router.get("/userStat", async (req, res, next) => {
   const sumObj = await bModel.aggregate([
     { $group: { _id: null, total: { $sum: "$final_price" } } },
   ]);
-  resBuild.totalIncome = sumObj[0].total;
+  resBuild.totalIncome = sumObj.length ? sumObj[0].total : 0;
   let users = await userService.find();
   resBuild.totalUsers = users.length;
   users = await userService.find({ status: { $ne: 0 } });
@@ -97,7 +97,7 @@ router.get("/bookingPerUser", async (req, res, next) => {
 
   const group = {
     _id: "$user",
-    total: { $sum: {} }
+    total: { $sum: {} },
   };
 
   const result = await userService.getCharts(null, group, "total");
