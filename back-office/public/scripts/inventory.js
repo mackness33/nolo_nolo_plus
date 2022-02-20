@@ -224,7 +224,6 @@ async function addModal() {
       description: form.elements[9].value,
       condition: form.elements[10].value,
       note: form.elements[11].value,
-
     };
 
     console.log(compInstance);
@@ -273,7 +272,7 @@ async function editModal(event) {
   });
   populateModal(item);
 
-  $("body").on("submit", "#addModal", async function (evt) {
+  $("body").on("submit", "#addForm", async function (evt) {
     evt.preventDefault();
     await $.get("/nnplus/inv/getOne", {
       id: event.relatedTarget.dataset.id,
@@ -313,7 +312,7 @@ async function editModal(event) {
 
 $("#addModal").on("hide.bs.modal", function (event) {
   $("#addForm")[0].reset();
-  $("body").off("submit", "#addModal");
+  $("body").off("submit", "#addForm");
   $("#addBrand").autocomplete("destroy");
   $("#addModel").autocomplete("destroy");
   $("#addType").autocomplete("destroy");
@@ -387,7 +386,7 @@ $("#bookingModal").on("show.bs.modal", async function (event) {
       data: { mail: $("#addUser").val() },
     })
       .done((data) => {
-        if (data){
+        if (data) {
           user = data;
         }
       })
