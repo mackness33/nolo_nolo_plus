@@ -258,6 +258,7 @@ export default function Searchbar2() {
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
                     clearable
+                    minDate={new Date()}
                     label='Data ritiro'
                     value={startDate}
                     onChange={(newValue) => {
@@ -284,6 +285,7 @@ export default function Searchbar2() {
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
                     label='Data consegna'
+                    minDate={new Date()}
                     value={endDate}
                     onChange={(newValue) => {
                       setEndDate(newValue);

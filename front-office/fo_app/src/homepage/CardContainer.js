@@ -25,7 +25,7 @@ const CardContainer = () => {
     } else {
       setUser(null);
     }
-  }, [globalUser]);
+  }, [globalUser, computers]);
   return (
     <Box>
       <Container
@@ -42,7 +42,6 @@ const CardContainer = () => {
         disableGutters
       >
         {computers?.map((computer) => {
-          console.log(computer._id);
           const chosen = user ? user.favourites.includes(computer._id) : false;
           return (
             <Computercard computer={computer} user={user} chosen={chosen} />

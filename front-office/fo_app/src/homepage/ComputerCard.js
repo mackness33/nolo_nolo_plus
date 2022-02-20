@@ -59,8 +59,10 @@ const Computercard = ({ computer, user, chosen }) => {
   React.useEffect(() => {
     if (chosen) {
       setFav(true);
+    } else {
+      setFav(false);
     }
-  }, [user]);
+  }, [user, computer, chosen]);
 
   const handleFav = async (add) => {
     console.log(user);
