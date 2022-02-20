@@ -11,7 +11,6 @@
 <script>
 import axios from "axios";
 import NavBar from "./components/NavBar.vue";
-import HelloWorld from "./components/HelloWorld.vue";
 import CustomerContainer from "./components/Customer.vue";
 import InventoryContainer from "./components/Inventory.vue";
 import BookingContainer from "./components/Booking.vue";
@@ -21,7 +20,6 @@ export default {
   name: "App",
 
   components: {
-    HelloWorld,
     NavBar,
     CustomerContainer,
     InventoryContainer,
