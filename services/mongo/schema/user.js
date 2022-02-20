@@ -37,6 +37,10 @@ const user_schema = mongoose.Schema({
     default: 0,
   },
   feedback: [feedback_schema],
+  favourites: {
+    type: [mongoose.Schema.Types.ObjectId],
+    deafult: [],
+  },
 });
 
 const User = helper.get_model("User", user_schema);

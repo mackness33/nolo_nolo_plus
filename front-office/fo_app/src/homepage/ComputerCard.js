@@ -18,22 +18,76 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+
 import Divider from "@mui/material/Divider";
 
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { ComputerContext, ComputerBackup } from "./HomeContext";
+import { NetworkContext } from "../NetworkContext";
 
 import { BsCpu } from "react-icons/bs";
 import { GiProcessor } from "react-icons/gi";
 import { FaMemory } from "react-icons/fa";
 
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+import StarIcon from "@mui/icons-material/Star";
+
 import { Link } from "react-router-dom";
 
 import Grow from "@mui/material/Fade";
+import axios from "axios";
 
-const Computercard = ({ computer }) => {
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant='filled' {...props} />;
+});
+
+const Computercard = ({ computer, user, chosen }) => {
   const mobile = useMediaQuery("(max-width: 768px)");
   let params = useParams();
+  const [fav, setFav] = React.useState(false);
+  const [alert, setAlert] = React.useState(false);
+  const [alertMsg, setAlertMsg] = React.useState("");
+  const [severity, setSeverity] = React.useState("success");
+  const { globalUser, setGlobalUser } = React.useContext(NetworkContext);
+
+  const handleAlertClose = () => {
+    setAlert(false);
+  };
+
+  React.useEffect(() => {
+    if (chosen) {
+      setFav(true);
+    }
+  }, [user]);
+
+  const handleFav = async (add) => {
+    console.log(user);
+    if (user !== null) {
+      const res = await axios.post(
+        "http://localhost:8000/front/user/changeFavs",
+        { userId: user._id, compId: computer._id, add: add }
+      );
+      console.log(res);
+      if (res.data.success) {
+        setSeverity("success");
+        setFav(add);
+        setAlertMsg(add ? "Aggiunto ai preferiti!" : "Rimosso dai preferiti!");
+        setAlert(true);
+      } else {
+        setSeverity("error");
+        setAlertMsg("Modifica fallita!");
+        console.log(res.data.error);
+        setAlert(true);
+      }
+      console.log(computer._id);
+    } else {
+      setSeverity("error");
+      setAlertMsg("Devi fare login per salvare i preferiti!");
+      setAlert(true);
+    }
+  };
 
   return (
     <Grow timeout={500} in={true}>
@@ -55,6 +109,21 @@ const Computercard = ({ computer }) => {
           },
         ]}
       >
+        <Snackbar
+          anchorOrigin={{ horizontal: "center", vertical: "top" }}
+          open={alert}
+          autoHideDuration={3000}
+          onClose={handleAlertClose}
+        >
+          <Alert
+            onClose={handleAlertClose}
+            severity={severity}
+            sx={{ width: "100%" }}
+          >
+            {alertMsg}
+          </Alert>
+        </Snackbar>
+
         <CardMedia
           sx={[
             {
@@ -69,6 +138,23 @@ const Computercard = ({ computer }) => {
           src={computer.image}
           alt={`${computer.brand} ${computer.model}`}
         />
+
+        {fav ? (
+          <StarIcon
+            onClick={() => {
+              handleFav(false);
+            }}
+            sx={{ m: "0.5rem" }}
+          />
+        ) : (
+          <StarBorderIcon
+            onClick={() => {
+              handleFav(true);
+            }}
+            sx={{ m: "0.5rem" }}
+          />
+        )}
+
         <Divider />
         <CardContent
           sx={{
@@ -76,6 +162,7 @@ const Computercard = ({ computer }) => {
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
+            backgroundColor: fav ? "rgba(191, 191, 63, 0.8)" : "none",
           }}
         >
           <Container>

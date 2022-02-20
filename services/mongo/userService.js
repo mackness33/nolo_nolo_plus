@@ -29,7 +29,7 @@ class userService extends personService {
   }
 
   async find(params, attributes = null) {
-    var usersTmp = await super.find(params, attributes);
+    var usersTmp = await super.find(params);
 
     for (const user of usersTmp) {
       await this.evalStatus(user);
@@ -139,6 +139,25 @@ class userService extends personService {
       newStatus = 4;
     }
     await this.updateOne({ _id: user.id }, { status: newStatus });
+  }
+
+  async updateFavs(userId, compId, add) {
+    const user = await super.findOne({ _id: userId }, "mail favourites");
+    console.warn(JSON.stringify(user));
+    try {
+      if (add) {
+        user.favourites.push(compId);
+        await user.save();
+      } else {
+        user.favourites = user.favourites.filter((el) => {
+          return el != compId;
+        });
+        user.save();
+      }
+      return { success: true };
+    } catch (err) {
+      return { success: false, error: err };
+    }
   }
 
   async getCharts(match, group, variable) {

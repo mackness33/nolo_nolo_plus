@@ -153,59 +153,22 @@ router.post("/deleteBooking", async (req, res, next) => {
   }
 });
 
-router.get("/getOne", async (req, res, next) => {
-  var user = await userService.findOne({ "person.mail": req.query.mail });
-  user = user ? userService.format(user, "person") : user;
+router.post("/changeFavs", async (req, res, next) => {
+  logger.info("IN user -- changeFavs");
+  if (req.session && req.session.mail) {
+    // if (true) {
+    const result = await userService.updateFavs(
+      req.body.userId,
+      req.body.compId,
+      req.body.add
+    );
 
-  if (user) {
-    if (req.query.mode == "edit") {
-      user.feedback = userService.filterFeeds(user.feedback, req.session.mail);
-    }
-    for (let i = 0; i < user.feedback.length; i++) {
-      user.feedback[i].emplCode = userService.format(
-        user.feedback[i].emplCode,
-        "person"
-      );
-    }
+    res.send({ ...result });
+    // await bookingService.updateOne({ _id: req.body.id }, data);
+    // res.send({ success: true });
+  } else {
+    res.send({ success: false });
   }
-
-  res.send(user);
-});
-
-router.post("/setOne", async (req, res, next) => {
-  req.body.feeds = req.body["feeds[]"];
-  delete req.body["feeds[]"];
-  console.log("QUI::: " + JSON.stringify(req.body));
-  await userService.updateOne({ "person.mail": req.body.oldMail }, req.body);
-  res.send({});
-});
-
-router.get("/all", async (req, res, next) => {
-  const users = await userService.find(req.query.params, req.query.attributes);
-  for (let i = 0; i < users.length; i++) {
-    users[i] = userService.format(users[i], "person");
-  }
-  res.send(users);
-});
-
-router.post("/add", async (req, res, next) => {
-  const user = {
-    ...userService.setUpPerson(req.body),
-    birth: req.body.birth,
-    status: req.body.status,
-    points: req.body.points,
-    feedback: [],
-  };
-  await userService.insertOne(user);
-  res.send({});
-});
-
-router.post("/deleteOne", async (req, res, next) => {
-  res.send(await userService.deleteOne({ "person.mail": req.body.mail }));
-});
-
-router.get("/checkExist", async (req, res, next) => {
-  res.send(await userService.checkExists({ "person.mail": req.query.mail }));
 });
 
 module.exports = router;
