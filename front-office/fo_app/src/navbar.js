@@ -269,10 +269,10 @@ const SmallMenu = () => {
           display: { xs: "block", md: "none" },
         }}
       >
-        <MenuItem key='homepage'>
+        <MenuItem component={Link} to='/' key='homepage'>
           <Typography textAlign='center'>Homepage</Typography>
         </MenuItem>
-        <MenuItem key='catalogo'>
+        <MenuItem component={Link} to='/catalogue' key='catalogo'>
           <Typography textAlign='center'>Catalogo</Typography>
         </MenuItem>
       </Menu>
