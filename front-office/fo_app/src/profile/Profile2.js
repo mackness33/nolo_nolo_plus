@@ -432,7 +432,7 @@ const BookingContainer = () => {
     const user = await identity();
     const res = await axios.get(
       "http://localhost:8000/front/user/getBookings",
-      { params: { mail: "primo@levi" } }
+      { params: { mail: user.mail } }
     );
     // console.log(res);
     if (!res.data.success) {

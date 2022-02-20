@@ -93,7 +93,7 @@ export default function ComputerContent() {
     } else {
       setUser(null);
     }
-  }, [params.id, globalUser]);
+  }, [params.id]);
 
   /**
    * at each page change, gets the item, its booking and

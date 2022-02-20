@@ -112,10 +112,11 @@ router.get("/getBookings", async (req, res, next) => {
   logger.info("IN user -- getBookings");
   if (req.session && req.session.mail) {
     // if (true) {
-    logger.info(req.query.mail);
+    logger.warn(req.query.mail);
 
     const user = await userService.findOne({
-      "person.mail": "primo@levi",
+      // "person.mail": "primo@levi",
+      "person.mail": req.session.mail,
     });
     const books = await bookingService.getPopulatedBookingsByUser(user.id);
     res.send({ success: true, payload: books });
