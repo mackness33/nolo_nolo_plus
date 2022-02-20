@@ -1,6 +1,6 @@
 import * as React from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { identity, checkLogged } from "./comms";
 
 import CssBaseline from "@mui/material/CssBaseline";
@@ -50,8 +50,23 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 
 import Tooltip from "@mui/material/Tooltip";
 
+import landing1 from "./images/landing1.jpg";
+import landing2 from "./images/landing2.jpeg";
+import landing3 from "./images/landing3.jpg";
+
+import { GrPersonalComputer } from "react-icons/gr";
+
+import Grow from "@mui/material/Fade";
+
 const Landing = () => {
   const tablet = useMediaQuery("(max-width: 1024px)");
+  const [logged, setLogged] = React.useState(false);
+  const { globalUser, setGlobalUser } = React.useContext(NetworkContext);
+
+  React.useEffect(async () => {
+    const res = await checkLogged();
+    setLogged(res);
+  }, [globalUser]);
 
   return (
     <Container
@@ -63,11 +78,162 @@ const Landing = () => {
         alignItems: "center",
       }}
     >
-      <Paper elevation={5} sx={{ height: "30%", width: "%", mt: "5rem" }}>
-        <Box>
-          <Typography variant='h2'>Benvenuto</Typography>
-        </Box>
-      </Paper>
+      <Grow timeout={500} in={true}>
+        <Card
+          sx={[
+            { display: "flex", width: "100%", mt: "2rem" },
+            tablet && { flexDirection: "column" },
+          ]}
+        >
+          <CardMedia
+            onClick={() => {
+              console.log(logged);
+            }}
+            component='img'
+            image={landing1}
+            alt='uomo che scive sulla tastiera'
+            sx={[
+              { objectFit: "cover", maxWidth: "40%" },
+              tablet && {
+                display: "flex",
+                justifyContent: "center",
+                maxWidth: "none",
+                maxHeight: "25rem",
+              },
+            ]}
+          />
+          <CardContent
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography gutterBottom variant='h5' component='div'>
+              Piu' spendi, piu' risparmi!
+            </Typography>
+            <Typography variant='body2' color='text.secondary'>
+              Con il nostro servizio più prenoti e più risparmi! Ad ogni
+              prenotazione ti verrà accreditato 1 punto. Potrai spenderli per
+              ottenere fantastici sconti! Ogni 10 punti puoi ottenere 1€ di
+              sconto sulla tua prossima prenotazione.
+            </Typography>
+            <Box sx={{ mt: "2rem" }}>
+              {logged ? (
+                <Button component={Link} to='/profile'>
+                  vai al tuo profilo
+                </Button>
+              ) : (
+                <Button component={Link} to='/registerLogin'>
+                  registrati
+                </Button>
+              )}
+            </Box>
+          </CardContent>
+        </Card>
+      </Grow>
+
+      <Divider flexItem sx={{ my: "2.5rem" }}>
+        <GrPersonalComputer />
+      </Divider>
+
+      <Grow timeout={500} in={true}>
+        <Card
+          sx={[
+            {
+              display: "flex",
+              width: "100%",
+              flexDirection: "row-reverse",
+            },
+            tablet && { flexDirection: "column" },
+          ]}
+        >
+          <CardMedia
+            component='img'
+            image={landing2}
+            alt='Uomo in ufficio che sorride'
+            sx={[
+              { objectFit: "cover", maxWidth: "40%" },
+              tablet && {
+                display: "flex",
+                justifyContent: "center",
+                maxWidth: "none",
+                maxHeight: "25rem",
+              },
+            ]}
+          />
+          <CardContent
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography gutterBottom variant='h5' component='div'>
+              Ti premiamo!
+            </Typography>
+            <Typography variant='body2' color='text.secondary'>
+              Ci sono anche altri modi di guadagnare, infatti se sarai
+              rispettoso degli oggetti noleggiati e li riporterai nelle loro
+              condizioni iniziali avrai diritto ad una vasta varietà di altri
+              sconti!
+            </Typography>
+            <Box sx={{ mt: "2rem" }}>
+              <Button component={Link} to='/catalogue'>
+                Vai al catalogo
+              </Button>
+            </Box>
+          </CardContent>
+        </Card>
+      </Grow>
+
+      <Divider flexItem sx={{ my: "2.5rem" }}>
+        <GrPersonalComputer />
+      </Divider>
+
+      <Grow timeout={500} in={true}>
+        <Card
+          sx={[
+            { display: "flex", width: "100%", mb: "1rem" },
+            tablet && { flexDirection: "column" },
+          ]}
+        >
+          <CardMedia
+            component='img'
+            image={landing3}
+            alt='uomo che scive sulla tastiera'
+            sx={[
+              { objectFit: "cover", maxWidth: "40%" },
+              tablet && {
+                display: "flex",
+                justifyContent: "center",
+                maxWidth: "none",
+                maxHeight: "25rem",
+              },
+            ]}
+          />
+          <CardContent
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography gutterBottom variant='h5' component='div'>
+              Siamo sempre disponibili!
+            </Typography>
+            <Typography variant='body2' color='text.secondary'>
+              Sembra tutto troppo bello? Lo è perchè il nostro servizio vuole
+              rendere l'esperienza di noleggio il più gradevole possibile. Per
+              questo ti offriamo la possibilità di poter disdire la tua
+              prenotazione fino al giorno precedente al ritiro!
+            </Typography>
+          </CardContent>
+        </Card>
+      </Grow>
     </Container>
   );
 };
