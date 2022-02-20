@@ -93,7 +93,7 @@ export default function ComputerContent() {
     } else {
       setUser(null);
     }
-  }, [params.id]);
+  }, [params.id, globalUser]);
 
   /**
    * at each page change, gets the item, its booking and
@@ -163,15 +163,17 @@ export default function ComputerContent() {
 
       // setShowCalc(true);
       setShowUnavail(false);
-      for (let i = 0; i < bookings.length; i++) {
-        const begin = new Date(bookings[i].begin);
-        begin.setHours(0, 0, 0, 0);
-        const end = new Date(bookings[i].end);
-        end.setHours(0, 0, 0, 0);
+      if (isLogged) {
+        for (let i = 0; i < bookings.length; i++) {
+          const begin = new Date(bookings[i].begin);
+          begin.setHours(0, 0, 0, 0);
+          const end = new Date(bookings[i].end);
+          end.setHours(0, 0, 0, 0);
 
-        if (startDate <= begin && end <= endDate) {
-          setShowUnavail(true);
-          return;
+          if (startDate <= begin && end <= endDate) {
+            setShowUnavail(true);
+            return;
+          }
         }
       }
       // evalFinalPrice();
@@ -212,6 +214,10 @@ export default function ComputerContent() {
 
   const handleDisable = (date) => {
     date.setHours(0, 0, 0, 0);
+
+    if (!isLogged) {
+      return false;
+    }
 
     for (let i = 0; i < bookings.length; i++) {
       const begin = new Date(bookings[i].begin);
