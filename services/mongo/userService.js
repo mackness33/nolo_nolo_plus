@@ -116,7 +116,7 @@ class userService extends personService {
     const bookings = await bookingService.find({ user: user.id });
     let id = user.id;
     let initStatus = user.status;
-    let newStatus = 0;
+    let newStatus = 4;
     let stat = [false, false, false, false, false, false];
     for (const booking of bookings) {
       let today = new Date().setHours(0, 0, 0, 0);
@@ -136,35 +136,38 @@ class userService extends personService {
     } else if (stat[2] || stat[1]) {
       newStatus = 1;
     } else {
-      newStatus = 0;
+      newStatus = 4;
     }
     await this.updateOne({ _id: user.id }, { status: newStatus });
   }
 
-  async getCharts (match, group, variable){
+  async getCharts(match, group, variable) {
     const result = [];
     const bModel = await Booking;
     const params = [];
 
-    if (match){
+    if (match) {
       params.push({
-        $match: match
-      })
+        $match: match,
+      });
     }
-    if (group){
+    if (group) {
       params.push({
-        $group: group
-      })
+        $group: group,
+      });
     }
 
     const user_per_count = await bModel.aggregate(params);
 
     let populatedUser = null;
-    for (const user of user_per_count){
+    for (const user of user_per_count) {
       logger.info(user);
-      populatedUser = await this.findOne({_id: user._id});
+      populatedUser = await this.findOne({ _id: user._id });
       logger.info(populatedUser.brand);
-      result.push([`${populatedUser.name} ${populatedUser.surname}`, user[variable]]);
+      result.push([
+        `${populatedUser.name} ${populatedUser.surname}`,
+        user[variable],
+      ]);
     }
 
     logger.info(JSON.stringify(result));
@@ -172,7 +175,6 @@ class userService extends personService {
     return result;
   }
 }
-
 
 const helper = new userService();
 module.exports = helper;

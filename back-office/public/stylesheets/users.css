@@ -216,6 +216,11 @@ main {
   margin-bottom: 0rem;
 }
 
+.userModal > div {
+  display: flex;
+  flex-direction: column;
+}
+
 #infoModalFeedback {
   margin-bottom: 0.5rem !important;
 }

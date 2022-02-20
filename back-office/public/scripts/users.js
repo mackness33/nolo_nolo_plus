@@ -165,7 +165,7 @@ async function populateModal(event, mode) {
     mail.innerHTML = user.mail;
     points.innerHTML = user.points;
     switch (user.status) {
-      case 0:
+      case 4:
         status.innerHTML = "Inattivo";
         break;
       case 1:
@@ -309,7 +309,7 @@ async function addUser() {
     password: inputs[2].value,
     birth: inputs[3].value,
     mail: inputs[4].value,
-    status: inputs[5].value,
+    status: 4,
     points: inputs[6].value,
     picture: img,
     role: 3,
@@ -435,10 +435,14 @@ function showUsers(users) {
     userEl.innerHTML = `<div class="customer-info">
                             <div class="no-btns">
                             <div class="detail">
-                            <span class="name" tabindex="0"><b style="display:inline;">Nome:</b> ${fullName.name} ${fullName.surname}</span>
+                            <span class="name" tabindex="0"><b style="display:inline;">Nome:</b> ${
+                              fullName.name
+                            } ${fullName.surname}</span>
                             </div>
                             <div class="detail">
-                                <span class="id" tabindex="0"><b style="display:inline;">Email:</b> ${user.mail}</span>
+                                <span class="id" tabindex="0"><b style="display:inline;">Email:</b> ${
+                                  user.mail
+                                }</span>
                             </div>
                             <div class="detail">
                                 <span class="status" tabindex="0"><b style="display:inline;">Status:</b> ${statusString}</span>
@@ -448,16 +452,28 @@ function showUsers(users) {
                         </div>
                         <div class="customer-btn">
                                 <button class="btn btn-primary info-btn" data-bs-toggle="modal"
-                                    data-bs-target="#infoModal" data-id="info${user.mail}" aria-label="mostra le informazioni di ${fullName.name} ${fullName.surname}">mostra informazioni</button>
+                                    data-bs-target="#infoModal" data-id="info${
+                                      user.mail
+                                    }" aria-label="mostra le informazioni di ${
+      fullName.name
+    } ${fullName.surname}">mostra informazioni</button>
                                 <button class="btn btn-primary edit-btn" data-bs-toggle="modal"
-                                data-bs-target="#editModal" data-id="edit${user.mail}" aria-label="cambia le informazioni di ${fullName.name} ${fullName.surname}">cambia informazioni</button>
+                                data-bs-target="#editModal" data-id="edit${
+                                  user.mail
+                                }" aria-label="cambia le informazioni di ${
+      fullName.name
+    } ${fullName.surname}">cambia informazioni</button>
                                 <button class="btn btn-primary feedback-btn" data-bs-toggle="modal"
-                                    data-bs-target="#feedModal" aria-label="fornisci un feedback su ${fullName.name} ${fullName.surname}">dai feedback</button>`;
-    if (user.status !== 1 && user.status !== 2){
-      userEl.innerHTML += `<button class="btn btn-danger delete-btn" aria-label="elimina l'account di  ${fullName.name} ${fullName.surname}" data-bs-toggle="modal" data-bs-target="#deleteModal">Elimina</button>
-                      </div>`;
-    }
-    userEl.innerHTML += `</div>`;
+                                    data-bs-target="#feedModal" aria-label="fornisci un feedback su ${
+                                      fullName.name
+                                    } ${fullName.surname}">dai feedback</button>
+                                    ${
+                                      user.status !== 1 && user.status !== 2
+                                        ? `<button class="btn btn-danger delete-btn" aria-label="elimina l'account di  ${fullName.name} ${fullName.surname}" data-bs-toggle="modal" data-bs-target="#deleteModal">Elimina</button>
+                                    </div>`
+                                        : ""
+                                    }
+                        </div>`;
     userList.appendChild(userEl);
   });
 }
