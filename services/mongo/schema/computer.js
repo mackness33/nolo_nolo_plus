@@ -55,7 +55,6 @@ const computerSchema = new mongoose.Schema({
   },
   note: {
     type: String,
-    required: true,
   },
   emplCode: {
     type: mongoose.Schema.Types.ObjectId,
