@@ -2,8 +2,7 @@
   <div id="customerContainer" class="shadow rounded">
     <h2 class="border-bottom border-2 pt-2">Dashboard inventario</h2>
     <div class="stats">
-      <Moneydata title="Statistiche" />
-      <Avgdata title="Medie" />
+      <Invdata title="Statistiche" />
     </div>
     <div class="graphContainer">
       <Columnchart
@@ -13,6 +12,10 @@
       <Columnchart
         data="http://localhost:8000/dash/inv/maxPricePerComputer"
         title="Fatturato per computer"
+      />
+      <Piechart
+        data="http://localhost:8000/dash/inv/componentNumbers"
+        title="Numero di componenti per categoria"
       />
     </div>
   </div>
@@ -24,8 +27,7 @@ import axios from "axios";
 import Piechart from "./userPage/Piechart.vue";
 import Linechart from "./userPage/Linechart.vue";
 import Columnchart from "./userPage/Columnchart.vue";
-import Moneydata from "./userPage/Moneydata.vue";
-import AvgData from "./userPage/Avgdata.vue";
+import Invdata from "./inventoryPage/Invdata.vue";
 
 export default {
   name: "inventoryContainer",
@@ -40,8 +42,7 @@ export default {
     Piechart,
     Linechart,
     Columnchart,
-    Moneydata,
-    AvgData,
+    Invdata,
   },
 
   methods: {
@@ -51,12 +52,6 @@ export default {
   },
 
   props: [],
-
-  mounted() {
-    axios
-      .get("http://localhost:8000/dash/user/userAge")
-      .then((res) => (this.info = res.data));
-  },
 };
 </script>
 

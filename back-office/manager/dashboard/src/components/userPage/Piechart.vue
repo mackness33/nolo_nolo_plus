@@ -28,6 +28,7 @@ export default {
 
 <style scoped>
 .graph {
+  max-width: 332px;
   margin: 2rem;
   padding: 1rem;
   background-color: whitesmoke;

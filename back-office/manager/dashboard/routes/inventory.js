@@ -4,6 +4,7 @@ const logger = require("../../../../logger");
 const computerModel = require("../../../../services/mongo/schema/computer");
 const bookingModel = require("../../../../services/mongo/schema/booking");
 const userModel = require("../../../../services/mongo/schema/user");
+const componentModel = require("../../../../services/mongo/schema/component");
 
 const SessionService = require("../../../../services/auth");
 const userService = require("../../../../services/mongo/userService");
@@ -22,34 +23,43 @@ router.use(async (req, res, next) => {
 });
 
 router.get("/invStat", async (req, res, next) => {
-  logger.info("IN DASH user -- userStat");
+  logger.info("IN DASH user -- invStat");
+  const mood = await computerModel;
 
   const resBuild = {};
+
+  resBuild.totalNumber = await mood.find().count();
 
   resBuild.maxComputer = await computerService.getStatsMost(
     null,
     {
       _id: "$computer",
-      total: { $sum: "$final_price" }
+      total: { $sum: "$final_price" },
     },
-    'total'
+    "total"
   );
-  resBuild.computerCurrentlyInUse = await computerService.getStats({ status: 3 }, { _id: "$computer" });
-  resBuild.computerCurrentlyUnavailable = await computerService.find({ available: false });
-  resBuild.computerCurrentlyUnavailableCount = resBuild.computerCurrentlyUnavailable.length;
+  resBuild.computerCurrentlyInUse = await computerService.getStats(
+    { status: 3 },
+    { _id: "$computer" }
+  );
+  resBuild.computerCurrentlyInUse = resBuild.computerCurrentlyInUse.length;
+  resBuild.computerCurrentlyUnavailableCount = await computerService.find({
+    available: false,
+  });
+  resBuild.computerCurrentlyUnavailableCount =
+    resBuild.computerCurrentlyUnavailableCount.length;
   resBuild.computersCount = await computerService.find({ available: false });
   resBuild.computersCount = resBuild.computersCount.count;
 
   res.send(resBuild);
 });
 
-
 router.get("/maxPricePerComputer", async (req, res, next) => {
   logger.info("IN DASH inventory -- maxPricePerComputer");
 
   const group = {
     _id: "$computer",
-    total: { $sum: "$final_price" }
+    total: { $sum: "$final_price" },
   };
 
   const result = await computerService.getCharts(null, group, "total");
@@ -62,7 +72,7 @@ router.get("/computerMostUsed", async (req, res, next) => {
 
   const group = {
     _id: "$computer",
-    count: { $sum: 1 }
+    count: { $sum: 1 },
   };
 
   const result = await computerService.getCharts(null, group, "count");
@@ -74,11 +84,23 @@ router.get("/computerPerUser", async (req, res, next) => {
 
   const group = {
     _id: "$computer",
-    total: { $sum: "$user" }
+    total: { $sum: "$user" },
   };
 
   const result = await computerService.getStats(null, group, "total");
   res.send(result);
+});
+
+router.get("/componentNumbers", async (req, res, next) => {
+  logger.info("IN DASH inventory -- componentNumbers");
+
+  const mood = await componentModel;
+  const data = await mood.find();
+  const resData = [];
+  for (const el of data) {
+    resData.push([el.name, el.list.length]);
+  }
+  res.send(resData);
 });
 
 module.exports = router;

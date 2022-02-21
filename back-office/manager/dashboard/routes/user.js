@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const logger = require("../../../../logger");
+const mongoose = require("mongoose");
 
 const bookingModel = require("../../../../services/mongo/schema/booking");
 const userModel = require("../../../../services/mongo/schema/user");
@@ -40,14 +41,14 @@ router.get("/userStat", async (req, res, next) => {
 });
 
 router.get("/userAgeSpend", async (req, res, next) => {
-  logger.info("IN DASH user -- userAgSpend");
+  logger.info("IN DASH user -- userAgeSpend");
 
   const currentYear = new Date().getFullYear();
   const result = [];
   const bModel = await bookingModel;
   const uModel = await userModel;
 
-  for (let i = 70; i > 0; i = i - 10) {
+  for (let i = 69; i >= 0; i = i - 9) {
     let tmp = currentYear - i;
 
     let users = await uModel.find({
@@ -56,7 +57,7 @@ router.get("/userAgeSpend", async (req, res, next) => {
     let acc = 0;
     for (const user of users) {
       let userBooks = await bModel.aggregate([
-        { $match: { user: "$user.id" } },
+        { $match: { user: new mongoose.Types.ObjectId(user.id) } },
         { $group: { _id: null, amount: { $sum: "$final_price" } } },
       ]);
 
@@ -64,9 +65,10 @@ router.get("/userAgeSpend", async (req, res, next) => {
       logger.warn(user.id);
       logger.warn(JSON.stringify(userBooks.length));
 
-      acc = acc + userBooks.amount;
+      acc = acc + userBooks[0].amount;
     }
-    result.push([`${i} - ${i - 10}`, acc]);
+    result.push([`${i} - ${i - 9}`, acc]);
+    i--;
   }
   logger.info(JSON.stringify(result));
 
@@ -80,12 +82,13 @@ router.get("/userAge", async (req, res, next) => {
   const currentYear = new Date().getFullYear();
   const result = [];
 
-  for (let i = 70; i > 0; i = i - 10) {
+  for (let i = 69; i >= 0; i = i - 9) {
     let tmp = currentYear - i;
     let count = await moodel.find({
       birth: { $gte: JSON.stringify(tmp), $lte: JSON.stringify(tmp + 10) },
     });
-    result.push([`${i} - ${i - 10}`, count.length]);
+    result.push([`${i} - ${i - 9}`, count.length]);
+    i--;
   }
   // logger.info(JSON.stringify(result));
 

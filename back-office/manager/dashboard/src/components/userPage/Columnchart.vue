@@ -2,7 +2,7 @@
   <div class="graph rounded shadow-lg">
     <h5 class="text-capitalize d-flex justify-content-center">{{ title }}</h5>
 
-    <bar-chart :data="data" :download="true"></bar-chart>
+    <column-chart :data="data" :download="true"></column-chart>
   </div>
 </template>
 
@@ -29,15 +29,12 @@ export default {
 
 <style scoped>
 .graph {
-  width: 35rem;
+  max-width: 332px;
   margin: 2rem;
   padding: 1rem;
   background-color: whitesmoke;
 }
 
 @media only screen and (max-width: 1024) {
-  .graph {
-    width: 20rem;
-  }
 }
 </style>
