@@ -16,6 +16,7 @@ var baseService = new baseClass();
 const userRoute = require("./dashboard/routes/user");
 const invRoute = require("./dashboard/routes/inventory");
 const bookingRoute = require("./dashboard/routes/booking");
+const emplRoute = require("./dashboard/routes/employee");
 const authRoute = require("./dashboard/routes/auth");
 
 const app = express();
@@ -51,14 +52,14 @@ app.post("/login", async (req, res, next) => {
   }
 });
 
-app.use(async (req, res, next) => {
-  if (SessionService.check_if_user_logged_in(req.session, 0)) {
-    next();
-  } else {
-    res.status(401);
-    res.send({ success: false });
-  }
-});
+// app.use(async (req, res, next) => {
+//   if (SessionService.check_if_user_logged_in(req.session, 0)) {
+//     next();
+//   } else {
+//     res.status(401);
+//     res.send({ success: false });
+//   }
+// });
 
 app.get("/protect", async (req, res, next) => {
   res.send({ success: true });
@@ -77,5 +78,6 @@ app.get("/logout", async (req, res, next) => {
 app.use("/user", userRoute);
 app.use("/inv", invRoute);
 app.use("/booking", bookingRoute);
+app.use("/empl", emplRoute);
 
 module.exports = app;

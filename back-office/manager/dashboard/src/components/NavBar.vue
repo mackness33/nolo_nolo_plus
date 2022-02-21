@@ -38,6 +38,11 @@
               >
             </li>
             <li class="nav-item" @click="makeActive">
+              <router-link class="nav-link" id="2" to="/employee"
+                >Dipendenti</router-link
+              >
+            </li>
+            <li class="nav-item" @click="makeActive">
               <a
                 class="nav-link"
                 href="http://localhost:8000/nnplus/home/inventory"
