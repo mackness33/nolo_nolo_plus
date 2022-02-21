@@ -46,7 +46,7 @@
               >
             </li>
             <li class="nav-item" @click="makeActive">
-              <a class="nav-link" href="http://localhost:8000/front/catalogue"
+              <a class="nav-link" href="http://localhost:8000/front/"
                 >Sito web</a
               >
             </li>
@@ -102,6 +102,10 @@ export default {
         this.$emit("update:modelValue", value);
       },
     },
+  },
+
+  mounted() {
+    this.$store.commit("setUser", 0);
   },
 };
 </script>
