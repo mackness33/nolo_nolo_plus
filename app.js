@@ -32,6 +32,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 // app.use('/nn+1', back_office);
 app.use(authService.get_session());
+
+app.get("/", async (req, res, next) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
 app.use("/nnplus", back_office);
 app.use("/front", front_office);
 app.use("/dash", dashboard);
@@ -47,9 +52,9 @@ app.use((req, res, next) => {
   );
 });
 
-app.use('/assets', async(req, res, next) =>{
-  res.sendFile(path.join(__dirname, './dist/assets/', req.url))
-})
+app.use("/assets", async (req, res, next) => {
+  res.sendFile(path.join(__dirname, "./dist/assets/", req.url));
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
