@@ -2,27 +2,39 @@
   <div id="customerContainer" class="shadow rounded">
     <h2 class="border-bottom border-2 pt-2">Gestione Dipendenti</h2>
     <div id="topBar">
-      <form id="searchForm">
+      <form @submit="searchSubmit" id="searchForm">
         <input
-          aria-label="Inserisci la mail del dipendente"
-          placeholder="Inserisci la mail del dipendente"
+          required
+          v-model="searchMail"
+          aria-label="Inserisci mail dipendente"
+          placeholder="Inserisci mail dipendente"
           class="form-control"
           type="text"
           id="searchInput"
         />
         <button class="btn btn-primary">Cerca</button>
       </form>
-      <button
-        id="addModalToggle"
-        class="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#addModal"
-      >
-        Aggiungi dipendete
-      </button>
+      <div class="d-flex align-items-center">
+        <button @click="updateList" class="btn btn-warning m-1" id="resetBtn">
+          Reset
+        </button>
+        <button
+          id="addModalToggle"
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#addModal"
+        >
+          Aggiungi Dipendente
+        </button>
+      </div>
     </div>
     <div id="employeeList">
-      <EmployeeCard v-for="user in data" :user="user" :key="user._id" />
+      <EmployeeCard
+        v-for="user in data"
+        :user="user"
+        :updateList="updateList"
+        :key="user._id"
+      />
     </div>
 
     <!-- add modal -->
@@ -40,38 +52,85 @@
             ></button>
           </div>
           <div class="modal-body">
-            <form id="addForm">
+            <form id="addForm" class="w-75" @submit="addUserSubmit">
               <div>
-                <span>Nome:</span>
-                <input type="text" class="form-control" id="addName" />
+                <span class="fw-bold">Nome:</span>
+                <input
+                  v-model="addUser.person.name"
+                  required
+                  type="text"
+                  class="form-control"
+                  id="addName"
+                />
               </div>
 
               <div>
-                <span>Cognome:</span>
-                <input type="text" class="form-control" id="addSurname" />
+                <span class="fw-bold">Cognome:</span>
+                <input
+                  v-model="addUser.person.surname"
+                  required
+                  type="text"
+                  class="form-control"
+                  id="addSurname"
+                />
               </div>
 
               <div>
-                <span>E-mail:</span>
-                <input type="text" class="form-control" id="addMail" />
+                <span class="fw-bold">E-mail:</span>
+                <input
+                  v-model="addUser.person.mail"
+                  required
+                  type="email"
+                  class="form-control"
+                  id="addMail"
+                />
               </div>
 
               <div>
-                <span>Password:</span>
-                <input type="password" class="form-control" id="AddPassword" />
+                <span class="fw-bold">Password:</span>
+                <input
+                  v-model="addUser.person.password"
+                  required
+                  type="password"
+                  class="form-control"
+                  id="AddPassword"
+                />
+              </div>
+
+              <div>
+                <span class="fw-bold">Ruolo:</span>
+                <select
+                  v-model="addUser.person.role"
+                  required
+                  class="form-select"
+                  id="addSelect"
+                >
+                  <option value="0">Manager</option>
+                  <option value="1">Dipendente</option>
+                </select>
               </div>
             </form>
           </div>
 
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
+            <p
+              class="animate__animated animate__bounceIn"
+              v-if="alert"
+              :style="alertStyle"
             >
-              Close
+              {{ alertMsg }}
+            </p>
+            <button
+              style="color: white"
+              class="btn btn-primary"
+              type="submit"
+              form="addForm"
+            >
+              Aggiungi
             </button>
-            <button type="button" class="btn btn-primary">Save changes</button>
+            <button class="btn btn-secondary" data-bs-dismiss="modal">
+              Chiudi
+            </button>
           </div>
         </div>
       </div>
@@ -91,17 +150,75 @@ export default {
   },
   data: () => {
     return {
+      searchMail: "",
       data: [],
+      addUser: {
+        person: {
+          name: "",
+          surname: "",
+          mail: "",
+          password: "",
+          role: 1,
+          picture: "",
+        },
+      },
+      alert: false,
+
+      alertMsg: "dioCane",
+      alertStyle: {
+        color: "red",
+      },
     };
   },
 
   methods: {
-    async getEmpls() {},
+    async updateList() {
+      const res = await axios.get("http://localhost:8000/dash/empl/getAll");
+      this.data = res.data;
+    },
+
+    async addUserSubmit(e) {
+      e.preventDefault();
+      e.target.reset();
+      const res = await axios.post(
+        "http://localhost:8000/dash/empl/addOne",
+        this.addUser
+      );
+      console.log(res.data);
+      this.resetAddUser();
+      this.alertMsg = res.data.message;
+      this.alertStyle.color = res.data.success ? "green" : "red";
+      this.alert = true;
+      setTimeout(() => {
+        this.alert = false;
+      }, 3000);
+      await this.updateList();
+    },
+
+    resetAddUser() {
+      this.addUser.person.name = "";
+      this.addUser.person.surname = "";
+      this.addUser.person.mail = "";
+      this.addUser.person.password = "";
+      this.addUser.person.role = 1;
+    },
+
+    async searchSubmit(e) {
+      e.preventDefault();
+      const res = await axios.get("http://localhost:8000/dash/empl/getOne", {
+        params: { mail: this.searchMail },
+      });
+
+      if (res.data.success && res.data.payload.length > 0) {
+        this.data = res.data.payload;
+      } else {
+        alert("Errore durante la ricerca o nessun utente trovato");
+      }
+    },
   },
 
   async mounted() {
-    const res = await axios.get("http://localhost:8000/dash/empl/getAll");
-    this.data = res.data;
+    await this.updateList();
   },
 };
 </script>
@@ -143,6 +260,10 @@ export default {
   margin: 0.5rem;
 }
 
+#addForm > div {
+  margin-bottom: 1rem;
+}
+
 #employeeList {
   width: 90%;
   margin-top: 1.5rem;
@@ -170,7 +291,6 @@ export default {
 
   #topBar {
     align-items: center;
-
     flex-direction: column;
   }
 }

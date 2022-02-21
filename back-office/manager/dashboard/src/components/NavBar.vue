@@ -19,11 +19,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-              <router-link
-                class="nav-link active"
-                id="0"
-                aria-current="clienti"
-                to="/"
+              <router-link class="nav-link" id="0" aria-current="clienti" to="/"
                 >Clienti</router-link
               >
             </li>
@@ -85,10 +81,6 @@ export default {
 
   methods: {
     makeActive(event) {
-      document.querySelectorAll("li > a").forEach((el) => {
-        el.classList.remove("active");
-      });
-      event.target.classList.add("active");
       this.currentlyActive = event.target.id;
     },
     async logout() {

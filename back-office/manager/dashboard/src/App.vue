@@ -1,6 +1,6 @@
 <template>
   <div v-cloak id="globalContainer">
-    <NavBar v-model="currentlyShowing" :logged="logged" />
+    <NavBar @click="test" v-model="currentlyShowing" :logged="logged" />
     <router-view />
     <!-- <CustomerContainer v-if="showCustomer" />
     <InventoryContainer v-if="showInv" />
@@ -42,10 +42,28 @@ export default {
     toggleBox() {
       this.isVisible = !this.isVisible;
     },
+
+    async setUser() {
+      const res = await axios.get("http://localhost:8000/dash/empl/whoAmI");
+      if (res.data.success) {
+        this.$store.commit("setUser", res.data.payload._id);
+      } else {
+        this.$store.commit("setUser", 0);
+      }
+    },
+
+    test() {
+      console.log(this.$store.state.userId);
+    },
   },
 
-  updated() {
+  async mounted() {
+    await this.setUser();
+  },
+
+  async updated() {
     console.log("updated");
+    await this.setUser();
 
     if (this.currentlyShowing == 0) {
       this.showCustomer = true;

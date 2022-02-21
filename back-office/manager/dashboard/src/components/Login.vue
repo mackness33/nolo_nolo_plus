@@ -56,6 +56,7 @@ export default {
         console.log(res);
         this.showError = false;
         this.$store.commit("login");
+        await this.setUser();
         this.$router.replace("/");
       } catch (err) {
         this.showError = true;
@@ -63,6 +64,15 @@ export default {
           this.showError = false;
         }, 3000);
         console.log(err);
+      }
+    },
+
+    async setUser() {
+      const res = await axios.get("http://localhost:8000/dash/empl/whoAmI");
+      if (res.data.success) {
+        this.$store.commit("setUser", res.data.payload._id);
+      } else {
+        this.$store.commit("setUser", 0);
       }
     },
   },

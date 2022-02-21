@@ -17,6 +17,7 @@ const store = createStore({
   state() {
     return {
       logged: true,
+      userId: {},
     };
   },
   mutations: {
@@ -25,6 +26,9 @@ const store = createStore({
     },
     login(state) {
       state.logged = true;
+    },
+    setUser(state, u) {
+      state.userId = u;
     },
   },
 });
