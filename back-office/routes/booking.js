@@ -22,7 +22,6 @@ router.get("/getDiscountsComputer", async (req, res, next) => {
   res.send({ discounts, points: 0 });
 });
 
-
 router.get("/getBookingsByItem", async (req, res, next) => {
   logger.info(JSON.stringify(req.query.id));
   logger.info("in booking");
@@ -58,8 +57,10 @@ router.get("/getDiscounts", async (req, res, next) => {
 
 router.post("/addOne", async (req, res, next) => {
   const booking = JSON.parse(req.body.data);
-  const employee = await employeeService.findOne({'person.mail': req.session.mail});
-  booking.employee = (employee) ? employee._id : null;
+  const employee = await employeeService.findOne({
+    "person.mail": req.session.mail,
+  });
+  booking.employee = employee ? employee._id : null;
 
   const ack_insert = await bookingService.insertOne(booking);
   await userService.changePoints(booking.user, -booking.points);
@@ -100,6 +101,16 @@ router.get("/getBookingsByUser", async (req, res, next) => {
   const attributes = req.query.attributes ? req.query.attributes : null;
   const bookings = await bookingService.getPopulatedBookingsByUser(
     req.query.user,
+    attributes
+  );
+
+  res.send(bookings);
+});
+
+router.get("/getBookingsByEmp", async (req, res, next) => {
+  const attributes = req.query.attributes ? req.query.attributes : null;
+  const bookings = await bookingService.getPopulatedBookingsByEmployee(
+    req.query.emp,
     attributes
   );
 

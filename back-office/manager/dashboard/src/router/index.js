@@ -22,19 +22,19 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from) => {
-  // console.log("FROM ROUTER");
-  // console.log(to.fullPath);
-  // console.log("END ROUTER");
-  // if (to.fullPath == "/login") {
-  //   return true;
-  // }
-  // try {
-  //   const res = await axios.get("http://localhost:8000/dash/protect");
-  //   console.log(res);
-  // } catch (err) {
-  //   console.error("USER NOT LOGGED");
-  //   return "/login";
-  // }
+  console.log("FROM ROUTER");
+  console.log(to.fullPath);
+  console.log("END ROUTER");
+  if (to.fullPath == "/login") {
+    return true;
+  }
+  try {
+    const res = await axios.get("http://localhost:8000/dash/protect");
+    console.log(res);
+  } catch (err) {
+    console.error("USER NOT LOGGED");
+    return "/login";
+  }
 });
 
 export default router;

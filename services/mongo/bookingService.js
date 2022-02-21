@@ -37,12 +37,15 @@ class bookingService extends baseService {
   }
 
   async updateOne(filter, params) {
-    if (params.final_condition && params.final_condition <= 5){
-      await computerService.updateOne({_id: params.computer}, {available: false});
+    if (params.final_condition && params.final_condition <= 5) {
+      await computerService.updateOne(
+        { _id: params.computer },
+        { available: false }
+      );
       logger.info("params: " + JSON.stringify(params));
     }
 
-    if (!params.computer){
+    if (!params.computer) {
       delete params.computer;
     }
 
@@ -168,6 +171,11 @@ class bookingService extends baseService {
     return this.getPopulatedBookings({ user: user_id }, attrs);
   }
 
+  async getPopulatedBookingsByEmployee(emp_id, attrs = null) {
+    logger.info("in getPopulateBookingsByUser");
+    return this.getPopulatedBookings({ employee: emp_id }, attrs);
+  }
+
   async getPopulatedBookingsByComputer(computer_id, attrs = null) {
     return this.getPopulatedBookings({ computer: computer_id }, attrs);
   }
@@ -196,7 +204,7 @@ class bookingService extends baseService {
       return booking;
     }
 
-    await booking.populate({ path: 'computer', select: 'available'});
+    await booking.populate({ path: "computer", select: "available" });
     // let filtered_booking = this._filterObject(booking, (key, value) => {
     //   // const filter = ["onHold", "status", "revoked", "late"];
     //   const filter = ["onHold", "status", "revoked", "late", "returned", "payed"];
@@ -216,10 +224,12 @@ class bookingService extends baseService {
 
     if (!booking.computer.available) {
       booking.late = false;
-      if (!future) {                                  // if revoked
+      if (!future) {
+        // if revoked
         booking.revoked = true;
         booking.status = 0;
-      } else {                                        // if onHold
+      } else {
+        // if onHold
         booking.onHold = true;
         booking.status = 1;
       }
@@ -227,17 +237,21 @@ class bookingService extends baseService {
       booking.onHold = false;
       booking.revoked = false;
 
-      if (future) {                                 // if future
+      if (future) {
+        // if future
         booking.status = 2;
       } else {
-        if (current && !booking.returned && !booking.payed) {                         // if current
+        if (current && !booking.returned && !booking.payed) {
+          // if current
           booking.status = 3;
-        } else if (!booking.returned || !booking.payed) {      // if late
+        } else if (!booking.returned || !booking.payed) {
+          // if late
           booking.late = true;
           booking.status = 4;
-       } else {                                       // is done
-         booking.status = 5;
-       }
+        } else {
+          // is done
+          booking.status = 5;
+        }
       }
     }
 
@@ -264,25 +278,25 @@ class bookingService extends baseService {
     return Object.fromEntries(filtered);
   }
 
-  async getCharts (match, group, variable){
+  async getCharts(match, group, variable) {
     const result = [];
     const bModel = await Booking;
     const params = [];
 
-    if (match){
+    if (match) {
       params.push({
-        $match: match
-      })
+        $match: match,
+      });
     }
-    if (group){
+    if (group) {
       params.push({
-        $group: group
-      })
+        $group: group,
+      });
     }
 
     const booking_per_count = await bModel.aggregate(params);
 
-    for (const booking of booking_per_count){
+    for (const booking of booking_per_count) {
       logger.info(booking);
       result.push([booking._id, booking[variable]]);
     }

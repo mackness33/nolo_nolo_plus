@@ -3,7 +3,26 @@ var bookingShownList = [];
 
 $(document).on("DOMContentLoaded", async function (event) {
   await autocompleteUser();
-  await getAllBookings();
+
+  if (sessionStorage.getItem("emplId")) {
+    $("#managePill").trigger("click");
+    console.log(sessionStorage.getItem("emplId"));
+    const id = sessionStorage.getItem("emplId");
+    sessionStorage.clear();
+
+    const bookings = await $.ajax({
+      method: "GET",
+      url: "/nnplus/booking/getBookingsByEmp",
+      data: {
+        emp: id,
+      },
+    }).done((data) => {
+      console.log(data);
+      showBookings(data);
+    });
+  } else {
+    await getAllBookings();
+  }
 });
 
 async function autocompleteUser() {
@@ -26,7 +45,7 @@ async function autocompleteUser() {
 }
 
 $("#managePill").on("click", async () => {
-  await getAllBookings();
+  // await getAllBookings();
 });
 
 $("#addStartDate").on("change", function () {

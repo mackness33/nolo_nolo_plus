@@ -18,7 +18,9 @@
         </ul>
       </div>
       <div class="buttonGroup">
-        <button class="btn btn-primary">Mostra prenotazioni</button>
+        <button @click="showBookings" class="btn btn-primary">
+          Mostra prenotazioni
+        </button>
         <button
           v-if="user.person.role == 1"
           @click="promote"
@@ -118,6 +120,12 @@ export default {
         alert("Promozioe fallita");
         console.log(res.data.error);
       }
+    },
+
+    showBookings() {
+      sessionStorage.setItem("emplId", this.user._id);
+      console.log(sessionStorage);
+      window.location.href = "http://localhost:8000/nnplus/home/booking";
     },
   },
 
