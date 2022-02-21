@@ -39,7 +39,7 @@ router.get("/filter", async (req, res, next) => {
 
 router.post("/insert",
   (req, res, next) => {
-    SessionService.authorization(
+    const result = SessionService.authorization(
       req,
       res,
       next,
@@ -47,6 +47,13 @@ router.post("/insert",
       "/nnplus/login",
       1
     );
+
+    logger.info("RESULT: " + JSON.stringify(result));
+    if (result.success){
+      next();
+    } else {
+      res.send(result);
+    }
   }, async (req, res, next) => {
 
     const emp = await empService.findOne({
@@ -61,7 +68,7 @@ router.post("/insert",
 
 router.put("/editOne",
   (req, res, next) => {
-    SessionService.authorization(
+    const result = SessionService.authorization(
       req,
       res,
       next,
@@ -69,6 +76,13 @@ router.put("/editOne",
       "/nnplus/login",
       1
     );
+
+    logger.info("RESULT: " + JSON.stringify(result));
+    if (result.success){
+      next();
+    } else {
+      res.send(result);
+    }
   }, async (req, res, next) => {
 
     const id = req.body.id;
@@ -85,7 +99,7 @@ router.put("/editOne",
 
 router.delete("/delete",
   (req, res, next) => {
-    SessionService.authorization(
+    const result = SessionService.authorization(
       req,
       res,
       next,
@@ -93,6 +107,13 @@ router.delete("/delete",
       "/nnplus/login",
       1
     );
+
+    logger.info("RESULT: " + JSON.stringify(result));
+    if (result.success){
+      next();
+    } else {
+      res.send(result);
+    }
   }, async (req, res, next) => {
     res.send(await computerService.deleteOne({ _id: req.body.id }));
   }
@@ -100,7 +121,7 @@ router.delete("/delete",
 
 router.put("/available",
   (req, res, next) => {
-    SessionService.authorization(
+    const result = SessionService.authorization(
       req,
       res,
       next,
@@ -108,6 +129,13 @@ router.put("/available",
       "/nnplus/login",
       1
     );
+
+    logger.info("RESULT: " + JSON.stringify(result));
+    if (result.success){
+      next();
+    } else {
+      res.send(result);
+    }
   }, async (req, res, next) => {
     logger.info ("IN AVAILABLE: ");
     const ack = await computerService.updateOne({ _id: req.body.id }, { available: true });

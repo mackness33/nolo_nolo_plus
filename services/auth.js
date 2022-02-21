@@ -54,23 +54,24 @@ class auth_service {
   }
 
   // function to check if the user has the right authorization to enter the url
-  authorization(req, res, next, home_url, index_url, role) {
-    this.is_logged(
+  authorization(req, res, next, home_url, login_url, role) {
+    return this.is_logged(
       req.session,
       () => {
         // check the user role to be correct
         if (req.session.role <= role) {
           logger.info("User authorizized");
-          next();
-          return;
+          // next();
+          return { success: true };
         } else {
           logger.warn("User not authorize");
           res.redirect(home_url);
+          return { success: false, url: home_url };
         }
       },
       () => {
         logger.warn("User not logged");
-        res.redirect(index_url);
+        return { success: false, url: login_url };
       }
     );
   }
@@ -81,45 +82,50 @@ class auth_service {
   is_logged(session, successful, unsuccessful, role) {
     logger.info("user_logged: " + this.check_if_user_logged_in(session, role));
     if (this.check_if_user_logged_in(session, role)) {
-      if (successful) successful();
+      if (successful) {
+        return successful();
+      }
     } else {
-      if (unsuccessful) unsuccessful();
+      if (unsuccessful) {
+        return unsuccessful();
+      };
     }
+
+    logger.info("No info about the user auth");
+    return { success: true };
   }
 
   // check wheter the user is already logged in
   already_logged(req, res, next, home_url, role) {
-    this.is_logged(
+    return this.is_logged(
       req.session,
       () => {
         logger.warn("User already logged in");
-        res.redirect(302, home_url);
+        return { success: false, url: home_url };
       },
       () => {
         logger.info("here is the prob bro");
-        next();
+        // next();
+        return { success: true};
       },
       role
     );
-
-    // next();
   }
 
   // check wheter the user isn't already logged in
   not_already_logged(req, res, next, login_url, role) {
-    this.is_logged(
+    return this.is_logged(
       req.session,
       () => {
-        next();
+        // next();
+        return { success: true};
       },
       () => {
         logger.warn("User not logged in");
-        res.redirect(302, login_url);
+        return { success: false, url: login_url };
       },
       role
     );
-
-    // next();
   }
 
   // check if the mail saved in the session has a

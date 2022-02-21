@@ -52,7 +52,7 @@ router.get("/all", async (req, res, next) => {
 });
 
 router.use((req, res, next) => {
-  SessionService.authorization(
+  const result = SessionService.authorization(
     req,
     res,
     next,
@@ -60,6 +60,13 @@ router.use((req, res, next) => {
     "/nnplus/login",
     1
   );
+
+  logger.info("RESULT: " + JSON.stringify(result));
+  if (result.success){
+    next();
+  } else {
+    res.send(result);
+  }
 });
 
 router.get("/getMany", async (req, res, next) => {

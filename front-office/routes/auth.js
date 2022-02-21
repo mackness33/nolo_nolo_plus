@@ -20,7 +20,13 @@ router.get(
   "/login",
   (req, res, next) => {
     logger.info("in pre-login GET");
-    SessionService.already_logged(req, res, next, "/nnplus/home");
+    const result = SessionService.already_logged(req, res, next, "/front", 2);
+    logger.info("RESULT: " + JSON.stringify(result));
+    if (result.success){
+      next();
+    } else {
+      res.send(result);
+    }
   },
   (req, res, next) => {
     logger.info("in login GET");
@@ -33,7 +39,13 @@ router.post(
   "/login",
   (req, res, next) => {
     logger.info("in pre-login POST");
-    SessionService.already_logged(req, res, next, "/nnplus/home");
+    const result = SessionService.already_logged(req, res, next, "/front", 2);
+    logger.info("RESULT: " + JSON.stringify(result));
+    if (result.success){
+      next();
+    } else {
+      res.send(result);
+    }
   },
   (req, res, next) => {
     logger.info("in login POST");
@@ -83,13 +95,24 @@ router.post(
 /* LOGOUT */
 
 // first we check whether a user is already logged in
-router.get("/logout", (req, res, next) => {
-  logger.info("in logout GET");
+router.get("/logout",
+  (req, res, next) => {
+    logger.info("in pre-logout GET");
+    const result = SessionService.not_already_logged(req, res, next, "/front/registerLogin", 2);
+    if (result.success){
+      next();
+    } else {
+      res.send(result);
+    }
+  },
+  (req, res, next) => {
+    logger.info("in logout GET");
 
-  // destroy the session and then redirect to the login/unauth home
-  SessionService.destroy(req.session, res);
+    // destroy the session and then redirect to the login/unauth home
+    SessionService.destroy(req.session, res);
 
-  res.send({ success: true });
-});
+    res.send({ success: true });
+  }
+);
 
 module.exports = router;

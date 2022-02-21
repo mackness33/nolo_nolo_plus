@@ -499,6 +499,9 @@ function adjustName(fullName) {
 
 // checks if response is html, which means the session has expired
 function checkSession(evt, xhr, options) {
+  console.log(evt);
+  console.log(xhr);
+  console.log(options);
   if (xhr.getResponseHeader("content-type").includes("html")) {
     window.location.href = "/nnplus/login";
   }

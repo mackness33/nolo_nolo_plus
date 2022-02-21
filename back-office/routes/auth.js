@@ -21,7 +21,13 @@ router.get(
   "/login",
   (req, res, next) => {
     logger.info("in pre-login GET");
-    SessionService.already_logged(req, res, next, "/nnplus/home", 1);
+    const result = SessionService.already_logged(req, res, next, "/nnplus/home", 1);
+    logger.info("RESULT: " + JSON.stringify(result));
+    if (result.success){
+      next();
+    } else {
+      res.send(result);
+    }
   },
   (req, res, next) => {
     logger.info("in login GET");
@@ -34,7 +40,12 @@ router.post(
   "/login",
   (req, res, next) => {
     logger.info("in pre-login POST");
-    SessionService.already_logged(req, res, next, "/nnplus/home", 1);
+    const result = SessionService.already_logged(req, res, next, "/nnplus/home", 1);
+    if (result.success){
+      next();
+    } else {
+      res.send(result);
+    }
   },
   (req, res, next) => {
     logger.info("in login POST");
@@ -87,7 +98,12 @@ router.get(
   "/logout",
   (req, res, next) => {
     logger.info("in pre-logout GET");
-    SessionService.not_already_logged(req, res, next, "/nnplus/login", 1);
+    const result = SessionService.not_already_logged(req, res, next, "/nnplus/login", 1);
+    if (result.success){
+      next();
+    } else {
+      res.send(result);
+    }
   },
   (req, res, next) => {
     logger.info("in logout GET");
@@ -95,7 +111,8 @@ router.get(
     // destroy the session and then redirect to the login/unauth home
     SessionService.destroy(req.session, res);
 
-    res.redirect(302, "/nnplus/login");
+    // res.redirect(302, "/nnplus/login");
+    res.send({ success: true, url: "/nnplus/login" });
   }
 );
 

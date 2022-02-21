@@ -14,7 +14,7 @@ router.get(
   "/",
   (req, res, next) => {
     logger.info("in pre-home GET");
-    SessionService.authorization(
+    const result = SessionService.authorization(
       req,
       res,
       next,
@@ -22,6 +22,13 @@ router.get(
       "/nnplus/login",
       1
     );
+
+    logger.info("RESULT: " + JSON.stringify(result));
+    if (result.success){
+      next();
+    } else {
+      res.send(result);
+    }
   },
   function (req, res, next) {
     logger.info("in home GET");
@@ -39,7 +46,7 @@ router.get(
   "/booking",
   (req, res, next) => {
     logger.info("in pre-home GET");
-    SessionService.authorization(
+    const result = SessionService.authorization(
       req,
       res,
       next,
@@ -47,6 +54,13 @@ router.get(
       "/nnplus/login",
       1
     );
+
+    logger.info("RESULT: " + JSON.stringify(result));
+    if (result.success){
+      next();
+    } else {
+      res.send(result);
+    }
   },
   (req, res, next) => {
     logger.info("in booking GET");
