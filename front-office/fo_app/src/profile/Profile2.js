@@ -785,13 +785,7 @@ const BookingItem = ({ booking, filter, fireTrigger }) => {
               >
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
-                    minDate={() => {
-                      if (compareDates(booking.begin, new Date())) {
-                        return null;
-                      } else {
-                        return new Date();
-                      }
-                    }}
+                    minDate={edit ? new Date() : undefined}
                     disabled={!edit}
                     clearable
                     value={bookingState?.begin}
@@ -818,13 +812,7 @@ const BookingItem = ({ booking, filter, fireTrigger }) => {
                 </LocalizationProvider>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
-                    minDate={() => {
-                      if (compareDates(booking.begin, new Date())) {
-                        return null;
-                      } else {
-                        return new Date();
-                      }
-                    }}
+                    minDate={edit ? new Date() : undefined}
                     disabled={!edit}
                     clearable
                     value={bookingState?.end}

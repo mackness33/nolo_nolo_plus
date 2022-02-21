@@ -70,6 +70,7 @@ export default function ComputerContent() {
 
   const [showMsg, setShowMsg] = useState(false);
   const [positive, setPositive] = useState(true);
+  const [bookingBtn, setBookingBtn] = useState(true);
 
   const [similarComputer, setSimilarComputer] = useState([]);
   const mobile = useMediaQuery("(max-width: 768px)");
@@ -177,6 +178,7 @@ export default function ComputerContent() {
         }
       }
       // evalFinalPrice();
+      setBookingBtn(false);
       setUserDiscount(tmpUserDiscount);
       setTrigger(!trigger);
     } else {
@@ -340,8 +342,11 @@ export default function ComputerContent() {
     });
 
     if (res.data.success) {
+      setBookingBtn(true);
       showResponse(true);
     } else {
+      setBookingBtn(true);
+
       showResponse(false);
       console.error("Logged but booking failed");
     }
@@ -750,6 +755,7 @@ export default function ComputerContent() {
                       }}
                     />
                     <Button
+                      disabled={bookingBtn}
                       fullWidth
                       sx={{ mt: "2rem" }}
                       variant='contained'
