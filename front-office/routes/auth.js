@@ -60,9 +60,7 @@ router.post(
 
     // create the data to send to the client
     function successful_login(user) {
-      const port = process.env.PORT ? ":" + process.env.PORT : "";
-      // OPTIMIZE: : use the url package to make the href
-      let href = req.protocol + "://" + req.hostname + port + "/nnplus/home";
+      let href = "/nnplus/home";
       data = { url: href, success: true, user: user };
     }
 
