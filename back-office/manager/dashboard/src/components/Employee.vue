@@ -1,18 +1,80 @@
 <template>
   <div id="customerContainer" class="shadow rounded">
     <h2 class="border-bottom border-2 pt-2">Gestione Dipendenti</h2>
-    <form id="searchForm">
-      <input
-        aria-label="Inserisci la mail del dipendente"
-        placeholder="Inserisci la mail del dipendente"
-        class="form-control"
-        type="text"
-        id="searchInput"
-      />
-      <button class="btn btn-primary">Cerca</button>
-    </form>
+    <div id="topBar">
+      <form id="searchForm">
+        <input
+          aria-label="Inserisci la mail del dipendente"
+          placeholder="Inserisci la mail del dipendente"
+          class="form-control"
+          type="text"
+          id="searchInput"
+        />
+        <button class="btn btn-primary">Cerca</button>
+      </form>
+      <button
+        id="addModalToggle"
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#addModal"
+      >
+        Aggiungi dipendete
+      </button>
+    </div>
     <div id="employeeList">
       <EmployeeCard v-for="user in data" :user="user" :key="user._id" />
+    </div>
+
+    <!-- add modal -->
+
+    <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addModalTitle">Aggiungi Dipendente</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Chiudi modale"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="addForm">
+              <div>
+                <span>Nome:</span>
+                <input type="text" class="form-control" id="addName" />
+              </div>
+
+              <div>
+                <span>Cognome:</span>
+                <input type="text" class="form-control" id="addSurname" />
+              </div>
+
+              <div>
+                <span>E-mail:</span>
+                <input type="text" class="form-control" id="addMail" />
+              </div>
+
+              <div>
+                <span>Password:</span>
+                <input type="password" class="form-control" id="AddPassword" />
+              </div>
+            </form>
+          </div>
+
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -62,14 +124,22 @@ export default {
   justify-content: center;
 }
 
-#searchForm {
+#topBar {
   width: 95%;
   display: flex;
   margin-top: 2rem;
 }
 
-#searchForm > * {
+#topBar > * {
   max-width: 20rem;
+  margin: 0.5rem;
+}
+
+#searchForm {
+  display: flex;
+}
+
+#searchForm > * {
   margin: 0.5rem;
 }
 
@@ -95,6 +165,12 @@ export default {
 @media only screen and (max-width: 1024px) {
   #searchForm {
     align-items: center;
+    flex-direction: column;
+  }
+
+  #topBar {
+    align-items: center;
+
     flex-direction: column;
   }
 }
