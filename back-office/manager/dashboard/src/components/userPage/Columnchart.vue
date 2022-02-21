@@ -1,13 +1,28 @@
 <template>
-  <div class="graph rounded shadow-lg">
-    <h5 class="text-capitalize d-flex justify-content-center">{{ title }}</h5>
-
-    <column-chart :data="data" :download="true"></column-chart>
+  <div>
+    <MqResponsive target="md-">
+      <div class="graphSm rounded shadow-lg">
+        <h5 class="text-capitalize d-flex justify-content-center">
+          {{ title }}
+        </h5>
+        <column-chart :data="data" :download="true"></column-chart>
+      </div>
+    </MqResponsive>
+    <MqResponsive target="lg+">
+      <div class="graphLg rounded shadow-lg">
+        <h5 class="text-capitalize d-flex justify-content-center">
+          {{ title }}
+        </h5>
+        <bar-chart :data="data" :download="true"></bar-chart>
+      </div>
+    </MqResponsive>
   </div>
 </template>
 
 
 <script>
+import { MqResponsive } from "vue3-mq";
+
 export default {
   name: "columnchart",
 
@@ -15,7 +30,9 @@ export default {
     return {};
   },
 
-  components: {},
+  components: {
+    MqResponsive,
+  },
 
   methods: {
     showInfo() {
@@ -28,13 +45,17 @@ export default {
 </script>
 
 <style scoped>
-.graph {
+.graphSm {
   max-width: 332px;
   margin: 2rem;
   padding: 1rem;
   background-color: whitesmoke;
 }
 
-@media only screen and (max-width: 1024) {
+.graphLg {
+  width: 950px;
+  margin: 2rem;
+  padding: 1rem;
+  background-color: whitesmoke;
 }
 </style>

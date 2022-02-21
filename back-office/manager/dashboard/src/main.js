@@ -10,6 +10,7 @@ import VueChartkick from "vue-chartkick";
 import "chartkick/chart.js";
 
 import router from "./router/index";
+import { Vue3Mq } from "vue3-mq";
 
 loadFonts();
 
@@ -38,4 +39,7 @@ createApp(App)
   .use(router)
   .use(store)
   .use(VueChartkick)
+  .use(Vue3Mq, {
+    preset: "bootstrap5",
+  })
   .mount("#app");

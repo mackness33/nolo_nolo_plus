@@ -1,12 +1,28 @@
 <template>
-  <div class="graph rounded shadow-lg">
-    <h5 class="text-capitalize d-flex justify-content-center">{{ title }}</h5>
-    <pie-chart :data="data"></pie-chart>
+  <div>
+    <MqResponsive target="md-">
+      <div class="graphSm rounded shadow-lg">
+        <h5 class="text-capitalize d-flex justify-content-center">
+          {{ title }}
+        </h5>
+        <pie-chart :data="data"></pie-chart>
+      </div>
+    </MqResponsive>
+    <MqResponsive target="lg+">
+      <div class="graphLg rounded shadow-lg">
+        <h5 class="text-capitalize d-flex justify-content-center">
+          {{ title }}
+        </h5>
+        <pie-chart :data="data"></pie-chart>
+      </div>
+    </MqResponsive>
   </div>
 </template>
 
 
 <script>
+import { MqResponsive } from "vue3-mq";
+
 export default {
   name: "barchart",
 
@@ -14,7 +30,9 @@ export default {
     return {};
   },
 
-  components: {},
+  components: {
+    MqResponsive,
+  },
 
   methods: {
     showInfo() {
@@ -27,8 +45,15 @@ export default {
 </script>
 
 <style scoped>
-.graph {
+.graphSm {
   max-width: 332px;
+  margin: 2rem;
+  padding: 1rem;
+  background-color: whitesmoke;
+}
+
+.graphLg {
+  width: 35rem;
   margin: 2rem;
   padding: 1rem;
   background-color: whitesmoke;
