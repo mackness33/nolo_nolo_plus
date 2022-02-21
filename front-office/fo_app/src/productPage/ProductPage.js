@@ -262,6 +262,9 @@ export default function ComputerContent() {
     setTimeout(() => {
       setShowMsg(false);
       setShowCalc(false);
+      setStartDate(null);
+      setEndDate(null);
+      setTrigger2(!trigger2);
     }, 3000);
   };
 
@@ -338,10 +341,8 @@ export default function ComputerContent() {
 
     if (res.data.success) {
       showResponse(true);
-      setTrigger2(!trigger2);
     } else {
       showResponse(false);
-      setTrigger2(!trigger2);
       console.error("Logged but booking failed");
     }
 
@@ -806,7 +807,12 @@ export default function ComputerContent() {
               Ti potrebbe anche interessare
             </Typography>
             <Divider sx={{ mb: "0.4rem" }} />
-            <Container sx={{ display: "flex", overflowX: "scroll" }}>
+            <Container
+              sx={[
+                { display: "flex", overflowX: "scroll" },
+                tablet && { flexDirection: "column" },
+              ]}
+            >
               {similarComputer?.map((pc) => {
                 return <Computercard computer={pc} />;
               })}

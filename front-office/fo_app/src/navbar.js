@@ -208,7 +208,7 @@ const UserSetting = () => {
           vertical: "top",
           horizontal: "right",
         }}
-        keepMounted
+        // keepMounted
         transformOrigin={{
           vertical: "top",
           horizontal: "right",
@@ -216,10 +216,19 @@ const UserSetting = () => {
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}
       >
-        <MenuItem key='profile' component={Link} to='/profile'>
+        <MenuItem
+          onClick={handleCloseUserMenu}
+          key='profile'
+          component={Link}
+          to='/profile'
+        >
           <Typography textAlign='center'>Profilo</Typography>
         </MenuItem>
-        <MenuItem key='logout' onClick={LogoutHandler}>
+        <MenuItem
+          onClick={handleCloseUserMenu}
+          key='logout'
+          onClick={LogoutHandler}
+        >
           <Typography textAlign='center'>Logout</Typography>
         </MenuItem>
       </Menu>
@@ -229,6 +238,7 @@ const UserSetting = () => {
 
 const SmallMenu = () => {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const open = Boolean(anchorElNav);
   const { globalUser, setGlobalUser } = React.useContext(NetworkContext);
 
   const handleOpenNavMenu = (event) => {
@@ -258,21 +268,28 @@ const SmallMenu = () => {
           vertical: "bottom",
           horizontal: "left",
         }}
-        keepMounted
+        // keepMounted
         transformOrigin={{
           vertical: "top",
           horizontal: "left",
         }}
-        open={Boolean(anchorElNav)}
+        open={open}
         onClose={handleCloseNavMenu}
         sx={{
           display: { xs: "block", md: "none" },
         }}
       >
         <MenuItem component={Link} to='/' key='homepage'>
-          <Typography textAlign='center'>Homepage</Typography>
+          <Typography onCLick={handleCloseNavMenu} textAlign='center'>
+            Homepage
+          </Typography>
         </MenuItem>
-        <MenuItem component={Link} to='/catalogue' key='catalogo'>
+        <MenuItem
+          onClick={handleCloseNavMenu}
+          component={Link}
+          to='/catalogue'
+          key='catalogo'
+        >
           <Typography textAlign='center'>Catalogo</Typography>
         </MenuItem>
       </Menu>

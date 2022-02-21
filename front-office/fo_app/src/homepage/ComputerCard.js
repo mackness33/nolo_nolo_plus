@@ -105,9 +105,9 @@ const Computercard = ({ computer, user, chosen }) => {
             boxShadow: 4,
           },
           mobile && {
-            minWidth: 0,
-            minHeight: "42rem",
-            margin: "0.3rem",
+            width: "320",
+            minHeight: "46rem",
+            my: "0.4rem",
           },
         ]}
       >

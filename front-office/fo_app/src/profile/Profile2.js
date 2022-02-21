@@ -785,7 +785,13 @@ const BookingItem = ({ booking, filter, fireTrigger }) => {
               >
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
-                    minDate={new Date()}
+                    minDate={() => {
+                      if (compareDates(booking.begin, new Date())) {
+                        return null;
+                      } else {
+                        return new Date();
+                      }
+                    }}
                     disabled={!edit}
                     clearable
                     value={bookingState?.begin}
@@ -795,6 +801,7 @@ const BookingItem = ({ booking, filter, fireTrigger }) => {
                       <TextField
                         variant='filled'
                         size='small'
+                        color='success'
                         sx={{
                           my: "0.5rem",
                           color: "white",
@@ -811,7 +818,13 @@ const BookingItem = ({ booking, filter, fireTrigger }) => {
                 </LocalizationProvider>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
-                    minDate={new Date()}
+                    minDate={() => {
+                      if (compareDates(booking.begin, new Date())) {
+                        return null;
+                      } else {
+                        return new Date();
+                      }
+                    }}
                     disabled={!edit}
                     clearable
                     value={bookingState?.end}

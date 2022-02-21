@@ -80,10 +80,10 @@ const Landing = () => {
         alignItems: "center",
       }}
     >
-      <Typography sx={{ mb: "2rem" }} gutterBottom variant='h5' component='div'>
+      <Typography sx={{ mb: "2rem" }} gutterBottom variant='h6' component='div'>
         Benvenuto su
       </Typography>
-      <img src={logo} alt='logo' />
+      <img style={{ height: "4rem" }} src={logo} alt='logo' />
       <Typography sx={{ fontStyle: "italic" }}>Nolo Nolo +™</Typography>
 
       <Grow timeout={500} in={true}>
@@ -122,7 +122,7 @@ const Landing = () => {
             }}
           >
             <Typography gutterBottom variant='h5' component='div'>
-              Tutta la tecnologia che ti serve!
+              Tutta la tecnologia che ti serve.
             </Typography>
             <Typography variant='body2' color='text.secondary'>
               Su Nolo Nolo +™ puoi trovare tutti di i computer che tu o i tuoi
@@ -177,7 +177,7 @@ const Landing = () => {
             }}
           >
             <Typography gutterBottom variant='h5' component='div'>
-              Piu' prenoti, piu' risparmi!
+              Piu' prenoti, piu' risparmi.
             </Typography>
             <Typography variant='body2' color='text.secondary'>
               Con il nostro servizio più prenoti e più risparmi! Ad ogni
@@ -240,10 +240,10 @@ const Landing = () => {
             }}
           >
             <Typography gutterBottom variant='h5' component='div'>
-              Ti premiamo!
+              Ti premiamo.
             </Typography>
             <Typography variant='body2' color='text.secondary'>
-              Ci sono anche altri modi di guadagnare, infatti se sarai
+              Ci sono anche altri modi di guadagnare: infatti se sarai
               rispettoso degli oggetti noleggiati e li riporterai nelle loro
               condizioni iniziali avrai diritto ad una vasta varietà di altri
               sconti!
@@ -286,7 +286,7 @@ const Landing = () => {
             }}
           >
             <Typography gutterBottom variant='h5' component='div'>
-              Siamo sempre disponibili!
+              Siamo sempre disponibili.
             </Typography>
             <Typography variant='body2' color='text.secondary'>
               Sembra tutto troppo bello? Lo è perchè il nostro servizio vuole
