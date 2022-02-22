@@ -12,9 +12,8 @@ router.use(async (req, res, next) => {
   next();
 });
 
-
 router.get("/getOne", async (req, res, next) => {
-  if (!req.session.mail){
+  if (!req.session.mail) {
     res.send(null);
     return;
   }
@@ -37,9 +36,9 @@ router.get("/getOne", async (req, res, next) => {
   res.send(user);
 });
 
-
 router.get("/all", async (req, res, next) => {
-  if (!req.session.mail){
+  if (!req.session.mail) {
+    res.status(401);
     res.send(null);
     return;
   }
@@ -80,7 +79,6 @@ router.post("/setOne", async (req, res, next) => {
   await userService.updateOne({ "person.mail": req.body.oldMail }, req.body);
   res.send({});
 });
-
 
 router.post("/add", async (req, res, next) => {
   const user = {

@@ -1,6 +1,8 @@
 var computerAutolist = [];
 var bookingShownList = [];
 
+$(document).ajaxError(checkSession);
+
 $(document).on("DOMContentLoaded", async function (event) {
   await autocompleteUser();
 
@@ -975,4 +977,11 @@ function daysNumber(start, end) {
   const diffInDays = Math.round(diffInTime / oneDay);
 
   return diffInDays;
+}
+
+function checkSession(evt, xhr, options, erro) {
+  console.log(xhr);
+  if (xhr.status === 302) {
+    window.location.href = "/nnplus/login";
+  }
 }

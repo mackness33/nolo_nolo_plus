@@ -70,6 +70,7 @@ class auth_service {
       },
       () => {
         logger.warn("User not logged");
+        res.status(302);
         res.redirect(index_url);
       }
     );

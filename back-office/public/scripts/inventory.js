@@ -1,6 +1,6 @@
 var currentlyShowing = [];
 
-// $(document).ajaxComplete(checkSession);
+$(document).ajaxError(checkSession);
 
 $(document).on("DOMContentLoaded", async function (event) {
   await reloadItems();
@@ -836,6 +836,8 @@ async function autocompleteUser() {
       }
     })
     .fail((err) => {
+      mails = ["topo@gigio", "paperon@paperoni"];
+      $("#addUser").val("topo@gigio");
       console.error(err);
     });
 
@@ -1107,9 +1109,9 @@ async function getModalData(item, id) {
   return filteredItem;
 }
 
-// function checkSession(evt, xhr, options) {
-//   console.log(xhr);
-//   if (xhr.getResponseHeader("content-type").includes("html")) {
-//     window.location.href = "/nnplus/login";
-//   }
-// }
+function checkSession(evt, xhr, options, erro) {
+  console.log(xhr);
+  if (xhr.status === 302) {
+    window.location.href = "/nnplus/login";
+  }
+}

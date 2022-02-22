@@ -7,7 +7,7 @@ const addModal = document.getElementById("addModal");
 const searchForm = document.getElementById("idSearch");
 const resetBtn = document.getElementById("resetBtn");
 const addUserForm = document.getElementById("addForm");
-$(document).ajaxComplete(checkSession);
+$(document).ajaxError(checkSession);
 
 document.addEventListener("DOMContentLoaded", async () => {
   reloadList();
@@ -498,8 +498,8 @@ function adjustName(fullName) {
 }
 
 // checks if response is html, which means the session has expired
-function checkSession(evt, xhr, options) {
-  if (xhr.getResponseHeader("content-type").includes("html")) {
+function checkSession(evt, xhr, options, error) {
+  if (xhr.status === 302 || xhr.status === 401) {
     window.location.href = "/nnplus/login";
   }
 }
