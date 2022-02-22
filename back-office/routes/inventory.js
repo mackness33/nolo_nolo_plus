@@ -1,5 +1,7 @@
 const router = require("express").Router();
 const logger = require("../../logger.js");
+const bookingModel = require("../../services/mongo/schema/booking");
+
 const SessionService = require("../../services/auth");
 const userService = require("../../services/mongo/userService");
 const empService = require("../../services/mongo/employeeService");
@@ -19,7 +21,7 @@ router.get("/allComponents", async (req, res, next) => {
 });
 
 router.get("/getAll", async (req, res, next) => {
-  const available = (req.session.mail) ? {} : { available: true };
+  const available = req.session.mail ? {} : { available: true };
   const items = await computerService.find(available);
   res.send(items);
 });
@@ -37,7 +39,8 @@ router.get("/filter", async (req, res, next) => {
   res.send(filteredItems);
 });
 
-router.post("/insert",
+router.post(
+  "/insert",
   (req, res, next) => {
     SessionService.authorization(
       req,
@@ -47,8 +50,8 @@ router.post("/insert",
       "/nnplus/login",
       1
     );
-  }, async (req, res, next) => {
-
+  },
+  async (req, res, next) => {
     const emp = await empService.findOne({
       "person.mail": req.session.mail,
     });
@@ -59,7 +62,8 @@ router.post("/insert",
   }
 );
 
-router.put("/editOne",
+router.put(
+  "/editOne",
   (req, res, next) => {
     SessionService.authorization(
       req,
@@ -69,8 +73,8 @@ router.put("/editOne",
       "/nnplus/login",
       1
     );
-  }, async (req, res, next) => {
-
+  },
+  async (req, res, next) => {
     const id = req.body.id;
     delete req.body.id;
     if (req.body["type[]"]) {
@@ -83,7 +87,8 @@ router.put("/editOne",
   }
 );
 
-router.delete("/delete",
+router.delete(
+  "/delete",
   (req, res, next) => {
     SessionService.authorization(
       req,
@@ -93,12 +98,16 @@ router.delete("/delete",
       "/nnplus/login",
       1
     );
-  }, async (req, res, next) => {
+  },
+  async (req, res, next) => {
+    const bookMood = await bookingModel;
+    await bookMood.deleteMany({ computer: req.body.id });
     res.send(await computerService.deleteOne({ _id: req.body.id }));
   }
 );
 
-router.put("/available",
+router.put(
+  "/available",
   (req, res, next) => {
     SessionService.authorization(
       req,
@@ -108,10 +117,14 @@ router.put("/available",
       "/nnplus/login",
       1
     );
-  }, async (req, res, next) => {
-    logger.info ("IN AVAILABLE: ");
-    const ack = await computerService.updateOne({ _id: req.body.id }, { available: true });
-    logger.info ("ack: " + JSON.stringify(ack));
+  },
+  async (req, res, next) => {
+    logger.info("IN AVAILABLE: ");
+    const ack = await computerService.updateOne(
+      { _id: req.body.id },
+      { available: true }
+    );
+    logger.info("ack: " + JSON.stringify(ack));
     res.send(ack);
   }
 );

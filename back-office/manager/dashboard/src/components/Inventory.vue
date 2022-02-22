@@ -1,10 +1,12 @@
 <template>
   <div id="customerContainer" class="shadow rounded">
     <h2 class="border-bottom border-2 pt-2">Dashboard inventario</h2>
-    <div class="stats">
-      <Invdata title="Statistiche" />
-    </div>
+    <Invdata title="Statistiche" />
     <div class="graphContainer">
+      <Piechart
+        data="http://localhost:8000/dash/inv/brandProfit"
+        title="Fatturato per marca"
+      />
       <Columnchart
         data="http://localhost:8000/dash/inv/computerMostUsed"
         title="Numero di prenotazioni per computer"

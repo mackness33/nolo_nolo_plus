@@ -5,7 +5,7 @@
         <h5 class="text-capitalize d-flex justify-content-center">
           {{ title }}
         </h5>
-        <area-chart :data="data" :download="true"></area-chart>
+        <line-chart :data="data" :download="true"></line-chart>
       </div>
     </MqResponsive>
     <MqResponsive target="lg+">
@@ -13,7 +13,7 @@
         <h5 class="text-capitalize d-flex justify-content-center">
           {{ title }}
         </h5>
-        <area-chart :data="data" :download="true"></area-chart>
+        <scatter-chart :data="data" :download="true"></scatter-chart>
       </div>
     </MqResponsive>
   </div>
@@ -24,7 +24,7 @@
 import { MqResponsive } from "vue3-mq";
 
 export default {
-  name: "linechart",
+  name: "scatterchart",
 
   data: () => {
     return {};

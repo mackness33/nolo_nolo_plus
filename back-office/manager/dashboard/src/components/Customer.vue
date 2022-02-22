@@ -1,18 +1,23 @@
 <template>
   <div id="customerContainer" class="shadow rounded">
     <h2 class="border-bottom border-2 pt-2">Dashboard utenti</h2>
-    <div class="stats">
-      <Moneydata title="Statistiche" />
-      <Avgdata title="Medie" />
-    </div>
+    <Moneydata title="Statistiche" />
     <div class="graphContainer">
       <Columnchart
         data="http://localhost:8000/dash/user/userAge"
         title="Eta' degli utenti"
       />
+      <Piechart
+        data="http://localhost:8000/dash/user/userPoint"
+        title="Quantita' media di punti per fasce di eta'"
+      />
       <Columnchart
         data="http://localhost:8000/dash/user/userAgeSpend"
-        title="Spesa degli utenti per eta'"
+        title="Spesa media degli utenti per eta'"
+      />
+      <Piechart
+        data="http://localhost:8000/dash/user/userFeed"
+        title="Numero feedback dipendenti per fascia di eta' di clienti"
       />
     </div>
   </div>
@@ -25,7 +30,6 @@ import Piechart from "./userPage/Piechart.vue";
 import Linechart from "./userPage/Linechart.vue";
 import Columnchart from "./userPage/Columnchart.vue";
 import Moneydata from "./userPage/Moneydata.vue";
-import AvgData from "./userPage/Avgdata.vue";
 
 export default {
   name: "customerContainer",
@@ -42,7 +46,6 @@ export default {
     Linechart,
     Columnchart,
     Moneydata,
-    AvgData,
   },
 
   methods: {

@@ -2,24 +2,24 @@
   <div class="graph rounded shadow-lg">
     <h5 class="text-capitalize d-flex justify-content-center">{{ title }}</h5>
     <div class="dataContainer">
-      <section>
-        il numero totale di noleggi corrisponde a:
+      <section class="border rounded">
+        Numero totale di noleggi :
         <span class="fw-bold">{{ totalBookings }}</span>
       </section>
-      <section>
-        il numero di noleggi attivi corrisponde a:
+      <section class="border rounded">
+        numero di noleggi attivi:
         <span class="fw-bold">{{ activeBookings }}</span>
       </section>
-      <section>
-        Il numero di noleggi futuri corrisponde a:
+      <section class="border rounded">
+        numero di noleggi futuri:
         <span class="fw-bold">{{ futureBookings }}</span>
       </section>
-      <section>
-        Il numero di noleggi passati corrispone a:
+      <section class="border rounded">
+        numero di noleggi terminati con successo:
         <span class="fw-bold">{{ pastBookings }}</span>
       </section>
-      <section>
-        Il numero recentemente ritirati ma non ancora restituiti corrisponde a:
+      <section class="border rounded">
+        Noleggi terminati ma computer non restituito:
         <span class="fw-bold">{{ lateBookings }}</span>
       </section>
     </div>
@@ -65,6 +65,7 @@ export default {
 
 <style scoped>
 .graph {
+  width: 95%;
   margin: 2rem;
   padding: 1rem;
   background-color: whitesmoke;
@@ -72,7 +73,22 @@ export default {
 
 .dataContainer {
   display: flex;
+  justify-content: space-between;
+}
+
+.dataContainer > section {
+  border-color: rgba(112, 128, 144, 0.404) !important;
+  padding: 0.2rem;
+  margin: 0.5rem;
+  display: flex;
   align-items: center;
   flex-direction: column;
+}
+
+@media only screen and (max-width: 1024px) {
+  .dataContainer {
+    align-items: center;
+    flex-direction: column;
+  }
 }
 </style>

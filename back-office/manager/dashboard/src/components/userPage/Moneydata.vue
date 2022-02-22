@@ -2,34 +2,20 @@
   <div class="graph rounded shadow-lg">
     <h5 class="text-capitalize d-flex justify-content-center">{{ title }}</h5>
     <div class="dataContainer">
-      <v-btn-toggle id="buttonGroup" v-model="icon" borderless>
-        <v-btn value="center">
-          <span>Totali</span>
-        </v-btn>
-
-        <v-btn value="right">
-          <span>Medie</span>
-        </v-btn>
-
-        <v-btn value="justify">
-          <span>Finali</span>
-        </v-btn>
-      </v-btn-toggle>
-      <div>{{ icon }}</div>
-      <section>
-        Il fatturato totale attuale corrisponde a:
+      <section class="border rounded">
+        <span>Il fatturato totale attuale corrisponde a:</span>
         <span class="fw-bold">${{ totalIncome }}</span>
       </section>
-      <section>
-        Il numero di utenti totale corrisponde a
+      <section class="border rounded">
+        <span>Il numero di utenti totale corrisponde a</span>
         <span class="fw-bold">{{ totalUsers }}</span>
       </section>
-      <section>
-        Il numero di utenti attivi corrisponde a
+      <section class="border rounded">
+        <span>Il numero di utenti attivi corrisponde a</span>
         <span class="fw-bold">{{ activeUsers }}</span>
       </section>
-      <section>
-        Il numero di utenti inattivi corrisponde a
+      <section class="border rounded">
+        <span>Il numero di utenti inattivi corrisponde a</span>
         <span class="fw-bold">{{ inactiveUsers }}</span>
       </section>
     </div>
@@ -49,7 +35,6 @@ export default {
       totalUsers: 0,
       activeUsers: 0,
       inactiveUsers: 0,
-      icon: "",
     };
   },
 
@@ -65,16 +50,13 @@ export default {
     this.inactiveUsers = res.data.inactiveUsers;
   },
 
-  update() {
-    console.log(this.icon);
-  },
-
   props: ["data", "title"],
 };
 </script>
 
 <style scoped>
 .graph {
+  width: 95%;
   margin: 2rem;
   padding: 1rem;
   background-color: whitesmoke;
@@ -82,15 +64,22 @@ export default {
 
 .dataContainer {
   display: flex;
+  justify-content: space-between;
+}
+
+.dataContainer > section {
+  border-color: rgba(112, 128, 144, 0.404) !important;
+  padding: 0.2rem;
+  margin: 0.5rem;
+  display: flex;
   align-items: center;
   flex-direction: column;
 }
 
-#buttonGroup {
-  margin-bottom: 1rem;
-}
-
-#buttonGroup > button {
-  justify-content: space-between;
+@media only screen and (max-width: 1024px) {
+  .dataContainer {
+    align-items: center;
+    flex-direction: column;
+  }
 }
 </style>

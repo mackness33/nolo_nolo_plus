@@ -777,6 +777,7 @@ async function getAllBookings(query = null) {
 
   if (bookings) {
     bookingShownList = bookings;
+    console.log(bookingShownList);
     showBookings(bookingShownList);
   } else {
     console.log("no booking to see");

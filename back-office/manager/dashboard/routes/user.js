@@ -56,20 +56,19 @@ router.get("/userAgeSpend", async (req, res, next) => {
     });
     let acc = 0;
     for (const user of users) {
-      let userBooks = await bModel.aggregate([
+      let points = await bModel.aggregate([
         { $match: { user: new mongoose.Types.ObjectId(user.id) } },
         { $group: { _id: null, amount: { $sum: "$final_price" } } },
       ]);
 
-      logger.warn("HOLD");
-      logger.warn(user.id);
-      logger.warn(JSON.stringify(userBooks.length));
-
-      acc = acc + userBooks[0].amount;
+      if (points.length > 0) {
+        acc = acc + points[0].amount;
+      }
     }
-    result.push([`${i} - ${i - 9}`, acc]);
+    result.push([`${i - 9} - ${i}`, (acc / users.length).toFixed(2)]);
     i--;
   }
+
   logger.info(JSON.stringify(result));
 
   res.send(result);
@@ -87,10 +86,73 @@ router.get("/userAge", async (req, res, next) => {
     let count = await moodel.find({
       birth: { $gte: JSON.stringify(tmp), $lte: JSON.stringify(tmp + 10) },
     });
-    result.push([`${i} - ${i - 9}`, count.length]);
+    result.push([`${i - 9} - ${i}`, count.length]);
     i--;
   }
   // logger.info(JSON.stringify(result));
+
+  res.send(result);
+});
+
+router.get("/userPoint", async (req, res, next) => {
+  logger.info("IN DASH user -- userPoint");
+
+  const moodel = await userModel;
+  const currentYear = new Date().getFullYear();
+  const result = [];
+
+  for (let i = 69; i >= 0; i = i - 9) {
+    let tmp = currentYear - i;
+
+    let users = await moodel.find({
+      birth: { $gte: JSON.stringify(tmp), $lte: JSON.stringify(tmp + 10) },
+    });
+    let acc = 0;
+    for (const user of users) {
+      let points = await moodel.aggregate([
+        { $match: { _id: new mongoose.Types.ObjectId(user.id) } },
+        { $group: { _id: null, amount: { $sum: "$points" } } },
+      ]);
+
+      if (points.length > 0) {
+        acc = acc + points[0].amount;
+      }
+    }
+    result.push([`${i - 9} - ${i}`, (acc / users.length).toFixed(0)]);
+    i--;
+  }
+
+  res.send(result);
+});
+
+router.get("/userFeed", async (req, res, next) => {
+  logger.info("IN DASH user -- userFeed");
+
+  const moodel = await userModel;
+  const currentYear = new Date().getFullYear();
+  const result = [];
+
+  for (let i = 69; i >= 0; i = i - 9) {
+    let tmp = currentYear - i;
+
+    let users = await moodel.find({
+      birth: { $gte: JSON.stringify(tmp), $lte: JSON.stringify(tmp + 10) },
+    });
+    let acc = 0;
+    for (const user of users) {
+      // let points = await moodel.aggregate([
+      //   { $match: { _id: new mongoose.Types.ObjectId(user.id) } },
+      //   { $group: { _id: null, amount: { $sum: "$points" } } },
+      // ]);
+
+      // if (points.length > 0) {
+      //   acc = acc + points[0].amount;
+      // }
+      acc = acc + user.feedback.length;
+    }
+    result.push([`${i - 9} - ${i}`, acc]);
+    i--;
+  }
 
   res.send(result);
 });

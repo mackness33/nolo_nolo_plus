@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const logger = require("../../../../logger");
+const mongoose = require("mongoose");
 
 const computerModel = require("../../../../services/mongo/schema/computer");
 const bookingModel = require("../../../../services/mongo/schema/booking");
@@ -80,7 +81,7 @@ router.get("/computerMostUsed", async (req, res, next) => {
 });
 
 router.get("/computerPerUser", async (req, res, next) => {
-  logger.info("IN DASH inventory -- computerMostUsed");
+  logger.info("IN DASH inventory -- computerPerUser");
 
   const group = {
     _id: "$computer",
@@ -99,6 +100,34 @@ router.get("/componentNumbers", async (req, res, next) => {
   const resData = [];
   for (const el of data) {
     resData.push([el.name, el.list.length]);
+  }
+  res.send(resData);
+});
+
+router.get("/brandProfit", async (req, res, next) => {
+  logger.info("IN DASH inventory -- brandProfit");
+
+  const componentMood = await componentModel;
+  const computerMood = await computerModel;
+  const bookMood = await bookingModel;
+  const le = await componentMood.findOne({ name: "brand" });
+  const brands = le.list;
+  const resData = [];
+
+  for (const brand of brands) {
+    let tmp = 0;
+    let acc = 0;
+    const comps = await computerMood.find({ brand: brand }, "id");
+    for (const comp of comps) {
+      const data = await bookMood.aggregate([
+        { $match: { computer: new mongoose.Types.ObjectId(comp.id) } },
+        { $group: { _id: null, total: { $sum: "$final_price" } } },
+      ]);
+      if (data.length > 0) {
+        acc = acc + data[0].total;
+      }
+    }
+    resData.push([brand, acc.toFixed(2)]);
   }
   res.send(resData);
 });

@@ -14,6 +14,23 @@ import { Vue3Mq } from "vue3-mq";
 
 loadFonts();
 
+Chartkick.options = {
+  colors: [
+    "#ff3333",
+    "#0066ff",
+    "#9933ff",
+    "#e6e600",
+    "#000099",
+    "#994d00",
+    "#1aff1a",
+    "#00e6e6",
+    "#666699",
+    "#336600",
+    "#ff66cc",
+    "#999966",
+  ],
+};
+
 const store = createStore({
   state() {
     return {

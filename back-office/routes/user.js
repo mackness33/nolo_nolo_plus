@@ -2,6 +2,7 @@ const router = require("express").Router();
 const logger = require("../../logger.js");
 const userModel = require("../../services/mongo/schema/user");
 const emplModel = require("../../services/mongo/schema/employee");
+const bookModel = require("../../services/mongo/schema/booking");
 const SessionService = require("../../services/auth");
 const userService = require("../../services/mongo/userService");
 const baseService = require("../../services/mongo/base.js");
@@ -98,6 +99,11 @@ router.post("/feed", async (req, res, next) => {
 });
 
 router.post("/deleteOne", async (req, res, next) => {
+  const userMood = await userModel;
+  const user = await userMood.findOne({ "person.mail": req.body.mail });
+
+  const bookMood = await bookModel;
+  await bookMood.deleteMany({ user: user.id });
   res.send(await userService.deleteOne({ "person.mail": req.body.mail }));
 });
 

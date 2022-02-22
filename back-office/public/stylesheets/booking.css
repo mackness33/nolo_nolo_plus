@@ -240,12 +240,17 @@ main {
   width: 70%;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: space-between;
 }
 
 .infoGroup > div {
+  margin-right: 2rem;
   margin-top: 0.3rem;
   margin-bottom: 0.3rem;
+}
+
+.infoGroup > div:first-child {
+  width: 20%;
 }
 
 .labelTag {
@@ -324,7 +329,7 @@ main {
 
 /* mobile responsive */
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 1024px) {
   .nav-pills {
     flex-direction: column;
     margin-bottom: 1.5rem !important;
@@ -365,6 +370,10 @@ main {
 
   .infoGroup > div > span {
     margin-right: 0.3rem;
+  }
+
+  .infoGroup > div:first-child {
+    width: 100%;
   }
 
   .buttonGroup {
