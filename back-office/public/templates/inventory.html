@@ -454,6 +454,29 @@
     </div>
   </div>
 
+  <!-- Unavailable Modal -->
+
+  <div class="modal fade" id="unavailableModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="unavailableTitle" tabindex="0">Disponibilità computer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Chiudi"></button>
+        </div>
+        <div class="modal-body">
+          <section class="userModal">
+            <span tabindex="0">Sei sicuro di voler rendere il computer indisponibile?</span>
+          </section>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="unavailableBtn" class="btn btn-danger" data-bs-dismiss="modal">Conferma
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Discount Modal -->
 
   <div class="modal fade" id="discountModal" tabindex="-1" aria-labelledby="discountTitle" aria-hidden="true">
@@ -574,6 +597,8 @@
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
       return new bootstrap.Tooltip(tooltipTriggerEl)
     })
+
+
   </script>
 </body>
 

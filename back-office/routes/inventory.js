@@ -129,4 +129,27 @@ router.put(
   }
 );
 
+router.put(
+  "/unavailable",
+  (req, res, next) => {
+    SessionService.authorization(
+      req,
+      res,
+      next,
+      "/nnplus/logout",
+      "/nnplus/login",
+      1
+    );
+  },
+  async (req, res, next) => {
+    logger.info("IN UNAVAILABLE: ");
+    const ack = await computerService.updateOne(
+      { _id: req.body.id },
+      { available: false }
+    );
+    logger.info("ack: " + JSON.stringify(ack));
+    res.send(ack);
+  }
+);
+
 module.exports = router;

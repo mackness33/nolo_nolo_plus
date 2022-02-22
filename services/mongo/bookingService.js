@@ -37,13 +37,13 @@ class bookingService extends baseService {
   }
 
   async updateOne(filter, params) {
-    if (params.final_condition && params.final_condition <= 5) {
-      await computerService.updateOne(
-        { _id: params.computer },
-        { available: false }
-      );
-      logger.info("params: " + JSON.stringify(params));
-    }
+    // if (params.final_condition && params.final_condition <= 5) {
+    //   await computerService.updateOne(
+    //     { _id: params.computer },
+    //     { available: false }
+    //   );
+    //   logger.info("params: " + JSON.stringify(params));
+    // }
 
     if (!params.computer) {
       delete params.computer;
@@ -93,7 +93,7 @@ class bookingService extends baseService {
       });
     }
 
-    if (userScore <= 2) {
+    if (userScore >= 8) {
       discounts.push({
         reason: "sconto buona condotta",
         amount: (

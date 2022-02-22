@@ -746,6 +746,21 @@ $("#availableModal").on("show.bs.modal", function (event) {
   });
 });
 
+$("#unavailableModal").on("show.bs.modal", function (event) {
+  $("#unavailableBtn").on("click", async (evt) => {
+    console.log("HENATI");
+    const id = event.relatedTarget.dataset.id;
+    await $.ajax({
+      method: "PUT",
+      url: "/nnplus/inv/unavailable",
+      data: { id },
+    }).done(async (data) => {
+      console.log("PANIPETTO");
+      await reloadItems();
+    });
+  });
+});
+
 function getdataUrl(img) {
   const reader = new FileReader();
   return new Promise((resolve, reject) => {
@@ -922,6 +937,11 @@ function showItems(items) {
 
   items.forEach((item) => {
     console.log(`${item.model} ${item.brand}: ${item.available}`);
+
+    const unavailBtn = item.available
+      ? `<button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#unavailableModal" data-id="${item._id}">Rendi Indisponibile</button>`
+      : ``;
+
     const modal = !item.available ? "#availableModal" : "#bookingModal";
     const text = !item.available
       ? "Rendi computer disponibile"
@@ -1018,6 +1038,7 @@ function showItems(items) {
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="${modal}" data-id="${
       item._id
     }">${text}</button>
+    ${unavailBtn}
         <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="${
           item._id
         }">Elimina</button>
