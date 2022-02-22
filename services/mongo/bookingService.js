@@ -223,15 +223,17 @@ class bookingService extends baseService {
     const current = today <= end;
 
     if (!booking.computer.available) {
-      booking.late = false;
-      if (!future) {
-        // if revoked
-        booking.revoked = true;
-        booking.status = 0;
-      } else {
-        // if onHold
-        booking.onHold = true;
-        booking.status = 1;
+      if (!booking.late){
+        booking.late = false;
+        if (!future) {
+          // if revoked
+          booking.revoked = true;
+          booking.status = 0;
+        } else {
+          // if onHold
+          booking.onHold = true;
+          booking.status = 1;
+        }
       }
     } else {
       booking.onHold = false;
