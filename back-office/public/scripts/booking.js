@@ -310,6 +310,7 @@ async function bookingPreview(user, computer, begin, end) {
     })
       .done((data) => {
         console.log(data);
+        getAllBookings();
         showAlert(
           "Noleggio creato con successo!",
           $("#addForm")[0],
