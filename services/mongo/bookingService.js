@@ -222,6 +222,11 @@ class bookingService extends baseService {
     const future = today < begin;
     const current = today <= end;
 
+    if (booking.returned && booking.payed) {
+      // is done
+      booking.status = 5;
+    }
+
     if (!booking.computer.available) {
       if (!booking.late){
         booking.late = false;
