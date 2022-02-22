@@ -45,11 +45,6 @@
                 >Gestionale</a
               >
             </li>
-            <li class="nav-item" @click="makeActive">
-              <a class="nav-link" href="http://localhost:8000/front/"
-                >Sito web</a
-              >
-            </li>
 
             <li
               v-show="this.$store.state.logged"
