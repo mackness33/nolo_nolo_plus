@@ -1054,6 +1054,8 @@ function showItems(items) {
     }
     $("#itemsContainer").append(itemElement);
   });
+
+  listenClicks();
 }
 
 function isEmpty(items) {
@@ -1135,4 +1137,30 @@ function checkSession(evt, xhr, options, erro) {
   if (xhr.status === 302) {
     window.location.href = "/nnplus/login";
   }
+}
+
+/**
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
+
+function listenClicks() {
+  $(".card-img-top").on("click", (event) => {
+    console.log(
+      $(event.target.parentElement).find(".info-card").css("display") == "none"
+    );
+    const el = $(event.target.parentElement).find(".info-card");
+    if (el.css("display") == "none") {
+      el.css("display", "flex");
+    } else {
+      el.css("display", "none");
+    }
+  });
 }
