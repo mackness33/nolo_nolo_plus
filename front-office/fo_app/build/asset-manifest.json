@@ -1,0 +1,28 @@
+{
+  "files": {
+    "main.js": "/front/static/js/main.eef56a6a.chunk.js",
+    "main.js.map": "/front/static/js/main.eef56a6a.chunk.js.map",
+    "runtime-main.js": "/front/static/js/runtime-main.342fcbe0.js",
+    "runtime-main.js.map": "/front/static/js/runtime-main.342fcbe0.js.map",
+    "static/css/2.6fbaedff.chunk.css": "/front/static/css/2.6fbaedff.chunk.css",
+    "static/js/2.d8b5a710.chunk.js": "/front/static/js/2.d8b5a710.chunk.js",
+    "static/js/2.d8b5a710.chunk.js.map": "/front/static/js/2.d8b5a710.chunk.js.map",
+    "index.html": "/front/index.html",
+    "precache-manifest.52017f0746cbb296c167e4ec5c7592ad.js": "/front/precache-manifest.52017f0746cbb296c167e4ec5c7592ad.js",
+    "service-worker.js": "/front/service-worker.js",
+    "static/css/2.6fbaedff.chunk.css.map": "/front/static/css/2.6fbaedff.chunk.css.map",
+    "static/js/2.d8b5a710.chunk.js.LICENSE.txt": "/front/static/js/2.d8b5a710.chunk.js.LICENSE.txt",
+    "static/media/colors.jpg": "/front/static/media/colors.868bc345.jpg",
+    "static/media/landing1.jpg": "/front/static/media/landing1.eb5f4ae4.jpg",
+    "static/media/landing2.jpeg": "/front/static/media/landing2.98ec1962.jpeg",
+    "static/media/landing3.jpg": "/front/static/media/landing3.999bd7e8.jpg",
+    "static/media/landing4.jpg": "/front/static/media/landing4.ea63853b.jpg",
+    "static/media/500.css": "/front/static/media/roboto-vietnamese-500-normal.b32ad0e3.woff2"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.342fcbe0.js",
+    "static/css/2.6fbaedff.chunk.css",
+    "static/js/2.d8b5a710.chunk.js",
+    "static/js/main.eef56a6a.chunk.js"
+  ]
+}
