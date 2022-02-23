@@ -29,10 +29,12 @@ const CardContainer = () => {
         );
 
         setLocalComps([...cop, ...filtered]);
+      } else {
       }
       setUser(res.payload);
     } else {
       setUser(null);
+      setLocalComps(computers);
     }
   }, [globalUser, computers]);
   return (

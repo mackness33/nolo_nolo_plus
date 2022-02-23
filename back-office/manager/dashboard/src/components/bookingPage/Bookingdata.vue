@@ -7,19 +7,19 @@
         <span class="fw-bold">{{ totalBookings }}</span>
       </section>
       <section class="border rounded">
-        numero di noleggi attivi:
+        Numero di noleggi attivi:
         <span class="fw-bold">{{ activeBookings }}</span>
       </section>
       <section class="border rounded">
-        numero di noleggi futuri:
+        Numero di noleggi futuri:
         <span class="fw-bold">{{ futureBookings }}</span>
       </section>
       <section class="border rounded">
-        numero di noleggi terminati con successo:
+        Numero di noleggi terminati con successo:
         <span class="fw-bold">{{ pastBookings }}</span>
       </section>
       <section class="border rounded">
-        Noleggi terminati ma computer non restituito:
+        Noleggi non restitutiti o non pagati:
         <span class="fw-bold">{{ lateBookings }}</span>
       </section>
     </div>

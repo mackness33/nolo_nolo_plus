@@ -180,7 +180,7 @@ async function bookingPreview(user, computer, begin, end) {
   $("#endInfo > span").html(`${end}`);
 
   const days = daysNumber(begin, end) + 1;
-  var price = days * computer.price;
+  var price = (days * computer.price).toFixed(2);
 
   // show full price
   const initPrice = document.createElement("li");
@@ -308,7 +308,7 @@ async function bookingPreview(user, computer, begin, end) {
       url: "/nnplus/booking/addOne",
       data: { data: JSON.stringify(booking) },
     })
-      .done((data) => {
+      .done(async (data) => {
         console.log(data);
         showAlert(
           "Noleggio creato con successo!",
@@ -318,6 +318,7 @@ async function bookingPreview(user, computer, begin, end) {
         );
         $("#bookingPreview").prop("hidden", true);
         $("#addForm")[0].reset();
+        await getAllBookings();
       })
       .fail((err) => {
         console.log(err);

@@ -67,10 +67,10 @@ router.get("/bookingStatus", async (req, res, next) => {
   count = await bModel.find({ status: 0 }).count();
   buildRes.push(["annullati per indisponibilita", count]);
 
-  count = await bModel.find({ payed: false }).count();
-  buildRes.push(["non ancora pagati", count]);
+  count = await bModel.find({ payed: false, status: 4 }).count();
+  buildRes.push(["non pagati", count]);
 
-  count = await bModel.find({ returned: false }).count();
+  count = await bModel.find({ returned: false, status: 4 }).count();
   buildRes.push(["non resituiti", count]);
 
   res.send(buildRes);
